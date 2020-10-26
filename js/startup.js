@@ -13,15 +13,16 @@ http.createServer(function (req, res) {
     res.writeHead(200, {
         'Content-Type': 'text/plain'
     });
-    res.write('Hi from HSA-SoC');
+    res.write('Hi');
     res.end();
 }).listen(process.env.PORT);
 // log message
-const message = `Listening on http://${ip}:${process.env.PORT}`;
+const link = `http://${ip}:${process.env.PORT}`;
+const message = `Listening on <a href=${link}>${link}</a>`;
 // data
 const data = '"' + JSON.stringify({
     message: message,
-    from: 'HSA SoC Client',
+    from: 'HSA SoC Local Server',
     secret: process.env.SECRET
 }).replace(/"/g, '\\"') + '"';
 // headers
@@ -29,7 +30,7 @@ const headers = `"Content-Type: application/json"`;
 // url
 const url = process.env.REMOTE + '/log';
 // full command
-const command = `curl --data ${data} -H ${headers} ${url} > /root/log`;
+const command = `curl --data ${data} -H ${headers} ${url}`;
 console.log(command);
 // execute
 exec(command, (error, stdout, stderr) => {

@@ -1,4 +1,4 @@
-# HSA SoC Client
+# HSA SoC Local Server
 This is a collection of scripts to perform HSA on a SoC-FPGA.
 
 # Installation
@@ -27,7 +27,7 @@ Setup Git and clone this repository.
 
 ```
 sudo apt-get install git
-git clone https://github.com/operezcham90/hsa-soc-client.git
+git clone https://github.com/operezcham90/hsa-soc-local.git
 ```
 
 Setup Curl.
@@ -42,6 +42,6 @@ Set the startup script to run on boot.
 
 ```
 npm install -g pm2
-pm2 start hsa-soc-client/js/startup.js
+pm2 start hsa-soc-local/js/startup.js
 pm2 startup
 ```
