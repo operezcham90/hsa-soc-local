@@ -30,7 +30,7 @@ const headers = `"Content-Type: application/json"`;
 // url
 const url = process.env.REMOTE + '/log';
 // full command
-const command = `curl --data ${data} -H ${headers} ${url}`;
+const command = `curl --data ${data} -H ${headers} ${url} > /root/log`;
 console.log(command);
 // execute
 exec(command, (error, stdout, stderr) => {
