@@ -11,7 +11,7 @@ http.createServer(function (req, res) {
     });
     var rs = fs.createReadStream('/root/hsa-soc-local/js/index.html');
     rs.pipe(res);
-}).listen(process.env.PORT, 'localhost', function () {
+}).listen(process.env.PORT, ip, function () {
     const url = `http://${ip}:${process.env.PORT}`;
     const message = `Listening on <a href=${url}>${url}</a>`;
     log(message);
