@@ -4,15 +4,15 @@ const log = require('./log.js').log;
 const http = require('http');
 const fs = require('fs');
 http.createServer(function (req, res) {
-    var stat = fs.statSync('/root/hsa-soc-local/js/index.html');
+    const file = '/root/hsa-soc-local/js/index.html';
+    const stat = fs.statSync(file);
     response.writeHead(200, {
         'Content-Type': 'text/html',
         'Content-Length': stat.size
     });
-    var rs = fs.createReadStream('/root/hsa-soc-local/js/index.html');
+    const rs = fs.createReadStream(file);
     rs.pipe(res);
-}).listen(process.env.PORT, ip, function () {
-    const url = `http://${ip}:${process.env.PORT}`;
-    const message = `Listening on <a href=${url}>${url}</a>`;
-    log(message);
-});
+}).listen(process.env.PORT);
+const url = `http://${ip}:${process.env.PORT}`;
+const message = `Listening on <a href=${url}>${url}</a>`;
+log(message);
