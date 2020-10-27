@@ -42,6 +42,7 @@ Set the startup script to run on boot.
 
 ```
 npm install -g pm2
-pm2 start hsa-soc-local/js/startup.js
+pm2 start hsa-soc-local/js/server.js
+pm2 save
 pm2 startup
 ```
