@@ -7,7 +7,7 @@ exports.log = function (message) {
     }).replace(/"/g, '\\"') + '"';
     const headers = `"Content-Type: application/json"`;
     const url = process.env.REMOTE + '/log';
-    const command = `curl --data ${data} -H ${headers} ${url} > /root/log`;
+    const command = `curl --data ${data} -H ${headers} ${url}`;
     exec(command, (error, stdout, stderr) => {
         console.log(error || stderr || stdout);
     });
