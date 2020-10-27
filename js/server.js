@@ -6,7 +6,7 @@ const fs = require('fs');
 http.createServer(function (req, res) {
     const file = '/root/hsa-soc-local/js/index.html';
     const stat = fs.statSync(file);
-    response.writeHead(200, {
+    res.writeHead(200, {
         'Content-Type': 'text/html',
         'Content-Length': stat.size
     });
