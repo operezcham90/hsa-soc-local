@@ -7,10 +7,10 @@ off_t axi_bram_ctrl_0_addr = 0x40000000;
 off_t axi_bram_ctrl_1_addr = 0x42000000;
 off_t axi_gpio_0_addr = 0x41200000;
 off_t axi_gpio_1_addr = 0x41210000;
-long long int *axi_bram_ctrl_0;
-long long int *axi_bram_ctrl_1;
-long long int *axi_gpio_0;
-long long int *axi_gpio_1;
+long int *axi_bram_ctrl_0;
+long int *axi_bram_ctrl_1;
+long int *axi_gpio_0;
+long int *axi_gpio_1;
 int main()
 {
     unsigned int bram_size = 0x8000;
