@@ -37,12 +37,13 @@ int main()
         printf("Data written\n");
         // confirm
         int confirmed = 1;
-        for (long int i = 0; i < 1000; i++)
+        for (long int i = 0; i < 10; i++)
         {
             if (axi_bram_ctrl_1[i] != i)
             {
                 confirmed = 0;
             }
+            printf("%ld\n", axi_bram_ctrl_1[i]);
         }
         printf("Data read\n");
         printf("Confirmed: %d\n", confirmed);
@@ -55,7 +56,7 @@ int main()
         int WORK = 0B10;
         axi_gpio_2[0] = RESET | WAIT;
         axi_gpio_2[0] = WORK | WAIT;
-        for (long int i = 0; i < 1000; i++)
+        for (long int i = 0; i < 10; i++)
         {
             axi_gpio_2[0] = WORK | WAIT;
             axi_gpio_0[0] = i << 2;
