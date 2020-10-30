@@ -49,9 +49,9 @@ int main()
 
         printf("Sum\n");
         // low level BRAM address is the number of the byte
-        int WAIT = 0b0;
-        int ADD = 0b1;
-        int RESET = 0b10;
+        int WAIT = 0b10;
+        int ADD = 0b11;
+        int RESET = 0b00;
         axi_gpio_2[0] = RESET;
         for (long int i = 0; i < 1000; i++)
         {
