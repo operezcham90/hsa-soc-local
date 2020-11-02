@@ -67,9 +67,9 @@ int main()
         printf("Confirmed: %d\n", confirmed);
 
         // Accumulator
-        int WAIT = 0;
-        int CLEAR = 2;
-        int WORK = 1;
+        int WAIT = 2;
+        int CLEAR = 0;
+        int WORK = 3;
         printf("Value: %ld\n", axi_gpio_1[0]);
         axi_gpio_4[0] = 2;
         axi_gpio_2[0] = CLEAR;
