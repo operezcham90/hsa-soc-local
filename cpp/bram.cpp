@@ -63,6 +63,8 @@ int main()
                 confirmed = 0;
             }
         }
+        printf("Data read\n");
+        printf("Confirmed: %d\n", confirmed);
 
         close(fd);
     }
