@@ -73,16 +73,8 @@ int main()
         printf("Value: %ld\n", axi_gpio_1[0]);
         axi_gpio_4[0] = 2;
         axi_gpio_2[0] = CLEAR | WAIT;
-        axi_gpio_2[0] = CLEAR | WAIT;
-        axi_gpio_2[0] = CLEAR |WORK;
-        axi_gpio_2[0] = CLEAR |WORK;
+        axi_gpio_2[0] = CLEAR | WORK;
         axi_gpio_2[0] = WAIT;
-        axi_gpio_2[0] = WAIT;
-        axi_gpio_2[0] = WORK;
-        axi_gpio_2[0] = WORK;
-        axi_gpio_2[0] = WAIT;
-        axi_gpio_2[0] = WAIT;
-        axi_gpio_2[0] = WORK;
         axi_gpio_2[0] = WORK;
         printf("Value: %ld\n", axi_gpio_1[0]);
 
