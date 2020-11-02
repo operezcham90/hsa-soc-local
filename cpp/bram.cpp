@@ -8,7 +8,7 @@ off_t axi_bram_ctrl_0_addr = 0x40000000;
 off_t axi_bram_ctrl_1_addr = 0x42000000;
 off_t axi_gpio_0_addr = 0x41200000;
 off_t axi_gpio_1_addr = 0x41210000;
-off_t axi_gpio_2_addr = 0x41210000;
+off_t axi_gpio_2_addr = 0x41220000;
 off_t axi_gpio_3_addr = 0x41230000;
 off_t axi_gpio_4_addr = 0x41240000;
 long int *axi_bram_ctrl_0;
