@@ -66,6 +66,20 @@ int main()
         printf("Data read\n");
         printf("Confirmed: %d\n", confirmed);
 
+        // Accumulator
+        int WAIT = 0;
+        int CLEAR = 2;
+        int WORK = 1;
+        printf("Value: %ld\n", axi_gpio_1[0]);
+        axi_gpio_4[0] = 2;
+        axi_gpio_2[0] = CLEAR;
+        for (int i = 0; i < 10; i++)
+        {
+            axi_gpio_2[0] = WAIT;
+            axi_gpio_2[0] = WORK;
+            printf("Value: %ld\n", axi_gpio_1[0]);
+        }
+
         close(fd);
     }
 }
