@@ -9,11 +9,15 @@ off_t axi_bram_ctrl_1_addr = 0x42000000;
 off_t axi_gpio_0_addr = 0x41200000;
 off_t axi_gpio_1_addr = 0x41210000;
 off_t axi_gpio_2_addr = 0x41210000;
+off_t axi_gpio_3_addr = 0x41230000;
+off_t axi_gpio_4_addr = 0x41240000;
 long int *axi_bram_ctrl_0;
 long int *axi_bram_ctrl_1;
 long int *axi_gpio_0;
 long int *axi_gpio_1;
 long int *axi_gpio_2;
+long int *axi_gpio_3;
+long int *axi_gpio_4;
 int main()
 {
     // size of bram default block
@@ -28,6 +32,8 @@ int main()
         axi_gpio_0 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_gpio_0_addr);
         axi_gpio_1 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_gpio_1_addr);
         axi_gpio_2 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_gpio_2_addr);
+        axi_gpio_3 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_gpio_3_addr);
+        axi_gpio_4 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_gpio_4_addr);
 
         // init BRAM
         for (long int i = 0; i < 1000; i++)
@@ -35,7 +41,7 @@ int main()
             axi_bram_ctrl_0[i] = i;
         }
         printf("Data written\n");
-        // confirm
+        // verfy BRAM
         int confirmed = 1;
         for (long int i = 0; i < 10; i++)
         {
@@ -43,30 +49,19 @@ int main()
             {
                 confirmed = 0;
             }
-            printf("%ld\n", axi_bram_ctrl_1[i]);
         }
         printf("Data read\n");
         printf("Confirmed: %d\n", confirmed);
 
-        printf("Sum\n");
-        // low level BRAM address is the number of the byte
-        int WAIT = 0B00;
-        int ADD = 0B01;
-        int RESET = 0B00;
-        int WORK = 0B10;
-        axi_gpio_2[0] = RESET | WAIT;
-        axi_gpio_2[0] = WORK | WAIT;
+        // verfy BRAM low level
+        confirmed = 1;
         for (long int i = 0; i < 10; i++)
         {
-            axi_gpio_2[0] = WORK | WAIT;
             axi_gpio_0[0] = i << 2;
-            axi_gpio_2[0] = WORK | WAIT;
-
-            axi_gpio_2[0] = WORK | ADD;
-            axi_gpio_0[0] = i << 2;
-            axi_gpio_2[0] = WORK | ADD;
-
-            printf("%ld\n", axi_gpio_1[0]);
+            if (axi_gpio_3[0] != i)
+            {
+                confirmed = 0;
+            }
         }
 
         close(fd);
