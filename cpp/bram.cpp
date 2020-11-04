@@ -60,6 +60,7 @@ int main()
             axi_gpio_2[0] = WORK;
         }
         printf("End sum: %ld\n", axi_gpio_1[0]);
+        length--;
         printf("Expected sum: %ld\n", (length * (length + 1)) / 2);
         close(fd);
     }
