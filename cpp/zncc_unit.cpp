@@ -116,7 +116,6 @@ int main()
         printf("End acc t: %ld\n", axi_gpio_5[0]);
         printf("End acc cross: %ld\n", axi_gpio_6[0]);
         // end
-        // end
         close(fd);
     }
 }
