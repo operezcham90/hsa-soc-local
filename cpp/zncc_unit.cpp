@@ -75,6 +75,28 @@ int main()
         printf("End acc i: %ld\n", axi_gpio_7[0]);
         printf("End acc t: %ld\n", axi_gpio_5[0]);
         printf("End acc cross: %ld\n", axi_gpio_6[0]);
+        long int i_avg = axi_gpio_7[0] / length;
+        long int t_avg = axi_gpio_5[0] / length;
+        // Clear previous data
+        axi_gpio_4[0] = CLEAR | WAIT | SQUARED;
+        axi_gpio_4[0] = CLEAR | WORK | SQUARED;
+        axi_gpio_2[0] = i_avg;
+        axi_gpio_3[0] = t_avg;
+        // Acc squared
+        printf("Start acc i: %ld\n", axi_gpio_7[0]);
+        printf("Start acc t: %ld\n", axi_gpio_5[0]);
+        printf("Start acc cross: %ld\n", axi_gpio_6[0]);
+        for (int i = 0; i < length; i++)
+        {
+            axi_gpio_0[0] = i << 2;
+            axi_gpio_1[0] = i << 2;
+            axi_gpio_4[0] = WAIT | SQUARED;
+            axi_gpio_4[0] = WORK | SQUARED;
+        }
+        printf("End acc i: %ld\n", axi_gpio_7[0]);
+        printf("End acc t: %ld\n", axi_gpio_5[0]);
+        printf("End acc cross: %ld\n", axi_gpio_6[0]);
+        // end
         close(fd);
     }
 }
