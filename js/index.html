@@ -16,25 +16,38 @@
         <h1>🍯 HSA SoC Local Server</h1>
         <div id="loading" class="alert alert-warning" role="alert">Loading OpenCV...</div>
         <div>
-            <label>Select an Image</label>
             <input type="file" class="d-none" id="fileInput" name="file">
-            <button type="button" class="btn btn-outline-light" id="fileInputBtn">Select File</button>
+            <button type="button" class="btn btn-outline-light" id="fileInputBtn">Select Image File</button>
         </div>
         <div>
-            <img id="imageSrc" alt="No Image" />
+            <img id="imageSrc" alt="No Image" class="d-none">
         </div>
         <div>
-            <canvas id="canvasOutput" width="0" height="0"></canvas>
+            <canvas id="canvasOutput" class="d-none"></canvas>
         </div>
-        <textarea id="textOutput" class="form-control" rows="10"></textarea>
+        <textarea id="textOutput" class="form-control" rows="10">Output:</textarea>
     </div>
     <script>
+        let mat = null;
         function onOpenCvReady() {
             document.querySelector('#loading').classList.add('d-none');
         }
         document.querySelector('#fileInputBtn').onclick = function () {
             document.querySelector('#fileInput').click();
-        }
+        };
+        document.getElementById('fileInput').addEventListener('change', (e) => {
+            document.getElementById('imageSrc').src = URL.createObjectURL(e.target.files[0]);
+        }, false);
+        document.getElementById('imageSrc').onload = function () {
+            mat = cv.imread(document.getElementById('imageSrc'));
+            document.getElementById('textOutput').innerHTML += 'Image length: ';
+            document.getElementById('textOutput').innerHTML += mat.data.length + ' bytes\n';
+            let dst = new cv.Mat();
+            cv.cvtColor(mat, dst, cv.COLOR_RGBA2GRAY);
+            document.getElementById('textOutput').innerHTML += 'Gray image length: ';
+            document.getElementById('textOutput').innerHTML += dst.data.length + ' bytes\n';
+            mat = dst;
+        };
     </script>
     <script async src="https://docs.opencv.org/master/opencv.js" onload="onOpenCvReady()"
         type="text/javascript"></script>
