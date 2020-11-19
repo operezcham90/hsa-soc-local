@@ -40,7 +40,7 @@
         }, false);
         document.getElementById('imageSrc').onload = function () {
             mat = cv.imread(document.getElementById('imageSrc'));
-            document.getElementById('textOutput').innerHTML += 'Image length: ';
+            document.getElementById('textOutput').innerHTML += '\nImage length: ';
             document.getElementById('textOutput').innerHTML += mat.data.length + ' bytes\n';
             let dst = new cv.Mat();
             cv.cvtColor(mat, dst, cv.COLOR_RGBA2GRAY);
