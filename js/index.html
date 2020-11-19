@@ -15,21 +15,25 @@
     <div class="container">
         <h1>🍯 HSA SoC Local Server</h1>
         <div id="loading" class="alert alert-warning" role="alert">Loading OpenCV...</div>
-        <textarea id="textOutput" class="form-control" rows="10"></textarea>
         <div>
-            Select an Image <input type="file" class="form-control-file" id="fileInput" name="file" />
+            <label>Select an Image</label>
+            <input type="file" class="d-none" id="fileInput" name="file">
+            <button type="button" class="btn btn-outline-light" id="fileInputBtn">Select File</button>
         </div>
         <div>
             <img id="imageSrc" alt="No Image" />
         </div>
         <div>
-            <canvas id="canvasOutput"></canvas>
-            <div>Output</div>
+            <canvas id="canvasOutput" width="0" height="0"></canvas>
         </div>
+        <textarea id="textOutput" class="form-control" rows="10"></textarea>
     </div>
     <script>
         function onOpenCvReady() {
             document.querySelector('#loading').classList.add('d-none');
+        }
+        document.querySelector('#fileInputBtn').onclick = function () {
+            document.querySelector('#fileInput').onclick();
         }
     </script>
     <script async src="https://docs.opencv.org/master/opencv.js" onload="onOpenCvReady()"
