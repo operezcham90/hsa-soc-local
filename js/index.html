@@ -14,19 +14,17 @@
 <body class="text-light bg-dark">
     <div class="container">
         <h1>🍯 HSA SoC Local Server</h1>
-
         <div id="loading" class="alert alert-warning" role="alert">Loading OpenCV...</div>
-
-        <textarea id="textOutput" rows="10" cols="100"></textarea>
+        <textarea id="textOutput" class="form-control" rows="10"></textarea>
         <div>
-            Select an Image <input type="file" id="fileInput" name="file" />
+            Select an Image <input type="file" class="form-control-file" id="fileInput" name="file" />
         </div>
         <div>
             <img id="imageSrc" alt="No Image" />
         </div>
         <div>
             <canvas id="canvasOutput"></canvas>
-            <div class="caption">Output</div>
+            <div>Output</div>
         </div>
     </div>
     <script>
