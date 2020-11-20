@@ -36,6 +36,12 @@ Setup Curl.
 sudo apt-get install curl
 ```
 
+Setup Rust.
+
+```
+sh hsa-soc-local/rs/rustup-init
+```
+
 Modify the config.js file to set the SECRET environment variable (use the same value of the remote server).
 
 Set the startup script to run on boot.

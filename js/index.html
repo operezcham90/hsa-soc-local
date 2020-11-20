@@ -17,7 +17,7 @@
         <div id="loading" class="alert alert-warning" role="alert">Loading OpenCV...</div>
         <div>
             <input type="file" class="d-none" id="fileInput" name="file">
-            <button type="button" class="btn btn-outline-light" id="fileInputBtn">Select Image File</button>
+            <button type="button" class="btn btn-outline-light mb-1" id="fileInputBtn">Select Image File</button>
         </div>
         <div>
             <img id="imageSrc" alt="No Image" class="d-none">
@@ -25,18 +25,19 @@
         <div>
             <canvas id="canvasOutput" class="d-none"></canvas>
         </div>
-        <textarea id="textOutput" class="form-control" rows="10">Output:</textarea>
+        <textarea id="textOutput" class="form-control mt-1" rows="10">Output:</textarea>
     </div>
     <script>
         let mat = null;
         function onOpenCvReady() {
-            document.querySelector('#loading').classList.add('d-none');
+            document.getElementById('loading').classList.add('d-none');
         }
-        document.querySelector('#fileInputBtn').onclick = function () {
-            document.querySelector('#fileInput').click();
+        document.getElementById('fileInputBtn').onclick = function () {
+            document.getElementById('fileInput').click();
         };
         document.getElementById('fileInput').addEventListener('change', (e) => {
             document.getElementById('imageSrc').src = URL.createObjectURL(e.target.files[0]);
+            document.getElementById('imageSrc').classList.remove('d-none');
         }, false);
         document.getElementById('imageSrc').onload = function () {
             mat = cv.imread(document.getElementById('imageSrc'));
@@ -44,8 +45,20 @@
             document.getElementById('textOutput').innerHTML += mat.data.length + ' bytes\n';
             let dst = new cv.Mat();
             cv.cvtColor(mat, dst, cv.COLOR_RGBA2GRAY);
-            document.getElementById('textOutput').innerHTML += 'Gray image length: ';
+            document.getElementById('textOutput').innerHTML += 'Image Color RGBA to GRAY\n';
+            document.getElementById('textOutput').innerHTML += 'Image length: ';
             document.getElementById('textOutput').innerHTML += dst.data.length + ' bytes\n';
+            for (var i = 0; i < 4; i++) {
+                document.getElementById('textOutput').innerHTML += 'byte ' + i + ': ' + dst.data[i] + '\n';
+            }
+            dst.convertTo(dst, cv.CV_32S);
+            document.getElementById('textOutput').innerHTML += 'Image Data 8U to 32S\n';
+            document.getElementById('textOutput').innerHTML += 'Image length: ';
+            document.getElementById('textOutput').innerHTML += dst.data.length + ' bytes\n';
+            for (var i = 0; i < 4; i++) {
+                document.getElementById('textOutput').innerHTML += 'byte ' + i + ': ' + dst.data[i] + '\n';
+            }
+            document.getElementById('textOutput').innerHTML += JSON.stringify(dst.data);
             mat = dst;
         };
     </script>
