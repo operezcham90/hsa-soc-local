@@ -31,11 +31,24 @@ git clone https://github.com/operezcham90/hsa-soc-local.git
 ```
 
 Setup CMake.
+
 ```
 git clone https://github.com/Kitware/CMake.git
 cd CMake
 git checkout tags/v3.0.0
 ./configure
+make
+sudo make install
+```
+
+Setup OpenCV.
+
+```
+git clone --branch 2.4 https://github.com/opencv/opencv.git
+cd opencv
+mkdir build
+cd build
+cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/usr/local ..
 make
 sudo make install
 ```
