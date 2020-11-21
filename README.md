@@ -36,12 +36,6 @@ Setup Curl.
 sudo apt-get install curl
 ```
 
-Setup Rust.
-
-```
-curl https://static.rust-lang.org/dist/rust-1.48.0-armv7-unknown-linux-gnueabihf.tar.gz --output rust.tar.gz
-```
-
 Modify the config.js file to set the SECRET environment variable (use the same value of the remote server).
 
 Set the startup script to run on boot.
