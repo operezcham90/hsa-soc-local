@@ -53,6 +53,24 @@ make
 sudo make install
 ```
 
+Find the full path to the OpenCV libraries.
+
+```
+sudo find / -name "libopencv_core.so.2.4*"
+```
+
+Write the path you found to the configuration file
+
+```
+sudo nano /etc/ld.so.conf.d/opencv.conf
+```
+
+Load the configuration
+
+```
+sudo ldconfig -v
+```
+
 Setup Curl.
 
 ```
