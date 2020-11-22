@@ -4,7 +4,7 @@ const log = require('./log.js').log;
 const http = require('http');
 const fs = require('fs');
 http.createServer(function (req, res) {
-    /*let file = '/root/hsa-soc-local/html/error.html';
+    let file = '/root/hsa-soc-local/html/error.html';
     let type = 'text/html';
     if (req.url === '/') {
         file = '/root/hsa-soc-local/html/index.html';
@@ -19,11 +19,7 @@ http.createServer(function (req, res) {
         'Content-Length': stat.size
     });
     const rs = fs.createReadStream(file);
-    rs.pipe(res);*/
-    res.writeHead(200, {
-        'Content-Type': 'text/plain'
-    });
-    res.end(req.url);
+    rs.pipe(res);
 }).listen(process.env.PORT);
 const url = `http://${ip}:${process.env.PORT}`;
 const message = `Listening on <a href=${url}>${url}</a>`;
