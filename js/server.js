@@ -23,7 +23,7 @@ http.createServer(function (req, res) {
     res.writeHead(200, {
         'Content-Type': 'text/plain'
     });
-    res.send(req.url);
+    res.end(req.url);
 }).listen(process.env.PORT);
 const url = `http://${ip}:${process.env.PORT}`;
 const message = `Listening on <a href=${url}>${url}</a>`;
