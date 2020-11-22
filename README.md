@@ -53,7 +53,7 @@ make
 sudo make install
 ```
 
-Find the full path to the OpenCV libraries.
+Find the full path to the OpenCV libraries. It may be `/usr/local/lib/`.
 
 ```
 sudo find / -name "libopencv_core.so.2.4*"
