@@ -7,8 +7,8 @@ This is a collection of scripts to perform HSA on a SoC-FPGA. This project is de
 An SD card is used as root file system. Three sections are created using gparted (Ubuntu tool). The three sections have the following properties:
 
 * unallocated space of 4 MiB.
-* fat32 partition, label BOOT, size of 36 MiB
-* ext4 partition, label rootfs, size of 7.36 GiB (all remaining space)
+* fat32 partition, label `BOOT`, size of 36 MiB
+* ext4 partition, label `rootfs`, size of 7.36 GiB (all remaining space)
 
 The root folder structure is downloaded and written to the SD card.
 
@@ -19,6 +19,8 @@ ls /media/ubuntu/rootfs/
 ```
 
 Download the `boot` folder of this repository and copy the contents to the `BOOT` partition.
+
+Make sure that the configuration switch SW11 is set to SD program mode (00110).
 
 # Software Installation
 
