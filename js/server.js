@@ -4,10 +4,18 @@ const log = require('./log.js').log;
 const http = require('http');
 const fs = require('fs');
 http.createServer(function (req, res) {
-    const file = '/root/hsa-soc-local/js/index.html';
+    let file = '';
+    let type = '';
+    if (req.path === '/') {
+        file = '/root/hsa-soc-local/html/index.html';
+        type = 'text/html';
+    } else (req.path === '/dogo') {
+        file = '/root/hsa-soc-local/img/dog.jpg';
+        type = 'image/jpg';
+    }
     const stat = fs.statSync(file);
     res.writeHead(200, {
-        'Content-Type': 'text/html',
+        'Content-Type': type,
         'Content-Length': stat.size
     });
     const rs = fs.createReadStream(file);
