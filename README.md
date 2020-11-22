@@ -4,7 +4,19 @@ This is a collection of scripts to perform HSA on a SoC-FPGA. This project is de
 
 # SoC Setup and OS Installation
 
-Work in Progress. Use [this document](https://github.com/operezcham90/bee-soc/wiki/Sobel-Operator-Example) as reference.
+An SD card is used as root file system. Three sections are created using gparted (Ubuntu tool). The three sections have the following properties:
+
+* unallocated space of 4 MiB.
+* fat32 partition, label BOOT, size of 36 MiB
+* ext4 partition, label rootfs, size of 7.36 GiB (all remaining space)
+
+The root folder structure is downloaded and written to the SD card.
+
+```
+wget http://releases.linaro.org/archive/12.12/ubuntu/vexpress/linaro-precise-ubuntu-desktop-20121124-560.tar.gz
+sudo tar --strip-components=3 -C /media/ubuntu/rootfs -xzpf linaro-precise-ubuntu-desktop-20121124-560.tar.gz binary/boot/filesystem.dir
+ls /media/ubuntu/rootfs/
+```
 
 # Software Installation
 
