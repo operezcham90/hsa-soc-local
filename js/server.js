@@ -6,10 +6,10 @@ const fs = require('fs');
 http.createServer(function (req, res) {
     let file = '/root/hsa-soc-local/html/error.html';
     let type = 'text/html';
-    if (req.path === '/') {
+    if (req.url === '/') {
         file = '/root/hsa-soc-local/html/index.html';
         type = 'text/html';
-    } else if (req.path === '/dogo') {
+    } else if (req.url === '/dogo') {
         file = '/root/hsa-soc-local/img/dog.jpg';
         type = 'image/jpg';
     }
