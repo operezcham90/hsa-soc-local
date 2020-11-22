@@ -1,7 +1,11 @@
 # HSA SoC Local Server
 This is a collection of scripts to perform HSA on a SoC-FPGA.
 
-# Installation
+# SoC Setup and OS Installation
+
+Work in Progress. Use [this document](https://github.com/operezcham90/bee-soc/wiki/Sobel-Operator-Example) as reference.
+
+# Software Installation
 
 Upgrade GCC compiler.
 
