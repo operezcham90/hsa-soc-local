@@ -1,5 +1,6 @@
 # HSA SoC Local Server
-This is a collection of scripts to perform HSA on a SoC-FPGA.
+
+This is a collection of scripts to perform HSA on a SoC-FPGA. This project is developed for the [ZC706 board](https://www.xilinx.com/products/boards-and-kits/ek-z7-zc706-g.html) that has a [Zynq-7000 SoC](https://www.xilinx.com/products/silicon-devices/soc/zynq-7000.html). The Processing System (PS) has two [ARM A9](https://developer.arm.com/ip-products/processors/cortex-a/cortex-a9) CPUs and the Programmable Logic (PL) has the properties of an [Artix-7](https://www.xilinx.com/products/silicon-devices/fpga/artix-7.html) FPGA. [Vivado HLx 2017.3](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools/archive.html) was used.
 
 # SoC Setup and OS Installation
 
