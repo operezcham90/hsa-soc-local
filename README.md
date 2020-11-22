@@ -18,6 +18,8 @@ sudo tar --strip-components=3 -C /media/ubuntu/rootfs -xzpf linaro-precise-ubunt
 ls /media/ubuntu/rootfs/
 ```
 
+Download the `boot` folder of this repository and copy the contents to the `BOOT` partition.
+
 # Software Installation
 
 Install SSH if remote access is required.

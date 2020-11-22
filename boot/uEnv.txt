@@ -1,0 +1,33 @@
+bootargs=console=ttyPS0,115200 root=/dev/mmcblk0p2 rw rootfstype=ext4 rootwait
+loadkernel=fatload mmc 0 0x3000000 ${kernel_image}
+loadtree=fatload mmc 0 0x2A00000 ${devicetree_image}
+bootfs=bootm 0x3000000 - 0x2A00000;
+hi0=echo '                              ####                '
+hi1=echo '                ######      ##  @@##              '
+hi2=echo '  ######      ##########    ##  @@##              '
+hi3=echo '##########    ####    ##  ##  @@@@##              '
+hi4=echo '####    ####          ##  ##  @@@@##              '
+hi5=echo '          ####        ##  ##  @@@@##      ######  '
+hi6=echo '            ##  ########  ##  @@##    ####      ##'
+hi7=echo '            ####    ####  ##  @@##  ##    @@@@@@##'
+hi8=echo '          ##  ##  ####  ####  ##  ##  @@@@@@@@##  '
+hi9=echo '        ##++      ##      ##  ####  @@@@@@@@##    '
+hia=echo '        ##                    ##  @@@@@@####      '
+hib=echo '      ####++        ++++      ##@@@@####    ##    '
+hic=echo '    ##  ##++      ++  ++++##    ####        ######'
+hid=echo '  ##  @@@@##      ++++++++####  ####      ##    ##'
+hie=echo '##  @@######      ++++++##  ######  ########  ##  '
+hif=echo '######      ##      ############    ####  ####    '
+hig=echo '              ######      ######  ####  ##        '
+hih=echo '                  ####  ####    ########          '
+hii=echo '                ##    ####                        '
+hij=echo '              ##    @@@@##                        '
+hik=echo '            ##  @@@@@@####                        '
+hil=echo '            ##########                            '
+sayhi0=echo 'Bzzz Bzzz...' && run hi0 && run hi1 && run hi2 && run hi3 && run hi4
+sayhi1=run hi5 && run hi6 && run hi7 && run hi8 && run hi9 && run hia && run hib
+sayhi2=run hic && run hid && run hie && run hif && run hig && run hih && run hii
+sayhi3=run hij && run hik && run hil
+sayhi=run sayhi0 && run sayhi1 && run sayhi2 && run sayhi3
+uenvboot=run loadkernel && run loadtree && run sayhi && run bootfs
+
