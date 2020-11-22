@@ -22,6 +22,8 @@ Download the `boot` folder of this repository and copy the contents to the `BOOT
 
 Make sure that the configuration switch SW11 is set to SD program mode (00110).
 
+![SW11](https://i.imgur.com/8GRIOfN.png)
+
 # Software Installation
 
 Install SSH if remote access is required.
