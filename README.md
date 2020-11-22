@@ -7,6 +7,19 @@ Work in Progress. Use [this document](https://github.com/operezcham90/bee-soc/wi
 
 # Software Installation
 
+Install SSH if remote access is required.
+
+```
+sudo apt-get install openssh-server
+sudo /etc/init.d/ssh start
+```
+
+To change the root passwrod:
+
+```
+passwd
+```
+
 Upgrade GCC compiler.
 
 ```
