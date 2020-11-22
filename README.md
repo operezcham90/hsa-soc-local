@@ -3,7 +3,7 @@ This is a collection of scripts to perform HSA on a SoC-FPGA.
 
 # Installation
 
-Setup GCC compiler.
+Upgrade GCC compiler.
 
 ```
 sudo add-apt-repository ppa:ubuntu-toolchain-r/test
@@ -12,7 +12,7 @@ sudo apt-get install gcc g++ gcc-5 g++-5 gcc-6 g++-6
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 80 --slave /usr/bin/g++ g++ /usr/bin/g++-6
 ```
 
-Setup NodeJS and NPM (GCC is needed).
+Install NodeJS and NPM.
 
 ```
 wget https://nodejs.org/dist/latest-v9.x/node-v9.11.2-linux-armv7l.tar.gz
@@ -23,14 +23,14 @@ node -v
 npm -v
 ```
 
-Setup Git and clone this repository.
+Install Git and clone this repository.
 
 ```
 sudo apt-get install git
 git clone https://github.com/operezcham90/hsa-soc-local.git
 ```
 
-Setup CMake.
+Upgrade CMake.
 
 ```
 git clone https://github.com/Kitware/CMake.git
@@ -41,7 +41,7 @@ make
 sudo make install
 ```
 
-Setup OpenCV.
+Install OpenCV.
 
 ```
 git clone --branch 2.4 https://github.com/opencv/opencv.git
@@ -59,25 +59,25 @@ Find the full path to the OpenCV libraries. It may be `/usr/local/lib/`.
 sudo find / -name "libopencv_core.so.2.4*"
 ```
 
-Write the path you found to the configuration file
+Write the path you found to the OpenCV configuration file.
 
 ```
 sudo nano /etc/ld.so.conf.d/opencv.conf
 ```
 
-Load the configuration
+Load the configuration file.
 
 ```
 sudo ldconfig -v
 ```
 
-Setup Curl.
+Install Curl.
 
 ```
 sudo apt-get install curl
 ```
 
-Modify the config.js file to set the SECRET environment variable (use the same value of the remote server).
+Modify the `config.js` file to set the `SECRET` environment variable (use the same value of the remote server).
 
 ```
 sudo nano hsa-soc-local/js/config.js
