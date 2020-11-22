@@ -20,8 +20,10 @@ http.createServer(function (req, res) {
     });
     const rs = fs.createReadStream(file);
     rs.pipe(res);*/
+    res.writeHead(200, {
+        'Content-Type': 'text/plain'
+    });
     res.send(req.url);
-    res.end();
 }).listen(process.env.PORT);
 const url = `http://${ip}:${process.env.PORT}`;
 const message = `Listening on <a href=${url}>${url}</a>`;
