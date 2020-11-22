@@ -79,6 +79,10 @@ sudo apt-get install curl
 
 Modify the config.js file to set the SECRET environment variable (use the same value of the remote server).
 
+```
+sudo nano hsa-soc-local/js/config.js
+```
+
 Set the startup script to run on boot.
 
 ```
