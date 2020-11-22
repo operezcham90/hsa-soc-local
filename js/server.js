@@ -4,12 +4,12 @@ const log = require('./log.js').log;
 const http = require('http');
 const fs = require('fs');
 http.createServer(function (req, res) {
-    let file = '';
-    let type = '';
+    let file = '/root/hsa-soc-local/html/error.html';
+    let type = 'text/html';
     if (req.path === '/') {
         file = '/root/hsa-soc-local/html/index.html';
         type = 'text/html';
-    } else (req.path === '/dogo') {
+    } else if (req.path === '/dogo') {
         file = '/root/hsa-soc-local/img/dog.jpg';
         type = 'image/jpg';
     }
