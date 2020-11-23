@@ -36,7 +36,7 @@ int main()
     int c = 1888 / 8;
     int d = 664 / 8;
     // load img
-    cv::Mat img = cv::imread("/root/hsa-soc-local/img/dices.jpg", cv::IMREAD_REDUCED_GRAYSCALE_8);
+    cv::Mat img = cv::imread("/root/hsa-soc-local/img/dices.jpg", IMREAD_REDUCED_GRAYSCALE_8);
     std::cout << "Cols: " << img.cols << std::endl;
     std::cout << "Rows: " << img.rows << std::endl;
     // draw target
