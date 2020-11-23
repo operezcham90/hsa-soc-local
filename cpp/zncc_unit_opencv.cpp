@@ -55,7 +55,7 @@ int main()
     {
         std::cout << "Byte " << i << ": " << imgr.data[i] << std::endl;
     }
-    imgr.convertTo(imgr, cv::CV_32S);
+    imgr.convertTo(imgr, CV_32S);
     for (int i = 0; i < 4; i++)
     {
         std::cout << "Byte " << i << ": " << imgr.data[i] << std::endl;
