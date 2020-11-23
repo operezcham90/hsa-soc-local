@@ -53,12 +53,12 @@ int main()
     // check bytes
     for (int i = 0; i < 4; i++)
     {
-        std::cout << "Byte " << i << ": " << imgr.data[i] << std::endl;
+        std::cout << "Byte " << i << ": " << (int)imgr.data[i] << std::endl;
     }
     imgr.convertTo(imgr, CV_32S);
     for (int i = 0; i < 4; i++)
     {
-        std::cout << "Byte " << i << ": " << imgr.data[i] << std::endl;
+        std::cout << "Byte " << i << ": " << (int)imgr.data[i] << std::endl;
     }
     // size of bram default block
     unsigned int bram_size = 0x8000;
