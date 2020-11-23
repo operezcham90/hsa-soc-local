@@ -1,4 +1,4 @@
-// g++ zncc_unit_opencv.cpp -lOpenCL -o zncc_unit_opencv `pkg-config --cflags --libs opencv`
+// g++ zncc_unit_opencv.cpp -o zncc_unit_opencv `pkg-config --cflags --libs opencv`
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -30,15 +30,20 @@ long int *axi_gpio_6;
 long int *axi_gpio_7;
 int main()
 {
-    // object location (x,y)
-    int a = 1669;
-    int b = 514;
-    int c = 1888;
-    int d = 664;
+    // known object location (x,y)
+    int a = 1669 / 8;
+    int b = 514 / 8;
+    int c = 1888 / 8;
+    int d = 664 / 8;
     // load img
-    cv::Mat img = cv::imread("/root/hsa-soc-local/img/dices.jpg", cv::IMREAD_GRAYSCALE);
+    cv::Mat img = cv::imread("/root/hsa-soc-local/img/dices.jpg", cv::IMREAD_REDUCED_GRAYSCALE_8);
     std::cout << "Cols: " << img.cols << std::endl;
     std::cout << "Rows: " << img.rows << std::endl;
+    // draw target
+    cv::Mat img0 = img.clone();
+    cvRectangle(img, cvPoint(a - 1, b - 1),
+                cvPoint(c + 1, d + 1), CV_RGB(0, 255, 0), 1);
+    cv::imwrite("/root/hsa-soc-local/img/dices0.jpg", img0);
     // size of bram default block
     unsigned int bram_size = 0x8000;
     // 32 bits
