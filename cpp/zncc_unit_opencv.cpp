@@ -69,7 +69,7 @@ int main()
         axi_gpio_6 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_gpio_6_addr);
         axi_gpio_7 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_gpio_7_addr);
         // init BRAM
-        int length = bram_size / 4;
+        long int length = 2048;
         for (long int i = 0; i < length; i++)
         {
             axi_bram_ctrl_0[i] = i;
