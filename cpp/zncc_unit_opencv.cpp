@@ -46,6 +46,10 @@ int main()
     cv::Point pt2(c, d);
     cv::rectangle(img0, pt1, pt2, cv::Scalar(0, 255, 0));
     cv::imwrite("/root/hsa-soc-local/img/dices0.jpg", img0);
+    // region of interest
+    cv::Rect rect = new cv::Rect(pt1, pt2);
+    cv::Mat imgr = img.roi(rect);
+    cv::imwrite("/root/hsa-soc-local/img/dices0.jpg", imgr);
     // size of bram default block
     unsigned int bram_size = 0x8000;
     // 32 bits
