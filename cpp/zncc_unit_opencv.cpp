@@ -31,13 +31,13 @@ long int *axi_gpio_7;
 int main()
 {
     // known object location (x,y)
-    int a = 1669 / 8;
-    int b = 514 / 8;
-    int c = 1888 / 8;
-    int d = 664 / 8;
+    int a = 1669 / 4;
+    int b = 514 / 4;
+    int c = 1888 / 4;
+    int d = 664 / 4;
     // load img
     int IMREAD_REDUCED_GRAYSCALE_8 = 64;
-    cv::Mat img = cv::imread("/root/hsa-soc-local/img/dices.jpg", IMREAD_REDUCED_GRAYSCALE_8);
+    cv::Mat img = cv::imread("/root/hsa-soc-local/img/dices4.jpg", cv::IMREAD_GRAYSCALE);
     std::cout << "Cols: " << img.cols << std::endl;
     std::cout << "Rows: " << img.rows << std::endl;
     // draw target
