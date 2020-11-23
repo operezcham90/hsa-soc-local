@@ -50,6 +50,16 @@ int main()
     cv::Rect rect = cv::Rect(a, b, c - a, d - b);
     cv::Mat imgr = img(rect);
     cv::imwrite("/root/hsa-soc-local/img/dices0.jpg", imgr);
+    // check bytes
+    for (int i = 0; i < 4; i++)
+    {
+        std::cout << "Byte " << i << ": " << imgr.data[i] << std::endl;
+    }
+    imgr.convertTo(imgr, cv::CV_32S);
+    for (int i = 0; i < 4; i++)
+    {
+        std::cout << "Byte " << i << ": " << imgr.data[i] << std::endl;
+    }
     // size of bram default block
     unsigned int bram_size = 0x8000;
     // 32 bits
