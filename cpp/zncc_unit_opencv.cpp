@@ -36,13 +36,15 @@ int main()
     int c = 1888 / 8;
     int d = 664 / 8;
     // load img
+    int IMREAD_REDUCED_GRAYSCALE_8 = 64;
     cv::Mat img = cv::imread("/root/hsa-soc-local/img/dices.jpg", IMREAD_REDUCED_GRAYSCALE_8);
     std::cout << "Cols: " << img.cols << std::endl;
     std::cout << "Rows: " << img.rows << std::endl;
     // draw target
     cv::Mat img0 = img.clone();
-    cvRectangle(img, cvPoint(a - 1, b - 1),
-                cvPoint(c + 1, d + 1), CV_RGB(0, 255, 0), 1);
+    cv::Point pt1(a, b);
+    cv::Point pt2(c, d);
+    cv::rectangle(img0, pt1, pt2, cv::Scalar(0, 255, 0));
     cv::imwrite("/root/hsa-soc-local/img/dices0.jpg", img0);
     // size of bram default block
     unsigned int bram_size = 0x8000;
