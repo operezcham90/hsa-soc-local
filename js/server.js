@@ -9,8 +9,8 @@ http.createServer(function (req, res) {
     if (req.url === '/') {
         file = '/root/hsa-soc-local/html/index.html';
         type = 'text/html';
-    } else if (req.url === '/dogo') {
-        file = '/root/hsa-soc-local/img/dog.jpg';
+    } else if (req.url === '/dices0') {
+        file = '/root/hsa-soc-local/img/dices0.jpg';
         type = 'image/jpg';
     }
     const stat = fs.statSync(file);
