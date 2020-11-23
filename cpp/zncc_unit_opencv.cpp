@@ -35,7 +35,7 @@ int main()
     int b = 514 / 4;
     int c = 1888 / 4;
     int d = 664 / 4;
-    // load img
+    // load image file
     int IMREAD_REDUCED_GRAYSCALE_8 = 64;
     cv::Mat img = cv::imread("/root/hsa-soc-local/img/dices4.jpg", cv::IMREAD_GRAYSCALE);
     std::cout << "Cols: " << img.cols << std::endl;
@@ -49,18 +49,8 @@ int main()
     // region of interest
     cv::Rect rect = cv::Rect(a, b, c - a, d - b);
     cv::Mat imgr = img(rect);
-    cv::imwrite("/root/hsa-soc-local/img/dices0.jpg", imgr);
-    // check bytes
-    for (int i = 0; i < 4; i++)
-    {
-        std::cout << "Byte " << i << ": " << (int)imgr.data[i] << std::endl;
-    }
     imgr.convertTo(imgr, CV_32S);
-    long int *data = (long int *)imgr.data;
-    for (int i = 0; i < 4; i++)
-    {
-        std::cout << "Long " << i << ": " << data[i] << std::endl;
-    }
+    long int *t = (long int *)imgr.data;
     // size of bram default block
     unsigned int bram_size = 0x8000;
     // 32 bits
@@ -79,11 +69,11 @@ int main()
         axi_gpio_6 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_gpio_6_addr);
         axi_gpio_7 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_gpio_7_addr);
         // init BRAM
-        int length = 1000;
+        int length = bram_size / 4;
         for (long int i = 0; i < length; i++)
         {
-            axi_bram_ctrl_0[i] = 1;
-            axi_bram_ctrl_1[i] = 2;
+            axi_bram_ctrl_0[i] = i;
+            axi_bram_ctrl_1[i] = i;
         }
         printf("Data written\n");
         // Constants
@@ -100,53 +90,23 @@ int main()
         printf("Start acc i: %ld\n", axi_gpio_7[0]);
         printf("Start acc t: %ld\n", axi_gpio_5[0]);
         printf("Start acc cross: %ld\n", axi_gpio_6[0]);
-        for (int i = 0; i < length; i++)
-        {
-            axi_gpio_0[0] = i << 2;
-            axi_gpio_1[0] = i << 2;
-            axi_gpio_4[0] = WAIT;
-            axi_gpio_4[0] = WORK;
-        }
+        long int i = 0;
+        axi_gpio_0[0] = i << 2;
+        axi_gpio_1[0] = i << 2;
+        axi_gpio_4[0] = WAIT;
+        axi_gpio_4[0] = WORK;
         printf("End acc i: %ld\n", axi_gpio_7[0]);
         printf("End acc t: %ld\n", axi_gpio_5[0]);
         printf("End acc cross: %ld\n", axi_gpio_6[0]);
-        long int i_avg = axi_gpio_7[0] / length;
-        long int t_avg = axi_gpio_5[0] / length;
-        // Clear previous data
-        axi_gpio_4[0] = CLEAR | WAIT | SQUARED;
-        axi_gpio_4[0] = CLEAR | WORK | SQUARED;
-        axi_gpio_2[0] = 0;
-        axi_gpio_3[0] = 0;
-        // Acc squared
+        // Acc average
         printf("Start acc i: %ld\n", axi_gpio_7[0]);
         printf("Start acc t: %ld\n", axi_gpio_5[0]);
         printf("Start acc cross: %ld\n", axi_gpio_6[0]);
-        for (int i = 0; i < length; i++)
-        {
-            axi_gpio_0[0] = i << 2;
-            axi_gpio_1[0] = i << 2;
-            axi_gpio_4[0] = WAIT | SQUARED;
-            axi_gpio_4[0] = WORK | SQUARED;
-        }
-        printf("End acc i: %ld\n", axi_gpio_7[0]);
-        printf("End acc t: %ld\n", axi_gpio_5[0]);
-        printf("End acc cross: %ld\n", axi_gpio_6[0]);
-        // Clear previous data
-        axi_gpio_4[0] = CLEAR | WAIT | SQUARED;
-        axi_gpio_4[0] = CLEAR | WORK | SQUARED;
-        axi_gpio_2[0] = i_avg;
-        axi_gpio_3[0] = t_avg;
-        // Acc squared errors
-        printf("Start acc i: %ld\n", axi_gpio_7[0]);
-        printf("Start acc t: %ld\n", axi_gpio_5[0]);
-        printf("Start acc cross: %ld\n", axi_gpio_6[0]);
-        for (int i = 0; i < length; i++)
-        {
-            axi_gpio_0[0] = i << 2;
-            axi_gpio_1[0] = i << 2;
-            axi_gpio_4[0] = WAIT | SQUARED;
-            axi_gpio_4[0] = WORK | SQUARED;
-        }
+        i = length - 1;
+        axi_gpio_0[0] = i << 2;
+        axi_gpio_1[0] = i << 2;
+        axi_gpio_4[0] = WAIT;
+        axi_gpio_4[0] = WORK;
         printf("End acc i: %ld\n", axi_gpio_7[0]);
         printf("End acc t: %ld\n", axi_gpio_5[0]);
         printf("End acc cross: %ld\n", axi_gpio_6[0]);
