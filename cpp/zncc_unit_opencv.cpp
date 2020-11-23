@@ -36,7 +36,7 @@ int main()
     int c = 1888;
     int d = 664;
     // load img
-    Mat img = imread("/root/hsa-soc-local/img/dices.jpg", IMREAD_GRAYSCALE);
+    cv::Mat img = imread("/root/hsa-soc-local/img/dices.jpg", IMREAD_GRAYSCALE);
     std::cout << "Cols: " << img.cols << std::endl;
     std::cout << "Rows: " << img.rows << std::endl;
     // size of bram default block
