@@ -56,9 +56,10 @@ int main()
         std::cout << "Byte " << i << ": " << (int)imgr.data[i] << std::endl;
     }
     imgr.convertTo(imgr, CV_32S);
+    long int *data = (long int *)imgr.data;
     for (int i = 0; i < 4; i++)
     {
-        std::cout << "Byte " << i << ": " << (int)imgr.data[i] << std::endl;
+        std::cout << "Long " << i << ": " << data[i] << std::endl;
     }
     // size of bram default block
     unsigned int bram_size = 0x8000;
