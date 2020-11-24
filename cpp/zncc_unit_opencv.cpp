@@ -69,7 +69,7 @@ int main()
         axi_gpio_6 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_gpio_6_addr);
         axi_gpio_7 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_gpio_7_addr);
         // init BRAM
-        long int length = 2050;//2048;
+        long int length = 2048;
         for (long int i = 0; i < length; i++)
         {
             axi_bram_ctrl_0[i] = i;
@@ -110,6 +110,49 @@ int main()
         printf("End acc i: %ld\n", axi_gpio_7[0]);
         printf("End acc t: %ld\n", axi_gpio_5[0]);
         printf("End acc cross: %ld\n", axi_gpio_6[0]);
+
+        length = 2049;
+        for (long int i = 0; i < length; i++)
+        {
+            axi_bram_ctrl_0[i] = i;
+            axi_bram_ctrl_1[i] = i;
+        }
+        printf("Data written\n");
+        // Constants
+        long int CLEAR = 0b1;
+        long int SQUARED = 0b10;
+        long int WORK = 0b100;
+        long int WAIT = 0b000;
+        // Clear previous data
+        axi_gpio_4[0] = CLEAR | WAIT;
+        axi_gpio_4[0] = CLEAR | WORK;
+        axi_gpio_2[0] = 0;
+        axi_gpio_3[0] = 0;
+        // Acc average
+        printf("Start acc i: %ld\n", axi_gpio_7[0]);
+        printf("Start acc t: %ld\n", axi_gpio_5[0]);
+        printf("Start acc cross: %ld\n", axi_gpio_6[0]);
+        i = 0;
+        axi_gpio_0[0] = i << 2;
+        axi_gpio_1[0] = i << 2;
+        axi_gpio_4[0] = WAIT;
+        axi_gpio_4[0] = WORK;
+        printf("End acc i: %ld\n", axi_gpio_7[0]);
+        printf("End acc t: %ld\n", axi_gpio_5[0]);
+        printf("End acc cross: %ld\n", axi_gpio_6[0]);
+        // Acc average
+        printf("Start acc i: %ld\n", axi_gpio_7[0]);
+        printf("Start acc t: %ld\n", axi_gpio_5[0]);
+        printf("Start acc cross: %ld\n", axi_gpio_6[0]);
+        i = length - 1;
+        axi_gpio_0[0] = i << 2;
+        axi_gpio_1[0] = i << 2;
+        axi_gpio_4[0] = WAIT;
+        axi_gpio_4[0] = WORK;
+        printf("End acc i: %ld\n", axi_gpio_7[0]);
+        printf("End acc t: %ld\n", axi_gpio_5[0]);
+        printf("End acc cross: %ld\n", axi_gpio_6[0]);
+
         // end
         close(fd);
     }
