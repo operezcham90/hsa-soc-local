@@ -133,8 +133,12 @@ int set_avg(long int i_avg, long int t_avg)
     axi_gpio_2[0] = i_avg;
     axi_gpio_3[0] = t_avg;
 }
-int get_acc()
+long int get_acc()
 {
+    int img_length = n * m;
+    printf("Image length: %d\n", img_length);
+    int rounds = img_length / bram_length;
+    printf("Rounds: %d\n", rounds);
     for (long int i = 0; i < bram_length; i++)
     {
         axi_gpio_0[0] = i << 2;
