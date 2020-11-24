@@ -118,11 +118,6 @@ int main()
             axi_bram_ctrl_1[i] = i;
         }
         printf("Data written\n");
-        // Constants
-        long int CLEAR = 0b1;
-        long int SQUARED = 0b10;
-        long int WORK = 0b100;
-        long int WAIT = 0b000;
         // Clear previous data
         axi_gpio_4[0] = CLEAR | WAIT;
         axi_gpio_4[0] = CLEAR | WORK;
