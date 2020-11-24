@@ -143,8 +143,8 @@ long int get_acc()
         // for each pixel
         for (long int i = 0; i < limit; i++)
         {
-            axi_bram_ctrl_0[i] = i[r * bram_length + i];
-            axi_bram_ctrl_1[i] = t[r * bram_length + i];
+            axi_bram_ctrl_0[i] = i_data[r * bram_length + i];
+            axi_bram_ctrl_1[i] = t_data[r * bram_length + i];
         }
         printf("Data written\n");
         for (long int i = 0; i < limit; i++)
