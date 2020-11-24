@@ -149,6 +149,7 @@ int get_acc()
 int main()
 {
     open_mem();
+    init_bram();
     clear_acc();
     set_avg(0, 0);
     get_acc();
