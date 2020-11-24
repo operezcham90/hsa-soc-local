@@ -123,8 +123,8 @@ int set_avg(long int i_avg, long int t_avg)
 {
     axi_gpio_2[0] = i_avg;
     axi_gpio_3[0] = t_avg;
-    printf("i avg: %d\n", axi_gpio_2[0]);
-    printf("t avg: %d\n", axi_gpio_3[0]);
+    printf("i avg: %ld\n", axi_gpio_2[0]);
+    printf("t avg: %ld\n", axi_gpio_3[0]);
 }
 long int get_acc()
 {
