@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <string.h>
 #include <sys/mman.h>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
@@ -36,7 +37,7 @@ long int conf_clear = 0b1;
 long int conf_squared = 0b10;
 long int conf_work = 0b100;
 long int conf_wait = 0b000;
-unsigned int bram_bytes = 2048 * 4;//0x8000; // this is not logic, should be 2048 * 4
+unsigned int bram_bytes = 2048 * 4;
 unsigned int gpio_bytes = 4;
 long int bram_length = 2048;
 // zncc variables
@@ -143,12 +144,13 @@ long int get_acc()
             limit = remain;
         }
         // for each pixel
-        for (long int i = 0; i < limit; i++)
+        memcpy(&axi_bram_ctrl_0, &i_data[r * bram_length], limit);
+        memcpy(&axi_bram_ctrl_1, &t_data[r * bram_length], limit);
+        /*for (long int i = 0; i < limit; i++)
         {
             axi_bram_ctrl_0[i] = i_data[r * bram_length + i];
             axi_bram_ctrl_1[i] = t_data[r * bram_length + i];
-        }
-        printf("Data written\n");
+        }*/
         for (long int i = 0; i < limit; i++)
         {
             axi_gpio_0[0] = i << 2;
