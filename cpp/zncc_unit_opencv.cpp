@@ -35,6 +35,7 @@ int fd;
 // constants of PL design
 long int conf_clear = 0b1;
 long int conf_squared = 0b10;
+long int conf_not_squared = 0b00;
 long int conf_work = 0b100;
 long int conf_wait = 0b000;
 unsigned int bram_bytes = 2048 * 4;
@@ -52,6 +53,10 @@ int m;
 long int *t_data;
 long int *i_data;
 cv::Mat img;
+// PL variables
+long int acc_i;
+long int acc_t;
+long int acc_cross;
 // functions
 int load_image_file()
 {
@@ -119,22 +124,20 @@ int clear_acc()
 {
     axi_gpio_4[0] = conf_clear | conf_wait;
     axi_gpio_4[0] = conf_clear | conf_work;
+    acc_i = axi_gpio_7[0];
+    acc_t = axi_gpio_5[0];
+    acc_cross = axi_gpio_6[0];
 }
 int set_avg(long int i_avg, long int t_avg)
 {
     axi_gpio_2[0] = i_avg;
     axi_gpio_3[0] = t_avg;
-    printf("i avg: %ld\n", axi_gpio_2[0]);
-    printf("t avg: %ld\n", axi_gpio_3[0]);
 }
-long int get_acc()
+long int get_acc(long int squared_or_not)
 {
     int img_length = n * m;
-    printf("Image length: %d\n", img_length);
     int rounds = img_length / bram_length;
     int remain = img_length - (bram_length * rounds);
-    printf("Rounds: %d\n", rounds);
-    printf("Remain: %d\n", remain);
     // for each round
     for (int r = 0; r < rounds + 1; r++)
     {
@@ -143,22 +146,21 @@ long int get_acc()
         {
             limit = remain;
         }
-        // for each pixel
+        // copy a block of data to PL
         memcpy(axi_bram_ctrl_0, i_data + (r * bram_length), limit * 4);
         memcpy(axi_bram_ctrl_1, t_data + (r * bram_length), limit * 4);
-        /*for (long int i = 0; i < limit; i++)
-        {
-            axi_bram_ctrl_0[i] = i_data[r * bram_length + i];
-            axi_bram_ctrl_1[i] = t_data[r * bram_length + i];
-        }*/
+        // get acc, still not parallel
         for (long int i = 0; i < limit; i++)
         {
             axi_gpio_0[0] = i << 2;
             axi_gpio_1[0] = i << 2;
-            axi_gpio_4[0] = conf_wait;
-            axi_gpio_4[0] = conf_work;
+            axi_gpio_4[0] = conf_wait | squared_or_not;
+            axi_gpio_4[0] = conf_work | squared_or_not;
         }
     }
+    acc_i = axi_gpio_7[0];
+    acc_t = axi_gpio_5[0];
+    acc_cross = axi_gpio_6[0];
 }
 int main()
 {
@@ -167,19 +169,18 @@ int main()
     // get averages
     clear_acc();
     set_avg(0, 0);
-    get_acc();
-    printf("Acc i: %ld\n", axi_gpio_7[0]);
-    printf("Acc t: %ld\n", axi_gpio_5[0]);
-    printf("Acc cross: %ld\n", axi_gpio_6[0]);
-    long int avg_i = axi_gpio_7[0] / (m * n);
-    long int avg_t = axi_gpio_5[0] / (m * n);
-    // get deviations
+    get_acc(conf_not_squared);
+    long int avg_i = acc_i / (m * n);
+    long int avg_t = acc_t / (m * n);
+    // get sum of squared err and cross correlation
     clear_acc();
     set_avg(avg_i, avg_t);
-    get_acc();
-    printf("Acc i: %ld\n", axi_gpio_7[0]);
-    printf("Acc t: %ld\n", axi_gpio_5[0]);
-    printf("Acc cross: %ld\n", axi_gpio_6[0]);
+    get_acc(conf_squared);
+    double err_i = acc_i * 1.0;
+    double err_t = acc_t * 1.0;
+    double corr = acc_cross * 1.0;
+    double zncc = corr / sqrt(err_i * err_t);
+    std::cout << "zncc: " << zncc << "\n";
     close_mem();
     return 0;
 }
