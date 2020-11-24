@@ -48,8 +48,8 @@ int u;
 int v;
 int n;
 int m;
-long int *t;
-long int *i;
+long int *t_data;
+long int *i_data;
 cv::Mat img;
 // functions
 int load_image_file()
@@ -69,8 +69,8 @@ int region_of_interest()
     cv::Mat img0 = img(rect);
     // convert chars to long int
     img0.convertTo(img0, CV_32S);
-    t = (long int *)img0.data;
-    i = (long int *)img0.data;
+    t_data = (long int *)img0.data;
+    i_data = (long int *)img0.data;
 }
 int load_init_file()
 {
@@ -114,15 +114,6 @@ int close_mem()
 {
     close(fd);
 }
-int init_bram()
-{
-    for (long int i = 0; i < bram_length; i++)
-    {
-        axi_bram_ctrl_0[i] = 1;
-        axi_bram_ctrl_1[i] = 1;
-    }
-    printf("Data written\n");
-}
 int clear_acc()
 {
     axi_gpio_4[0] = conf_clear | conf_wait;
@@ -138,13 +129,31 @@ long int get_acc()
     int img_length = n * m;
     printf("Image length: %d\n", img_length);
     int rounds = img_length / bram_length;
+    int remain = img_length - (bram_length * rounds);
     printf("Rounds: %d\n", rounds);
-    for (long int i = 0; i < bram_length; i++)
+    printf("Remain: %d\n", remain);
+    // for each round
+    for (int r = 0; r < rounds + 1; r++)
     {
-        axi_gpio_0[0] = i << 2;
-        axi_gpio_1[0] = i << 2;
-        axi_gpio_4[0] = conf_wait;
-        axi_gpio_4[0] = conf_work;
+        int limit = bram_length;
+        if (r == rounds)
+        {
+            limit = remain;
+        }
+        // for each pixel
+        for (long int i = 0; i < limit; i++)
+        {
+            axi_bram_ctrl_0[i] = i[r * bram_length + i];
+            axi_bram_ctrl_1[i] = t[r * bram_length + i];
+        }
+        printf("Data written\n");
+        for (long int i = 0; i < limit; i++)
+        {
+            axi_gpio_0[0] = i << 2;
+            axi_gpio_1[0] = i << 2;
+            axi_gpio_4[0] = conf_wait;
+            axi_gpio_4[0] = conf_work;
+        }
     }
     printf("Acc i: %ld\n", axi_gpio_7[0]);
     printf("Acc t: %ld\n", axi_gpio_5[0]);
@@ -154,7 +163,6 @@ int main()
 {
     init_zncc();
     open_mem();
-    init_bram();
     clear_acc();
     set_avg(0, 0);
     get_acc();
