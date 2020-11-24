@@ -144,8 +144,8 @@ long int get_acc()
             limit = remain;
         }
         // for each pixel
-        memcpy(axi_bram_ctrl_0, i_data + (r * bram_length), limit);
-        memcpy(axi_bram_ctrl_1, t_data + (r * bram_length), limit);
+        memcpy(axi_bram_ctrl_0, i_data + (r * bram_length), limit * 4);
+        memcpy(axi_bram_ctrl_1, t_data + (r * bram_length), limit * 4);
         /*for (long int i = 0; i < limit; i++)
         {
             axi_bram_ctrl_0[i] = i_data[r * bram_length + i];
