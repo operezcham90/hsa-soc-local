@@ -7,7 +7,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <iostream>
-// addresses from vivado block design
+// AXI addresses
 off_t axi_bram_ctrl_0_addr = 0x40000000;
 off_t axi_bram_ctrl_1_addr = 0x42000000;
 off_t axi_gpio_0_addr = 0x41200000;
@@ -18,6 +18,7 @@ off_t axi_gpio_4_addr = 0x41240000;
 off_t axi_gpio_5_addr = 0x41260000;
 off_t axi_gpio_6_addr = 0x41270000;
 off_t axi_gpio_7_addr = 0x41250000;
+// AXI pointers
 long int *axi_bram_ctrl_0;
 long int *axi_bram_ctrl_1;
 long int *axi_gpio_0;
@@ -28,128 +29,129 @@ long int *axi_gpio_4;
 long int *axi_gpio_5;
 long int *axi_gpio_6;
 long int *axi_gpio_7;
-int main()
+// dev mem
+int fd;
+// constants of PL design
+long int conf_clear = 0b1;
+long int conf_squared = 0b10;
+long int conf_work = 0b100;
+long int conf_wait = 0b000;
+unsigned int bram_bytes = 0x8000; // this is not logic, should be 2048 * 4
+unsigned int gpio_bytes = 0x4;
+long int bram_length = 2048;
+// zncc variables
+int a;
+int b;
+int c;
+int d;
+int u;
+int v;
+int n;
+int m;
+long int *t;
+long int *i;
+cv::Mat img;
+// functions
+int load_image_file()
 {
-    // known object location (x,y)
-    int a = 1669 / 4;
-    int b = 514 / 4;
-    int c = 1888 / 4;
-    int d = 664 / 4;
-    // load image file
-    int IMREAD_REDUCED_GRAYSCALE_8 = 64;
-    cv::Mat img = cv::imread("/root/hsa-soc-local/img/dices4.jpg", cv::IMREAD_GRAYSCALE);
-    std::cout << "Cols: " << img.cols << std::endl;
-    std::cout << "Rows: " << img.rows << std::endl;
-    // draw target
+    img = cv::imread("/root/hsa-soc-local/img/dices4.jpg", cv::IMREAD_GRAYSCALE);
+    // draw the target for inspection
     cv::Mat img0 = img.clone();
     cv::Point pt1(a, b);
     cv::Point pt2(c, d);
     cv::rectangle(img0, pt1, pt2, cv::Scalar(0, 255, 0));
     cv::imwrite("/root/hsa-soc-local/img/dices0.jpg", img0);
-    // region of interest
-    cv::Rect rect = cv::Rect(a, b, c - a, d - b);
-    cv::Mat imgr = img(rect);
-    imgr.convertTo(imgr, CV_32S);
-    long int *t = (long int *)imgr.data;
-    // size of bram default block
-    unsigned int bram_size = 0x8000;
-    // 32 bits
-    unsigned int gpio_size = 0x4;
-    int fd;
-    if ((fd = open("/dev/mem", O_RDWR | O_SYNC)) != -1)
+    img0.release();
+}
+int region_of_interest()
+{
+    cv::Rect rect = cv::Rect(a, b, n, m);
+    cv::Mat img0 = img(rect);
+    // convert chars to long int
+    img0.convertTo(img0, CV_32S);
+    t = (long int *)img0.data;
+    i = (long int *)img0.data;
+}
+int load_init_file()
+{
+    a = 1669 / 4;
+    b = 514 / 4;
+    c = 1888 / 4;
+    d = 664 / 4;
+    u = a;
+    v = b;
+    n = c - a;
+    m = d - b;
+}
+int init_zncc()
+{
+    load_init_file();
+    load_image_file();
+    region_of_interest();
+}
+long int *map_mem(unsigned int bytes, off_t addr)
+{
+    return (long int *)mmap(NULL, bytes, PROT_READ | PROT_WRITE, MAP_SHARED, fd, addr);
+}
+int open_mem()
+{
+    if ((fd = open("/dev/mem", O_RDWR | O_SYNC)) == -1)
     {
-        axi_bram_ctrl_0 = (long int *)mmap(NULL, bram_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_bram_ctrl_0_addr);
-        axi_bram_ctrl_1 = (long int *)mmap(NULL, bram_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_bram_ctrl_1_addr);
-        axi_gpio_0 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_gpio_0_addr);
-        axi_gpio_1 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_gpio_1_addr);
-        axi_gpio_2 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_gpio_2_addr);
-        axi_gpio_3 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_gpio_3_addr);
-        axi_gpio_4 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_gpio_4_addr);
-        axi_gpio_5 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_gpio_5_addr);
-        axi_gpio_6 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_gpio_6_addr);
-        axi_gpio_7 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_gpio_7_addr);
-        // init BRAM
-        long int length = 2048;
-        for (long int i = 0; i < length; i++)
-        {
-            axi_bram_ctrl_0[i] = i;
-            axi_bram_ctrl_1[i] = i;
-        }
-        printf("Data written\n");
-        // Constants
-        long int CLEAR = 0b1;
-        long int SQUARED = 0b10;
-        long int WORK = 0b100;
-        long int WAIT = 0b000;
-        // Clear previous data
-        axi_gpio_4[0] = CLEAR | WAIT;
-        axi_gpio_4[0] = CLEAR | WORK;
-        axi_gpio_2[0] = 0;
-        axi_gpio_3[0] = 0;
-        // Acc average
-        printf("Start acc i: %ld\n", axi_gpio_7[0]);
-        printf("Start acc t: %ld\n", axi_gpio_5[0]);
-        printf("Start acc cross: %ld\n", axi_gpio_6[0]);
-        long int i = 0;
-        axi_gpio_0[0] = i << 2;
-        axi_gpio_1[0] = i << 2;
-        axi_gpio_4[0] = WAIT;
-        axi_gpio_4[0] = WORK;
-        printf("End acc i: %ld\n", axi_gpio_7[0]);
-        printf("End acc t: %ld\n", axi_gpio_5[0]);
-        printf("End acc cross: %ld\n", axi_gpio_6[0]);
-        // Acc average
-        printf("Start acc i: %ld\n", axi_gpio_7[0]);
-        printf("Start acc t: %ld\n", axi_gpio_5[0]);
-        printf("Start acc cross: %ld\n", axi_gpio_6[0]);
-        i = length - 1;
-        axi_gpio_0[0] = i << 2;
-        axi_gpio_1[0] = i << 2;
-        axi_gpio_4[0] = WAIT;
-        axi_gpio_4[0] = WORK;
-        printf("End acc i: %ld\n", axi_gpio_7[0]);
-        printf("End acc t: %ld\n", axi_gpio_5[0]);
-        printf("End acc cross: %ld\n", axi_gpio_6[0]);
-
-        length = 2049;
-        for (long int i = 0; i < length; i++)
-        {
-            axi_bram_ctrl_0[i] = i;
-            axi_bram_ctrl_1[i] = i;
-        }
-        printf("Data written\n");
-        // Clear previous data
-        axi_gpio_4[0] = CLEAR | WAIT;
-        axi_gpio_4[0] = CLEAR | WORK;
-        axi_gpio_2[0] = 0;
-        axi_gpio_3[0] = 0;
-        // Acc average
-        printf("Start acc i: %ld\n", axi_gpio_7[0]);
-        printf("Start acc t: %ld\n", axi_gpio_5[0]);
-        printf("Start acc cross: %ld\n", axi_gpio_6[0]);
-        i = 0;
-        axi_gpio_0[0] = i << 2;
-        axi_gpio_1[0] = i << 2;
-        axi_gpio_4[0] = WAIT;
-        axi_gpio_4[0] = WORK;
-        printf("End acc i: %ld\n", axi_gpio_7[0]);
-        printf("End acc t: %ld\n", axi_gpio_5[0]);
-        printf("End acc cross: %ld\n", axi_gpio_6[0]);
-        // Acc average
-        printf("Start acc i: %ld\n", axi_gpio_7[0]);
-        printf("Start acc t: %ld\n", axi_gpio_5[0]);
-        printf("Start acc cross: %ld\n", axi_gpio_6[0]);
-        i = length - 1;
-        axi_gpio_0[0] = i << 2;
-        axi_gpio_1[0] = i << 2;
-        axi_gpio_4[0] = WAIT;
-        axi_gpio_4[0] = WORK;
-        printf("End acc i: %ld\n", axi_gpio_7[0]);
-        printf("End acc t: %ld\n", axi_gpio_5[0]);
-        printf("End acc cross: %ld\n", axi_gpio_6[0]);
-
-        // end
-        close(fd);
+        exit(1);
     }
+    axi_bram_ctrl_0 = map_mem(bram_bytes, axi_bram_ctrl_0_addr);
+    axi_bram_ctrl_1 = map_mem(bram_bytes, axi_bram_ctrl_1_addr);
+    axi_gpio_0 = map_mem(gpio_bytes, axi_gpio_0_addr);
+    axi_gpio_1 = map_mem(gpio_bytes, axi_gpio_1_addr);
+    axi_gpio_2 = map_mem(gpio_bytes, axi_gpio_2_addr);
+    axi_gpio_3 = map_mem(gpio_bytes, axi_gpio_3_addr);
+    axi_gpio_4 = map_mem(gpio_bytes, axi_gpio_4_addr);
+    axi_gpio_5 = map_mem(gpio_bytes, axi_gpio_5_addr);
+    axi_gpio_6 = map_mem(gpio_bytes, axi_gpio_6_addr);
+    axi_gpio_7 = map_mem(gpio_bytes, axi_gpio_7_addr);
+}
+int close_mem()
+{
+    close(fd);
+}
+int init_bram()
+{
+    for (long int i = 0; i < bram_length; i++)
+    {
+        axi_bram_ctrl_0[i] = 1;
+        axi_bram_ctrl_1[i] = 1;
+    }
+    printf("Data written\n");
+}
+int clear_acc()
+{
+    axi_gpio_4[0] = conf_clear | conf_wait;
+    axi_gpio_4[0] = conf_clear | conf_work;
+}
+int set_avg(long int i_avg, long int t_avg)
+{
+    axi_gpio_2[0] = i_avg;
+    axi_gpio_3[0] = t_avg;
+}
+int get_acc()
+{
+    for (long int i = 0; i < bram_length; i++)
+    {
+        axi_gpio_0[0] = i << 2;
+        axi_gpio_1[0] = i << 2;
+        axi_gpio_4[0] = conf_wait;
+        axi_gpio_4[0] = conf_work;
+    }
+    printf("Acc i: %ld\n", axi_gpio_7[0]);
+    printf("Acc t: %ld\n", axi_gpio_5[0]);
+    printf("Acc cross: %ld\n", axi_gpio_6[0]);
+}
+int main()
+{
+    open_mem();
+    clear_acc();
+    set_avg(0, 0);
+    get_acc();
+    close_mem();
     return 0;
 }
