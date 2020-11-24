@@ -152,6 +152,7 @@ long int get_acc()
 }
 int main()
 {
+    init_zncc();
     open_mem();
     init_bram();
     clear_acc();
