@@ -36,8 +36,8 @@ long int conf_clear = 0b1;
 long int conf_squared = 0b10;
 long int conf_work = 0b100;
 long int conf_wait = 0b000;
-unsigned int bram_bytes = 0x8000; // this is not logic, should be 2048 * 4
-unsigned int gpio_bytes = 0x4;
+unsigned int bram_bytes = 2048 * 4;//0x8000; // this is not logic, should be 2048 * 4
+unsigned int gpio_bytes = 4;
 long int bram_length = 2048;
 // zncc variables
 int a;
