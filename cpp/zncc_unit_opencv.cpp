@@ -143,8 +143,8 @@ long int get_acc()
         // for each pixel
         for (long int i = 0; i < limit; i++)
         {
-            axi_bram_ctrl_0[i] = i_data[r * bram_length + i];
-            axi_bram_ctrl_1[i] = t_data[r * bram_length + i];
+            axi_bram_ctrl_0[i] = 1; //i_data[r * bram_length + i];
+            axi_bram_ctrl_1[i] = 1; //t_data[r * bram_length + i];
         }
         printf("Data written\n");
         for (long int i = 0; i < limit; i++)
@@ -155,9 +155,6 @@ long int get_acc()
             axi_gpio_4[0] = conf_work;
         }
     }
-    printf("Acc i: %ld\n", axi_gpio_7[0]);
-    printf("Acc t: %ld\n", axi_gpio_5[0]);
-    printf("Acc cross: %ld\n", axi_gpio_6[0]);
 }
 int main()
 {
@@ -166,6 +163,16 @@ int main()
     clear_acc();
     set_avg(0, 0);
     get_acc();
+    printf("Acc i: %ld\n", axi_gpio_7[0]);
+    printf("Acc t: %ld\n", axi_gpio_5[0]);
+    printf("Acc cross: %ld\n", axi_gpio_6[0]);
+    long int avg_i = axi_gpio_7[0] / (m * n);
+    long int avg_t = axi_gpio_5[0] / (m * n);
+    set_avg(avg_i, avg_t);
+    get_acc();
+    printf("Acc i: %ld\n", axi_gpio_7[0]);
+    printf("Acc t: %ld\n", axi_gpio_5[0]);
+    printf("Acc cross: %ld\n", axi_gpio_6[0]);
     close_mem();
     return 0;
 }
