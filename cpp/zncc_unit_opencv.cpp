@@ -227,7 +227,7 @@ int main()
                 // draw candidate in result
                 cv::Point pt1(u1, v1);
                 cv::Point pt2(u1 + n, v1 + m);
-                cv::rectangle(img0, pt1, pt2, cv::Scalar(0, 255, 0));
+                cv::rectangle(res, pt1, pt2, cv::Scalar(0, 255, 0));
                 cv::imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
             }
             std::cout << "max zncc: " << max_zncc << "\n";
