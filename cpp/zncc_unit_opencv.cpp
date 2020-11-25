@@ -190,22 +190,28 @@ long int get_acc(long int squared_or_not)
 int main()
 {
     double *zncc = (double *)malloc(n_times_m * sizeof(double));
+    std::cout << "ok0";
     double max_zncc = -2.0;
     int u1 = 0;
     int v1 = 0;
+    std::cout << "ok1";
     open_mem();
+    std::cout << "ok2";
     init_zncc(-1, -1);
+    std::cout << "ok3";
     for (int x = 0; x < w; x++)
     {
         for (int y = 0; y < h; y++)
         {
             init_zncc(x, y);
+            std::cout << "ok4";
             // get averages
             clear_acc();
             set_avg(0, 0);
             get_acc(conf_not_squared);
             long int avg_i = acc_i / n_times_m;
             long int avg_t = acc_t / n_times_m;
+            std::cout << "ok5";
             // get sum of squared err and cross correlation
             clear_acc();
             set_avg(avg_i, avg_t);
@@ -213,6 +219,7 @@ int main()
             double err_i = acc_i * 1.0;
             double err_t = acc_t * 1.0;
             double corr = acc_cross * 1.0;
+            std::cout << "ok6";
             // get zncc
             zncc[x + y * w] = corr / sqrt(err_i * err_t);
             if (max_zncc < zncc[x + y * w])
@@ -221,6 +228,7 @@ int main()
                 u1 = x;
                 v1 = y;
             }
+            std::cout << "ok7";
         }
     }
     std::cout << "max zncc: " << max_zncc << "\n";
