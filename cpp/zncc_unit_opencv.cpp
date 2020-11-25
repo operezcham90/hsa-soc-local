@@ -189,6 +189,7 @@ long int get_acc(long int squared_or_not)
 }
 int main()
 {
+    std::cout << "ok-1";
     double *zncc = (double *)malloc(n_times_m * sizeof(double));
     std::cout << "ok0";
     double max_zncc = -2.0;
