@@ -59,6 +59,7 @@ cv::Mat i_img;
 cv::Mat t_img;
 cv::Mat i_img_roi;
 cv::Mat t_img_roi;
+cv::Rect rect;
 // PL variables
 long int acc_i;
 long int acc_t;
@@ -69,7 +70,7 @@ int load_image_file(int x, int y)
     if (x < 0 || y < 0)
     {
         i_img = cv::imread("/root/hsa-soc-local/img/dices4.jpg", cv::IMREAD_GRAYSCALE);
-        t_img = i_img.clone();
+        t_img = cv::imread("/root/hsa-soc-local/img/dices4.jpg", cv::IMREAD_GRAYSCALE);
         // draw the target for inspection
         cv::Mat img0 = t_img.clone();
         cv::Point pt1(a, b);
@@ -83,7 +84,6 @@ int load_image_file(int x, int y)
 }
 int region_of_interest(int x, int y)
 {
-    cv::Rect rect;
     if (x < 0 || y < 0 || x >= w || y >= h)
     {
         rect = cv::Rect(u, v, n, m);
@@ -100,7 +100,7 @@ int region_of_interest(int x, int y)
         // convert chars to long int
         i_img_roi.convertTo(i_img_roi, CV_32S);
         cv::imwrite("/root/hsa-soc-local/img/dices0.jpg", i_img_roi);
-        t_data = (long int *)i_img_roi.data;
+        i_data = (long int *)i_img_roi.data;
     }
 }
 int load_init_file(int x, int y)
