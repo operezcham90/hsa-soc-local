@@ -195,9 +195,9 @@ int main()
     int v1 = 0;
     open_mem();
     init_zncc(-1, -1);
-    for (int x = 0; x < w; x++)
+    for (int x = 0; x < w - n; x++)
     {
-        for (int y = 0; y < h; y++)
+        for (int y = 0; y < h - m; y++)
         {
             init_zncc(x, y);
             // get averages
