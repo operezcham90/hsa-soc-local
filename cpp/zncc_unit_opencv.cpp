@@ -55,7 +55,10 @@ int h;
 int n_times_m;
 long int *t_data;
 long int *i_data;
-cv::Mat img;
+cv::Mat i_img;
+cv::Mat t_img;
+cv::Mat i_img_roi;
+cv::Mat t_img_roi;
 // PL variables
 long int acc_i;
 long int acc_t;
@@ -65,16 +68,17 @@ int load_image_file(int x, int y)
 {
     if (x < 0 || y < 0)
     {
-        img = cv::imread("/root/hsa-soc-local/img/dices4.jpg", cv::IMREAD_GRAYSCALE);
+        i_img = cv::imread("/root/hsa-soc-local/img/dices4.jpg", cv::IMREAD_GRAYSCALE);
+        t_img = i_img.clone();
         // draw the target for inspection
-        cv::Mat img0 = img.clone();
+        cv::Mat img0 = t_img.clone();
         cv::Point pt1(a, b);
         cv::Point pt2(c, d);
         cv::rectangle(img0, pt1, pt2, cv::Scalar(0, 255, 0));
         cv::imwrite("/root/hsa-soc-local/img/dices0.jpg", img0);
         img0.release();
-        w = img.cols;
-        h = img.rows;
+        w = t_img.cols;
+        h = t_img.rows;
     }
 }
 int region_of_interest(int x, int y)
@@ -83,22 +87,20 @@ int region_of_interest(int x, int y)
     if (x < 0 || y < 0 || x >= w || y >= h)
     {
         rect = cv::Rect(u, v, n, m);
+        t_img_roi = t_img(rect);
+        // convert chars to long int
+        t_img_roi.convertTo(t_img_roi, CV_32S);
+        cv::imwrite("/root/hsa-soc-local/img/dices0.jpg", t_img_roi);
+        t_data = (long int *)t_img_roi.data;
     }
     else
     {
         rect = cv::Rect(x, y, n, m);
-    }
-    cv::Mat img0 = img(rect);
-    // convert chars to long int
-    img0.convertTo(img0, CV_32S);
-    cv::imwrite("/root/hsa-soc-local/img/dices0.jpg", img0);
-    if (x < 0 || y < 0 || x >= w || y >= h)
-    {
-        t_data = (long int *)img0.data;
-    }
-    else
-    {
-        i_data = (long int *)img0.data;
+        i_img_roi = i_img(rect);
+        // convert chars to long int
+        i_img_roi.convertTo(i_img_roi, CV_32S);
+        cv::imwrite("/root/hsa-soc-local/img/dices0.jpg", i_img_roi);
+        t_data = (long int *)i_img_roi.data;
     }
 }
 int load_init_file(int x, int y)
