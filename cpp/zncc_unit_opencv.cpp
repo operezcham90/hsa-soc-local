@@ -91,6 +91,7 @@ int region_of_interest(int x, int y)
     cv::Mat img0 = img(rect);
     // convert chars to long int
     img0.convertTo(img0, CV_32S);
+    cv::imwrite("/root/hsa-soc-local/img/dices0.jpg", img0);
     if (x < 0 || y < 0 || x >= w || y >= h)
     {
         t_data = (long int *)img0.data;
