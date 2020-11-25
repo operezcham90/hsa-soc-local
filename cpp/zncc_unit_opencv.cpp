@@ -59,6 +59,7 @@ cv::Mat i_img;
 cv::Mat t_img;
 cv::Mat i_img_roi;
 cv::Mat t_img_roi;
+cv::Mat res;
 cv::Rect rect;
 // PL variables
 long int acc_i;
@@ -72,6 +73,7 @@ int load_image_file(int x, int y)
         i_img = cv::imread("/root/hsa-soc-local/img/dices4.jpg", cv::IMREAD_GRAYSCALE);
         t_img = cv::imread("/root/hsa-soc-local/img/dices4.jpg", cv::IMREAD_GRAYSCALE);
         // draw the target for inspection
+        res = i_img.clone();
         cv::Mat img0 = t_img.clone();
         cv::Point pt1(a, b);
         cv::Point pt2(c, d);
@@ -90,7 +92,6 @@ int region_of_interest(int x, int y)
         t_img_roi = t_img(rect);
         // convert chars to long int
         t_img_roi.convertTo(t_img_roi, CV_32S);
-        cv::imwrite("/root/hsa-soc-local/img/dices0.jpg", t_img_roi);
         t_data = (long int *)t_img_roi.data;
     }
     else
@@ -99,7 +100,6 @@ int region_of_interest(int x, int y)
         i_img_roi = i_img(rect);
         // convert chars to long int
         i_img_roi.convertTo(i_img_roi, CV_32S);
-        cv::imwrite("/root/hsa-soc-local/img/dices0.jpg", i_img_roi);
         i_data = (long int *)i_img_roi.data;
     }
 }
@@ -224,6 +224,11 @@ int main()
                 max_zncc = zncc;
                 u1 = x;
                 v1 = y;
+                // draw candidate in result
+                cv::Point pt1(u1, v1);
+                cv::Point pt2(u1 + n, v1 + m);
+                cv::rectangle(img0, pt1, pt2, cv::Scalar(0, 255, 0));
+                cv::imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
             }
             std::cout << "max zncc: " << max_zncc << "\n";
         }

@@ -12,6 +12,9 @@ http.createServer(function (req, res) {
     } else if (req.url === '/dices0') {
         file = '/root/hsa-soc-local/img/dices0.jpg';
         type = 'image/jpg';
+    } else if (req.url === '/dices1') {
+        file = '/root/hsa-soc-local/img/dices1.jpg';
+        type = 'image/jpg';
     }
     const stat = fs.statSync(file);
     res.writeHead(200, {

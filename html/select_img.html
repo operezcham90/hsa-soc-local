@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍯 HSA SoC Local Server</title>
+    <link rel="icon" type="image/png" href="https://i.imgur.com/pmSblkF.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+</head>
+
+<body class="text-light bg-dark">
+    <div class="container">
+        <h1>🍯 HSA SoC Local Server</h1>
+        <div id="loading" class="alert alert-warning" role="alert">Loading OpenCV...</div>
+        <div>
+            <input type="file" class="d-none" id="fileInput" name="file">
+            <button type="button" class="btn btn-outline-light mb-1" id="fileInputBtn">Select Image File</button>
+        </div>
+        <div>
+            <img id="imageSrc" alt="No Image" class="d-none">
+        </div>
+        <div>
+            <canvas id="canvasOutput" class="d-none"></canvas>
+        </div>
+        <textarea id="textOutput" class="form-control mt-1" rows="10">Output:</textarea>
+    </div>
+    <script>
+        let mat = null;
+        function onOpenCvReady() {
+            document.getElementById('loading').classList.add('d-none');
+        }
+        document.getElementById('fileInputBtn').onclick = function () {
+            document.getElementById('fileInput').click();
+        };
+        document.getElementById('fileInput').addEventListener('change', (e) => {
+            document.getElementById('imageSrc').src = URL.createObjectURL(e.target.files[0]);
+            document.getElementById('imageSrc').classList.remove('d-none');
+        }, false);
+        document.getElementById('imageSrc').onload = function () {
+            mat = cv.imread(document.getElementById('imageSrc'));
+            document.getElementById('textOutput').innerHTML += '\nImage length: ';
+            document.getElementById('textOutput').innerHTML += mat.data.length + ' bytes\n';
+            let dst = new cv.Mat();
+            cv.cvtColor(mat, dst, cv.COLOR_RGBA2GRAY);
+            document.getElementById('textOutput').innerHTML += 'Image Color RGBA to GRAY\n';
+            document.getElementById('textOutput').innerHTML += 'Image length: ';
+            document.getElementById('textOutput').innerHTML += dst.data.length + ' bytes\n';
+            for (var i = 0; i < 4; i++) {
+                document.getElementById('textOutput').innerHTML += 'byte ' + i + ': ' + dst.data[i] + '\n';
+            }
+            dst.convertTo(dst, cv.CV_32S);
+            document.getElementById('textOutput').innerHTML += 'Image Data 8U to 32S\n';
+            document.getElementById('textOutput').innerHTML += 'Image length: ';
+            document.getElementById('textOutput').innerHTML += dst.data.length + ' bytes\n';
+            for (var i = 0; i < 4; i++) {
+                document.getElementById('textOutput').innerHTML += 'byte ' + i + ': ' + dst.data[i] + '\n';
+            }
+            mat = dst;
+        };
+    </script>
+    <script async src="https://docs.opencv.org/master/opencv.js" onload="onOpenCvReady()"
+        type="text/javascript"></script>
+</body>
+
+</html>
