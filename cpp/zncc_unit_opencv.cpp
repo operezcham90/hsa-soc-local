@@ -222,9 +222,9 @@ int main()
                 u1 = x;
                 v1 = y;
             }
+            std::cout << "max zncc: " << max_zncc << "\n";
         }
     }
-    std::cout << "max zncc: " << max_zncc << "\n";
     close_mem();
     return 0;
 }
