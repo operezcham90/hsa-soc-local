@@ -50,6 +50,9 @@ int u;
 int v;
 int n;
 int m;
+int w;
+int h;
+int n_times_m;
 long int *t_data;
 long int *i_data;
 cv::Mat img;
@@ -58,42 +61,65 @@ long int acc_i;
 long int acc_t;
 long int acc_cross;
 // functions
-int load_image_file()
+int load_image_file(int x, int y)
 {
-    img = cv::imread("/root/hsa-soc-local/img/dices4.jpg", cv::IMREAD_GRAYSCALE);
-    // draw the target for inspection
-    cv::Mat img0 = img.clone();
-    cv::Point pt1(a, b);
-    cv::Point pt2(c, d);
-    cv::rectangle(img0, pt1, pt2, cv::Scalar(0, 255, 0));
-    cv::imwrite("/root/hsa-soc-local/img/dices0.jpg", img0);
-    img0.release();
+    if (x < 0 || y < 0)
+    {
+        img = cv::imread("/root/hsa-soc-local/img/dices4.jpg", cv::IMREAD_GRAYSCALE);
+        // draw the target for inspection
+        cv::Mat img0 = img.clone();
+        cv::Point pt1(a, b);
+        cv::Point pt2(c, d);
+        cv::rectangle(img0, pt1, pt2, cv::Scalar(0, 255, 0));
+        cv::imwrite("/root/hsa-soc-local/img/dices0.jpg", img0);
+        img0.release();
+        w = img.cols;
+        h = img.rows;
+    }
 }
-int region_of_interest()
+int region_of_interest(int x, int y)
 {
-    cv::Rect rect = cv::Rect(a, b, n, m);
+    cv::Rect rect;
+    if (x < 0 || y < 0 || x >= w || y >= h)
+    {
+        rect = cv::Rect(u, v, n, m);
+    }
+    else
+    {
+        rect = cv::Rect(x, y, n, m);
+    }
     cv::Mat img0 = img(rect);
     // convert chars to long int
     img0.convertTo(img0, CV_32S);
-    t_data = (long int *)img0.data;
-    i_data = (long int *)img0.data;
+    if (x < 0 || y < 0 || x >= w || y >= h)
+    {
+        t_data = (long int *)img0.data;
+    }
+    else
+    {
+        i_data = (long int *)img0.data;
+    }
 }
-int load_init_file()
+int load_init_file(int x, int y)
 {
-    a = 1669 / 4;
-    b = 514 / 4;
-    c = 1888 / 4;
-    d = 664 / 4;
-    u = a;
-    v = b;
-    n = c - a;
-    m = d - b;
+    if (x < 0 || y < 0)
+    {
+        a = 1669 / 4;
+        b = 514 / 4;
+        c = 1888 / 4;
+        d = 664 / 4;
+        u = a;
+        v = b;
+        n = c - a;
+        m = d - b;
+        n_times_m = n * m;
+    }
 }
-int init_zncc()
+int init_zncc(int x, int y)
 {
-    load_init_file();
-    load_image_file();
-    region_of_interest();
+    load_init_file(x, y);
+    load_image_file(x, y);
+    region_of_interest(x, y);
 }
 long int *map_mem(unsigned int bytes, off_t addr)
 {
@@ -135,9 +161,8 @@ int set_avg(long int i_avg, long int t_avg)
 }
 long int get_acc(long int squared_or_not)
 {
-    int img_length = n * m;
-    int rounds = img_length / bram_length;
-    int remain = img_length - (bram_length * rounds);
+    int rounds = n_times_m / bram_length;
+    int remain = n_times_m - (bram_length * rounds);
     // for each round
     for (int r = 0; r < rounds + 1; r++)
     {
@@ -164,23 +189,41 @@ long int get_acc(long int squared_or_not)
 }
 int main()
 {
-    init_zncc();
+    double *zncc = malloc(n_times_m * sizeof(double));
+    double max_zncc = -2.0;
+    int u1 = 0;
+    int v1 = 0;
     open_mem();
-    // get averages
-    clear_acc();
-    set_avg(0, 0);
-    get_acc(conf_not_squared);
-    long int avg_i = acc_i / (m * n);
-    long int avg_t = acc_t / (m * n);
-    // get sum of squared err and cross correlation
-    clear_acc();
-    set_avg(avg_i, avg_t);
-    get_acc(conf_squared);
-    double err_i = acc_i * 1.0;
-    double err_t = acc_t * 1.0;
-    double corr = acc_cross * 1.0;
-    double zncc = corr / sqrt(err_i * err_t);
-    std::cout << "zncc: " << zncc << "\n";
+    init_zncc(-1, -1);
+    for (int x = 0; x < w; x++)
+    {
+        for (int y = 0; y < h; y++)
+        {
+            init_zncc(x, y);
+            // get averages
+            clear_acc();
+            set_avg(0, 0);
+            get_acc(conf_not_squared);
+            long int avg_i = acc_i / n_times_m;
+            long int avg_t = acc_t / n_times_m;
+            // get sum of squared err and cross correlation
+            clear_acc();
+            set_avg(avg_i, avg_t);
+            get_acc(conf_squared);
+            double err_i = acc_i * 1.0;
+            double err_t = acc_t * 1.0;
+            double corr = acc_cross * 1.0;
+            // get zncc
+            zncc[x + y * w] = corr / sqrt(err_i * err_t);
+            if (max_zncc < zncc[x + y * w])
+            {
+                max_zncc = zncc[x + y * w];
+                u1 = x;
+                v1 = y;
+            }
+        }
+    }
+    std::cout << "max zncc: " << max_zncc << "\n";
     close_mem();
     return 0;
 }
