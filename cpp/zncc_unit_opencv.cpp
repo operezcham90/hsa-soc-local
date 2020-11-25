@@ -189,7 +189,7 @@ long int get_acc(long int squared_or_not)
 }
 int main()
 {
-    double *zncc = malloc(n_times_m * sizeof(double));
+    double *zncc = (double *)malloc(n_times_m * sizeof(double));
     double max_zncc = -2.0;
     int u1 = 0;
     int v1 = 0;
