@@ -190,7 +190,7 @@ long int get_acc(long int squared_or_not)
 int main()
 {
     std::cout << "ok-1";
-    double *zncc = (double *)malloc(n_times_m * sizeof(double));
+    double zncc = 0;
     std::cout << "ok0";
     double max_zncc = -2.0;
     int u1 = 0;
@@ -222,10 +222,10 @@ int main()
             double corr = acc_cross * 1.0;
             std::cout << "ok6";
             // get zncc
-            zncc[x + y * w] = corr / sqrt(err_i * err_t);
-            if (max_zncc < zncc[x + y * w])
+            zncc = corr / sqrt(err_i * err_t);
+            if (max_zncc < zncc)
             {
-                max_zncc = zncc[x + y * w];
+                max_zncc = zncc;
                 u1 = x;
                 v1 = y;
             }
