@@ -15,6 +15,9 @@ http.createServer(function (req, res) {
     } else if (req.url === '/dices1') {
         file = '/root/hsa-soc-local/img/dices1.jpg';
         type = 'image/jpg';
+    } else if (req.url === '/opencv_zynq7000') {
+        file = '/root/opencv_zynq7000/build.tar.gz';
+        type = 'application/gzip';
     }
     const stat = fs.statSync(file);
     res.writeHead(200, {

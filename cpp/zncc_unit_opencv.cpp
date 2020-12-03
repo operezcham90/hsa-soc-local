@@ -198,7 +198,7 @@ int main()
     int v1 = 0;
     open_mem();
     init_zncc(-1, -1);
-    for (int x = u - 5; x < w - n; x++)
+    for (int x = 0; x < w - n; x++)
     {
         for (int y = 0; y < h - m; y++)
         {
