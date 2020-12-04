@@ -88,13 +88,8 @@ cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/usr/local ..
 make
 sudo make install
 ```
-An alternative is to download the precompiled `build` folder using the `opencv.js` script.
 
-```
-node hsa-soc-local/js/opencv.js
-tar -xvzf opencv_zynq7000.tar.gz
-sudo make install
-```
+Building OpenCV can be time consuming. An alternative is to download the precompiled `build` folder. Download link: [opencv_zynq7000.tar.gz](https://github.com/operezcham90/opencv_zynq7000/releases/download/release/opencv_zynq7000.tar.gz).
 
 Find the full path to the OpenCV libraries. It may be `/usr/local/lib/`.
 
