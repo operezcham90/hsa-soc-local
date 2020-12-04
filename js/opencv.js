@@ -10,6 +10,7 @@ https.request(url, function (response) {
     response.on('end', function () {
         //fs.writeFileSync('/root/opencv_zynq7000.tar.gz', data.read());
         const html = data.read().toString();
-        console.log(html);
+        const redirect = html.replace('<html><body>You are being <a href="', '').replace('">redirected</a>.</body></html>', '');
+        console.log(redirect);
     });
 }).end();
