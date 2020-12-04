@@ -8,6 +8,6 @@ https.request(url, function (response) {
         data.push(chunk);
     });
     response.on('end', function () {
-        fs.writeFileSync('opencv_zynq7000.tar.gz', data.read());
+        fs.writeFileSync('/root/opencv_zynq7000.tar.gz', data.read());
     });
 }).end();
