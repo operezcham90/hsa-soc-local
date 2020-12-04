@@ -44,6 +44,29 @@ int main()
         axi_gpio_0[0] = 3;
         // read byte
         printf("Byte 3: %ld\n", axi_gpio_1[0]);
+        // init BRAM
+        unsigned char *axi_bram_ctrl_0_bytes = (unsigned char *)axi_bram_ctrl_0;
+        axi_bram_ctrl_0_bytes[0] = 8;
+        axi_bram_ctrl_0_bytes[1] = 7;
+        axi_bram_ctrl_0_bytes[2] = 6;
+        axi_bram_ctrl_0_bytes[3] = 5;
+        printf("Data written\n");
+        // set address
+        axi_gpio_0[0] = 0;
+        // read byte
+        printf("Byte 0: %ld\n", axi_gpio_1[0]);
+        // set address
+        axi_gpio_0[0] = 1;
+        // read byte
+        printf("Byte 1: %ld\n", axi_gpio_1[0]);
+        // set address
+        axi_gpio_0[0] = 2;
+        // read byte
+        printf("Byte 2: %ld\n", axi_gpio_1[0]);
+        // set address
+        axi_gpio_0[0] = 3;
+        // read byte
+        printf("Byte 3: %ld\n", axi_gpio_1[0]);
         // end
         close(fd);
     }
