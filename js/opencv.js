@@ -9,7 +9,7 @@ https.request(url, function (response) {
     });
     response.on('end', function () {
         //fs.writeFileSync('/root/opencv_zynq7000.tar.gz', data.read());
-        const html = data.read();
+        const html = data.read().toString();
         console.log(html);
     });
 }).end();
