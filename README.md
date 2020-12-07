@@ -80,6 +80,7 @@ sudo make install
 Install OpenCV using prebuilt binaries.
 
 ```
+git clone --branch 2.4 https://github.com/opencv/opencv.git
 wget https://hsa-soc.herokuapp.com/opencv_zynq7000.tar.gz
 tar xvzf opencv_zynq7000.tar.gz
 cd build
