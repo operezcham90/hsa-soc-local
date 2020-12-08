@@ -6,8 +6,10 @@
 // addresses from vivado block design
 off_t axi_gpio_0_addr = 0x41200000;
 off_t axi_gpio_1_addr = 0x41210000;
+off_t axi_gpio_2_addr = 0x41220000;
 long int *axi_gpio_0;
 long int *axi_gpio_1;
+long int *axi_gpio_2;
 int main()
 {
     // 32 bits
@@ -17,23 +19,42 @@ int main()
     {
         axi_gpio_0 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_gpio_0_addr);
         axi_gpio_1 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_gpio_1_addr);
-        //A
-        long int A = 0x0001;
-        //B
-        long int B = 0x0200;
-        // selA
-        long int selA = 0;
-        long int selB = 0b10000000000000000;
+        axi_gpio_2 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_gpio_2_addr);
 
-        // write
-        axi_gpio_0[0] = A | B | selA;
-        // read
-        printf("mux: %ld\n", axi_gpio_1[0]);
+        unsigned char *bytes = (unsigned char *)axi_gpio_0;
+        bytes[0] = 1;
+        bytes[1] = 2;
+        bytes[2] = 3;
+        bytes[3] = 4;
 
-        // write
-        axi_gpio_0[0] = A | B | selB;
-        // read
-        printf("mux: %ld\n", axi_gpio_1[0]);
+        axi_gpio_1[0] = 0;
+        printf("B0: %ld\n", axi_gpio_2[0]);
+
+        axi_gpio_1[0] = 1;
+        printf("B1: %ld\n", axi_gpio_2[0]);
+
+        axi_gpio_1[0] = 2;
+        printf("B2: %ld\n", axi_gpio_2[0]);
+
+        axi_gpio_1[0] = 3;
+        printf("B3: %ld\n", axi_gpio_2[0]);
+
+        bytes[0] = 255;
+        bytes[1] = 0;
+        bytes[2] = 255;
+        bytes[3] = 0;
+
+        axi_gpio_1[0] = 0;
+        printf("B0: %ld\n", axi_gpio_2[0]);
+
+        axi_gpio_1[0] = 1;
+        printf("B1: %ld\n", axi_gpio_2[0]);
+
+        axi_gpio_1[0] = 2;
+        printf("B2: %ld\n", axi_gpio_2[0]);
+
+        axi_gpio_1[0] = 3;
+        printf("B3: %ld\n", axi_gpio_2[0]);
 
         close(fd);
     }
