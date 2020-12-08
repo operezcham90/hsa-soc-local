@@ -24,7 +24,7 @@ int main()
         unsigned char *bytes = (unsigned char *)axi_gpio_0;
         bytes[0] = 1;
         bytes[1] = 2;
-        bytes[2] = 3;
+        bytes[2] = 0;
         bytes[3] = 4;
 
         axi_gpio_1[0] = 0;
@@ -41,8 +41,8 @@ int main()
 
         bytes[0] = 255;
         bytes[1] = 0;
-        bytes[2] = 255;
-        bytes[3] = 0;
+        bytes[2] = 0;
+        bytes[3] = 255;
 
         axi_gpio_1[0] = 0;
         printf("B0: %ld\n", axi_gpio_2[0]);
