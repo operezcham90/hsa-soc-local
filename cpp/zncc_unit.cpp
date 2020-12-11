@@ -31,8 +31,8 @@ int main()
     int fd;
     if ((fd = open("/dev/mem", O_RDWR | O_SYNC)) != -1)
     {
-        axi_bram_ctrl_0 = (long int *)mmap(NULL, bram_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_bram_ctrl_0_addr);
-        axi_bram_ctrl_1 = (long int *)mmap(NULL, bram_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_bram_ctrl_1_addr);
+        axi_bram_ctrl_0 = (unsigned char *)mmap(NULL, bram_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_bram_ctrl_0_addr);
+        axi_bram_ctrl_1 = (unsigned char *)mmap(NULL, bram_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_bram_ctrl_1_addr);
         axi_gpio_0 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_gpio_0_addr);
         axi_gpio_1 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_gpio_1_addr);
         axi_gpio_2 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_gpio_2_addr);
@@ -42,7 +42,7 @@ int main()
         axi_gpio_6 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_gpio_6_addr);
         // init BRAM
         int length = 3;
-        for (long int i = 0; i < length; i++)
+        for (unsigned char i = 0; i < length; i++)
         {
             axi_bram_ctrl_0[i] = i + 1;
             axi_bram_ctrl_1[i] = i + 2;
@@ -65,20 +65,6 @@ int main()
         for (int i = 0; i < length; i++)
         {
             axi_gpio_0[0] = i;
-            axi_gpio_3[0] = WAIT;
-            axi_gpio_3[0] = WORK;
-            axi_gpio_3[0] = WAIT;
-            axi_gpio_3[0] = WORK;
-            axi_gpio_3[0] = WAIT;
-            axi_gpio_3[0] = WORK;
-            axi_gpio_3[0] = WAIT;
-            axi_gpio_3[0] = WORK;
-            axi_gpio_3[0] = WAIT;
-            axi_gpio_3[0] = WORK;
-            axi_gpio_3[0] = WAIT;
-            axi_gpio_3[0] = WORK;
-            axi_gpio_3[0] = WAIT;
-            axi_gpio_3[0] = WORK;
             axi_gpio_3[0] = WAIT;
             axi_gpio_3[0] = WORK;
         }
