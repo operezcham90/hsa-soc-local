@@ -44,8 +44,8 @@ int main()
         int length = 3;
         for (long int i = 0; i < length; i++)
         {
-            axi_bram_ctrl_0[i] = i;
-            axi_bram_ctrl_1[i] = i * 2;
+            axi_bram_ctrl_0[i] = i + 1;
+            axi_bram_ctrl_1[i] = i + 2;
         }
         printf("Data written\n");
         // Constants
