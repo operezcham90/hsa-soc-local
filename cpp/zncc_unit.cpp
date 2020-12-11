@@ -67,19 +67,9 @@ int main()
             axi_gpio_0[0] = i;
             axi_gpio_3[0] = WAIT;
             axi_gpio_3[0] = WORK;
-            axi_gpio_3[0] = WAIT;
-            axi_gpio_3[0] = WORK;
-            axi_gpio_3[0] = WAIT;
-            axi_gpio_3[0] = WORK;
-            axi_gpio_3[0] = WAIT;
-            axi_gpio_3[0] = WORK;
-            axi_gpio_3[0] = WAIT;
-            axi_gpio_3[0] = WORK;
-            axi_gpio_3[0] = WAIT;
-            axi_gpio_3[0] = WORK;
-            printf("End acc i: %ld\n", axi_gpio_4[0]);
-            printf("End acc t: %ld\n", axi_gpio_5[0]);
-            printf("End acc cross: %ld\n", axi_gpio_6[0]);
+            printf("step acc i: %ld\n", axi_gpio_4[0]);
+            printf("step acc t: %ld\n", axi_gpio_5[0]);
+            printf("step acc cross: %ld\n", axi_gpio_6[0]);
         }
         printf("End acc i: %ld\n", axi_gpio_4[0]);
         printf("End acc t: %ld\n", axi_gpio_5[0]);
