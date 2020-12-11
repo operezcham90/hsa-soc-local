@@ -41,11 +41,11 @@ int main()
         axi_gpio_5 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_gpio_5_addr);
         axi_gpio_6 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, axi_gpio_6_addr);
         // init BRAM
-        int length = 1000;
+        int length = 3;
         for (long int i = 0; i < length; i++)
         {
-            axi_bram_ctrl_0[i] = 1;
-            axi_bram_ctrl_1[i] = 2;
+            axi_bram_ctrl_0[i] = i;
+            axi_bram_ctrl_1[i] = i * 2;
         }
         printf("Data written\n");
         // Constants
