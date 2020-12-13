@@ -160,7 +160,9 @@ int set_avg(long int i_avg, long int t_avg)
 long int get_acc(long int squared_or_not)
 {
     int rounds = n_times_m / bram_length;
+    std::cout << "rounds" << rounds << "\n";
     int remain = n_times_m - (bram_length * rounds);
+    std::cout << "remain" << remain << "\n";
     // for each round
     for (int r = 0; r < rounds + 1; r++)
     {
@@ -170,8 +172,8 @@ long int get_acc(long int squared_or_not)
             limit = remain;
         }
         // copy a block of data to PL
-        memcpy(axi_bram_ctrl_0, i_data + (r * bram_length), limit * 4);
-        memcpy(axi_bram_ctrl_1, t_data + (r * bram_length), limit * 4);
+        memcpy(axi_bram_ctrl_0, i_data + (r * bram_length), limit);
+        memcpy(axi_bram_ctrl_1, t_data + (r * bram_length), limit);
         // get acc, still not parallel
         for (long int i = 0; i < limit; i++)
         {
