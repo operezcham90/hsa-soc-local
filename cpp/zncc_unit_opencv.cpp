@@ -160,9 +160,7 @@ int set_avg(long int i_avg, long int t_avg)
 long int get_acc(long int squared_or_not)
 {
     int rounds = n_times_m / bram_length;
-    std::cout << "rounds" << rounds << "\n";
     int remain = n_times_m - (bram_length * rounds);
-    std::cout << "remain" << remain << "\n";
     // for each round
     for (int r = 0; r < rounds + 1; r++)
     {
@@ -200,23 +198,16 @@ int main()
         {
             std::cout << "(" << x << "," << y << ")\n";
             init_zncc(x, y);
-            std::cout << "init\n";
             // get averages
             clear_acc();
-            std::cout << "clear\n";
             set_avg(0, 0);
-            std::cout << "avg\n";
             get_acc(conf_not_squared);
-            std::cout << "acc\n";
             long int avg_i = acc_i / n_times_m;
             long int avg_t = acc_t / n_times_m;
             // get sum of squared err and cross correlation
             clear_acc();
-            std::cout << "clear\n";
             set_avg(avg_i, avg_t);
-            std::cout << "avg\n";
             get_acc(conf_squared);
-            std::cout << "acc\n";
             double err_i = acc_i * 1.0;
             double err_t = acc_t * 1.0;
             double corr = acc_cross * 1.0;
