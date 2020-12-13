@@ -16,9 +16,8 @@ off_t axi_gpio_1_addr = 0x41210000;
 off_t axi_gpio_2_addr = 0x41220000;
 off_t axi_gpio_3_addr = 0x41230000;
 off_t axi_gpio_4_addr = 0x41240000;
-off_t axi_gpio_5_addr = 0x41260000;
-off_t axi_gpio_6_addr = 0x41270000;
-off_t axi_gpio_7_addr = 0x41250000;
+off_t axi_gpio_5_addr = 0x41250000;
+off_t axi_gpio_6_addr = 0x41260000;
 // AXI pointers
 long int *axi_bram_ctrl_0;
 long int *axi_bram_ctrl_1;
@@ -29,18 +28,17 @@ long int *axi_gpio_3;
 long int *axi_gpio_4;
 long int *axi_gpio_5;
 long int *axi_gpio_6;
-long int *axi_gpio_7;
 // dev mem
 int fd;
 // constants of PL design
-long int conf_clear = 0b1;
-long int conf_squared = 0b10;
-long int conf_not_squared = 0b00;
-long int conf_work = 0b100;
-long int conf_wait = 0b000;
+long int conf_clear = 0b10;
+long int conf_squared = 0b100;
+long int conf_not_squared = 0b000;
+long int conf_work = 0b1;
+long int conf_wait = 0b0;
 unsigned int bram_bytes = 2048 * 4;
 unsigned int gpio_bytes = 4;
-long int bram_length = 2048;
+long int bram_length = 2048 * 4;
 // zncc variables
 int a;
 int b;
@@ -90,16 +88,14 @@ int region_of_interest(int x, int y)
     {
         rect = cv::Rect(u, v, n, m);
         t_img_roi = t_img(rect);
-        // convert chars to long int
-        t_img_roi.convertTo(t_img_roi, CV_32S);
+        t_img_roi.convertTo(t_img_roi, CV_8U);
         t_data = (long int *)t_img_roi.data;
     }
     else
     {
         rect = cv::Rect(x, y, n, m);
         i_img_roi = i_img(rect);
-        // convert chars to long int
-        i_img_roi.convertTo(i_img_roi, CV_32S);
+        i_img_roi.convertTo(i_img_roi, CV_8U);
         i_data = (long int *)i_img_roi.data;
     }
 }
@@ -143,7 +139,6 @@ int open_mem()
     axi_gpio_4 = map_mem(gpio_bytes, axi_gpio_4_addr);
     axi_gpio_5 = map_mem(gpio_bytes, axi_gpio_5_addr);
     axi_gpio_6 = map_mem(gpio_bytes, axi_gpio_6_addr);
-    axi_gpio_7 = map_mem(gpio_bytes, axi_gpio_7_addr);
 }
 int close_mem()
 {
@@ -151,16 +146,16 @@ int close_mem()
 }
 int clear_acc()
 {
-    axi_gpio_4[0] = conf_clear | conf_wait;
-    axi_gpio_4[0] = conf_clear | conf_work;
-    acc_i = axi_gpio_7[0];
+    axi_gpio_3[0] = conf_clear | conf_wait;
+    axi_gpio_3[0] = conf_clear | conf_work;
+    acc_i = axi_gpio_4[0];
     acc_t = axi_gpio_5[0];
     acc_cross = axi_gpio_6[0];
 }
 int set_avg(long int i_avg, long int t_avg)
 {
-    axi_gpio_2[0] = i_avg;
-    axi_gpio_3[0] = t_avg;
+    axi_gpio_1[0] = i_avg;
+    axi_gpio_2[0] = t_avg;
 }
 long int get_acc(long int squared_or_not)
 {
@@ -180,13 +175,12 @@ long int get_acc(long int squared_or_not)
         // get acc, still not parallel
         for (long int i = 0; i < limit; i++)
         {
-            axi_gpio_0[0] = i << 2;
-            axi_gpio_1[0] = i << 2;
-            axi_gpio_4[0] = conf_wait | squared_or_not;
-            axi_gpio_4[0] = conf_work | squared_or_not;
+            axi_gpio_0[0] = i;
+            axi_gpio_3[0] = conf_wait | squared_or_not;
+            axi_gpio_3[0] = conf_work | squared_or_not;
         }
     }
-    acc_i = axi_gpio_7[0];
+    acc_i = axi_gpio_4[0];
     acc_t = axi_gpio_5[0];
     acc_cross = axi_gpio_6[0];
 }
