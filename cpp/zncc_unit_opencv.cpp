@@ -17,6 +17,7 @@ off_t axi_gpio_2_addr = 0x41220000;
 off_t axi_gpio_3_addr = 0x41230000;
 off_t axi_gpio_4_addr = 0x41240000;
 off_t axi_gpio_5_addr = 0x41250000;
+off_t axi_gpio_6_addr = 0x41260000;
 // AXI pointers
 long int *axi_bram_ctrl_0;
 long int *axi_bram_ctrl_1;
@@ -26,6 +27,7 @@ long int *axi_gpio_2;
 long int *axi_gpio_3;
 long int *axi_gpio_4;
 long int *axi_gpio_5;
+long int *axi_gpio_6;
 // dev mem
 int fd;
 // constants of PL design
@@ -137,6 +139,7 @@ int open_mem()
     axi_gpio_3 = map_mem(gpio_bytes, axi_gpio_3_addr);
     axi_gpio_4 = map_mem(gpio_bytes, axi_gpio_4_addr);
     axi_gpio_5 = map_mem(gpio_bytes, axi_gpio_5_addr);
+    axi_gpio_6 = map_mem(gpio_bytes, axi_gpio_6_addr);
 }
 int close_mem()
 {
@@ -175,9 +178,12 @@ long int get_acc(long int squared_or_not)
         memcpy(axi_bram_ctrl_0, i_data + (r * bram_length), limit);
         memcpy(axi_bram_ctrl_1, t_data + (r * bram_length), limit);
         // get acc, still not parallel
-        for (long int i = 0; i < limit; i++)
+        int units = 2;
+        int limit_fraction = limit / units;
+        for (long int i = 0; i < limit_fraction; i++)
         {
             axi_gpio_5[0] = i;
+            axi_gpio_6[0] = i + limit_fraction;
             axi_gpio_1[0] = conf_wait | squared_or_not;
             axi_gpio_1[0] = conf_work | squared_or_not;
         }
