@@ -204,7 +204,10 @@ int main()
     {
         for (int y = 0; y < h - m; y++)
         {
-            std::cout << "(" << x << "," << y << ")\n";
+            if (y % 200 == 0)
+            {
+                std::cout << "(" << x << "," << y << ")\n";
+            }
             init_zncc(x, y);
             // get averages
             clear_acc();
