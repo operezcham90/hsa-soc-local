@@ -232,7 +232,10 @@ int main()
                 cv::rectangle(res, pt1, pt2, cv::Scalar(0, 255, 0));
                 cv::imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
             }
-            std::cout << "max zncc: " << max_zncc << "\n";
+            if (y % 200 == 0)
+            {
+                std::cout << "max zncc: " << max_zncc << "\n";
+            }
         }
     }
     close_mem();
