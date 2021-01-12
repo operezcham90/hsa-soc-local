@@ -8,6 +8,12 @@
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <iostream>
+
+#include <algorithm> 
+#include <chrono> 
+#include<vector> 
+using namespace std; 
+using namespace std::chrono;
 // AXI addresses
 off_t axi_bram_ctrl_0_addr = 0x40000000;
 off_t axi_bram_ctrl_1_addr = 0x42000000;
