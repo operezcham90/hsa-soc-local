@@ -8,11 +8,10 @@
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <iostream>
-
-#include <algorithm> 
-#include <chrono> 
-#include<vector> 
-using namespace std; 
+#include <algorithm>
+#include <chrono>
+#include <vector>
+using namespace std;
 using namespace std::chrono;
 // AXI addresses
 off_t axi_bram_ctrl_0_addr = 0x40000000;
@@ -75,6 +74,7 @@ int load_image_file(int x, int y)
 {
     if (x < 0 || y < 0)
     {
+        auto start = high_resolution_clock::now();
         i_img = cv::imread("/root/hsa-soc-local/img/dices4.jpg", cv::IMREAD_GRAYSCALE);
         t_img = cv::imread("/root/hsa-soc-local/img/dices4.jpg", cv::IMREAD_GRAYSCALE);
         // draw the target for inspection
@@ -87,6 +87,9 @@ int load_image_file(int x, int y)
         img0.release();
         w = t_img.cols;
         h = t_img.rows;
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        cout << "Read: " << duration.count() << " us\n";
     }
 }
 int region_of_interest(int x, int y)
