@@ -183,10 +183,15 @@ long int get_acc(long int squared_or_not)
         {
             limit = remain;
         }
+        auto start = high_resolution_clock::now();
         // copy a block of data to PL
         memcpy(axi_bram_ctrl_0, i_data + (r * bram_length), limit);
         memcpy(axi_bram_ctrl_1, t_data + (r * bram_length), limit);
-        // get acc, still not parallel
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        cout << "Write: " << duration.count() << " us\n";
+        // get acc
+        start = high_resolution_clock::now();
         int units = 2;
         int limit_fraction = limit / units;
         for (long int i = 0; i < limit_fraction; i++)
@@ -196,6 +201,9 @@ long int get_acc(long int squared_or_not)
             axi_gpio_1[0] = conf_wait | squared_or_not;
             axi_gpio_1[0] = conf_work | squared_or_not;
         }
+        stop = high_resolution_clock::now();
+        duration = duration_cast<microseconds>(stop - start);
+        cout << "Process: " << duration.count() << " us\n";
     }
     acc_i = axi_gpio_2[0];
     acc_t = axi_gpio_3[0];
@@ -213,10 +221,7 @@ int main()
     {
         for (int y = 0; y < h - m; y++)
         {
-            if (y % 200 == 0)
-            {
-                std::cout << "(" << x << "," << y << ")\n";
-            }
+            std::cout << "(" << x << "," << y << ")\n";
             init_zncc(x, y);
             // get averages
             clear_acc();
@@ -244,10 +249,7 @@ int main()
                 cv::rectangle(res, pt1, pt2, cv::Scalar(0, 255, 0));
                 cv::imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
             }
-            if (y % 200 == 0)
-            {
-                std::cout << "max zncc: " << max_zncc << "\n";
-            }
+            std::cout << "max zncc: " << max_zncc << "\n";
         }
     }
     close_mem();
