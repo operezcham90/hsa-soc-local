@@ -193,11 +193,11 @@ long int get_acc(long int squared_or_not)
         // get acc
         start = high_resolution_clock::now();
         int units = 2;
-        int limit_fraction = limit / units;
+        int limit_fraction = limit; //limit / units;
         for (long int i = 0; i < limit_fraction; i++)
         {
             axi_gpio_5[0] = i;
-            axi_gpio_6[0] = i + limit_fraction;
+            //axi_gpio_6[0] = 0; //i + limit_fraction;
             axi_gpio_1[0] = conf_wait | squared_or_not;
             axi_gpio_1[0] = conf_work | squared_or_not;
         }
