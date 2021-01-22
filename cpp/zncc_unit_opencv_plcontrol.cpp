@@ -183,7 +183,6 @@ int set_offset(long int offset)
 }
 long int get_acc(long int squared_or_not, long int avg_i, long int avg_t)
 {
-    clear_acc();
     int rounds = n_times_m / bram_length;
     int remain = n_times_m - (bram_length * rounds);
     acc_i = 0;
@@ -212,6 +211,7 @@ long int get_acc(long int squared_or_not, long int avg_i, long int avg_t)
         int limit_fraction = limit / units;
         set_avg(avg_i, avg_t);
         set_offset(limit_fraction);
+        clear_acc();
         cout << "limit_fraction " << limit_fraction << "\n";
         cout << "count: " << axi_gpio_5[0] << "\n";
         cout << "acci: " << axi_gpio_2[0] << "\n";
@@ -229,7 +229,6 @@ long int get_acc(long int squared_or_not, long int avg_i, long int avg_t)
         acc_t += axi_gpio_3[0];
         acc_cross += axi_gpio_4[0];
         cout << acc_i << " " << acc_t << " " << acc_cross << "\n";
-        clear_acc();
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
         cout << "Process: " << duration.count() << " us\n";
