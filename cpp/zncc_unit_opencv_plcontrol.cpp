@@ -174,6 +174,7 @@ int set_offset(long int offset)
 }
 long int get_acc(long int squared_or_not, long int avg_i, long int avg_t)
 {
+    clear_acc();
     int rounds = n_times_m / bram_length;
     int remain = n_times_m - (bram_length * rounds);
     acc_i = 0;
@@ -235,10 +236,13 @@ int main()
             std::cout << "(" << x << "," << y << ")\n";
             init_zncc(x, y);
             // get averages
+            std::cout << "averages \n";
             get_acc(conf_not_squared, 0, 0);
             long int avg_i = acc_i / n_times_m;
             long int avg_t = acc_t / n_times_m;
+            std::cout << avg_i << " " << avg_t << "\n";
             // get sum of squared err and cross correlation
+            std::cout << "stats \n";
             get_acc(conf_squared, avg_i, avg_t);
             double err_i = acc_i * 1.0;
             double err_t = acc_t * 1.0;
@@ -250,11 +254,14 @@ int main()
                 max_zncc = zncc;
                 u1 = x;
                 v1 = y;
-                // draw candidate in result
-                cv::Point pt1(u1, v1);
-                cv::Point pt2(u1 + n, v1 + m);
-                cv::rectangle(res, pt1, pt2, cv::Scalar(0, 255, 0));
-                cv::imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
+                if (max_zncc > 0.8)
+                {
+                    // draw candidate in result
+                    cv::Point pt1(u1, v1);
+                    cv::Point pt2(u1 + n, v1 + m);
+                    cv::rectangle(res, pt1, pt2, cv::Scalar(0, 255, 0));
+                    cv::imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
+                }
             }
             std::cout << "max zncc: " << max_zncc << "\n";
         }
