@@ -18,6 +18,7 @@ long int *limit;
 long int *control;
 long int *counter;
 long int *accumulated;
+long int *version;
 int fd;
 // open memory
 long int *map_mem(unsigned int bytes, off_t addr)
@@ -34,6 +35,7 @@ int open_mem()
     control = map_mem(gpio_bytes, 0x41210000);
     counter = map_mem(gpio_bytes, 0x41220000);
     accumulated = map_mem(gpio_bytes, 0x41230000);
+    version = map_mem(gpio_bytes, 0x41240000);
 }
 int close_mem()
 {
@@ -46,6 +48,8 @@ int main()
     long int work = 0b1;
     long int clear = 0b10;
     long int square = 0b100;
+
+    cout << "VER " << version[0] << "\n";
 
     limit[0] = 10;
     cout << "*Limit " << limit[0] << "\n";
