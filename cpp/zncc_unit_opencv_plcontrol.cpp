@@ -80,7 +80,7 @@ int load_image_file(int x, int y)
         cv::Mat img0 = t_img.clone();
         cv::Point pt1(a, b);
         cv::Point pt2(c, d);
-        cv::rectangle(img0, pt1, pt2, cv::Scalar(0, 255, 0));
+        cv::rectangle(img0, pt1, pt2, cv::Scalar(0, 0, 0));
         cv::imwrite("/root/hsa-soc-local/img/dices0.jpg", img0);
         img0.release();
         w = t_img.cols;
@@ -153,10 +153,8 @@ int close_mem()
 }
 int clear_acc()
 {
+    cout << "Clear acc\n";
     axi_gpio_1[0] = conf_clear;
-    acc_i = axi_gpio_2[0];
-    acc_t = axi_gpio_3[0];
-    acc_cross = axi_gpio_4[0];
     axi_gpio_1[0] = conf_wait;
 }
 int set_avg(long int i_avg, long int t_avg)
@@ -178,17 +176,19 @@ long int get_acc(long int squared_or_not, long int avg_i, long int avg_t)
 {
     int rounds = n_times_m / bram_length;
     int remain = n_times_m - (bram_length * rounds);
-    // for each round
     acc_i = 0;
     acc_t = 0;
     acc_cross = 0;
+    // for each round
     for (int r = 0; r < rounds + 1; r++)
     {
+        cout << "round " << r << " of " << rounds << "\n";
         int limit = bram_length;
         if (r == rounds)
         {
             limit = remain;
         }
+        cout << "limit " << limit << "\n";
         auto start = high_resolution_clock::now();
         // copy a block of data to PL
         memcpy(axi_bram_ctrl_0, i_data + (r * bram_length), limit);
@@ -203,6 +203,7 @@ long int get_acc(long int squared_or_not, long int avg_i, long int avg_t)
         set_avg(avg_i, avg_t);
         set_offset(limit_fraction);
         axi_gpio_1[0] = conf_work | squared_or_not;
+        cout << "limit_fraction " << limit_fraction << "\n";
         while (axi_gpio_5[0] < limit_fraction)
         {
             cout << "count: " << axi_gpio_5[0] << "\n";
@@ -210,6 +211,7 @@ long int get_acc(long int squared_or_not, long int avg_i, long int avg_t)
         acc_i += axi_gpio_2[0];
         acc_t += axi_gpio_3[0];
         acc_cross += axi_gpio_4[0];
+        cout << acc_i << " " << acc_t << " " << acc_cross << "\n";
         clear_acc();
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
