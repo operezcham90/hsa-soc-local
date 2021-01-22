@@ -203,8 +203,12 @@ long int get_acc(long int squared_or_not, long int avg_i, long int avg_t)
         int limit_fraction = limit / units;
         set_avg(avg_i, avg_t);
         set_offset(limit_fraction);
-        axi_gpio_1[0] = conf_work | squared_or_not;
         cout << "limit_fraction " << limit_fraction << "\n";
+        cout << "count: " << axi_gpio_5[0] << "\n";
+        cout << "acci: " << axi_gpio_2[0] << "\n";
+        cout << "acct: " << axi_gpio_3[0] << "\n";
+        cout << "acccross: " << axi_gpio_4[0] << "\n";
+        axi_gpio_1[0] = conf_work | squared_or_not;
         while (axi_gpio_5[0] < limit_fraction)
         {
             cout << "count: " << axi_gpio_5[0] << "\n";
