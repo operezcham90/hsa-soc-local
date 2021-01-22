@@ -51,7 +51,7 @@ int main()
 
     cout << "HW VER " << version[0] << "\n";
 
-    limit[0] = 10;
+    limit[0] = 2000;
     cout << "*Limit " << limit[0] << "\n";
 
     control[0] = clear;
