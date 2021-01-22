@@ -52,12 +52,12 @@ int main()
     cout << "*Limit " << limit[0] << "\n";
 
     control[0] = clear;
-    cout << "Clear\n";
+    cout << "Clear" << control[0] << "\n";
     cout << "Counter " << counter[0] << "\n";
     cout << "Accumulated " << accumulated[0] << "\n";
 
     control[0] = work;
-    cout << "Work\n";
+    cout << "Work" << control[0] << "\n";
     while (counter[0] <= limit[0])
     {
         cout << "Counter " << counter[0] << "\n";
