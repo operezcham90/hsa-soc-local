@@ -18,6 +18,7 @@ long int *limit;
 long int *control;
 long int *count;
 long int *accumulated;
+int fd;
 // open memory
 long int *map_mem(unsigned int bytes, off_t addr)
 {
