@@ -31,8 +31,8 @@ int open_mem()
         exit(1);
     }
     limit = map_mem(gpio_bytes, 0x41200000);
-    control = map_mem(gpio_bytes, 0x41200000);
-    counter = map_mem(gpio_bytes, 0x41200000);
+    control = map_mem(gpio_bytes, 0x41210000);
+    counter = map_mem(gpio_bytes, 0x41220000);
     accumulated = map_mem(gpio_bytes, 0x41230000);
 }
 int close_mem()
