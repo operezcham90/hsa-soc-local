@@ -42,9 +42,9 @@ int close_mem()
 int main()
 {
     open_mem();
-    long int none = 0b11;
-    long int work = 0b10;
-    long int clear = 0b00;
+    long int none = 0b0;
+    long int work = 0b1;
+    long int clear = 0b10;
     long int square = 0b100;
 
     limit[0] = 10;
@@ -57,13 +57,12 @@ int main()
 
     control[0] = work;
     cout << "Work " << control[0] << "\n";
+    while (counter[0] <= limit[0])
+    {
         cout << "Work " << control[0] << "\n";
         cout << "Counter " << counter[0] << "\n";
         cout << "Accumulated " << accumulated[0] << "\n";
-
-                cout << "Work " << control[0] << "\n";
-        cout << "Counter " << counter[0] << "\n";
-        cout << "Accumulated " << accumulated[0] << "\n";
+    }
 
     close_mem();
     return 0;
