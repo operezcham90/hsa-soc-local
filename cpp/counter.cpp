@@ -51,15 +51,15 @@ int main()
     cout << "*Limit " << limit[0] << "\n";
 
     control[0] = clear;
-    cout << "Clear" << control[0] << "\n";
+    cout << "Clear " << control[0] << "\n";
     cout << "Counter " << counter[0] << "\n";
     cout << "Accumulated " << accumulated[0] << "\n";
 
     control[0] = work;
-    cout << "Work" << control[0] << "\n";
+    cout << "Work " << control[0] << "\n";
     while (counter[0] <= limit[0])
     {
-        cout << "Work" << control[0] << "\n";
+        cout << "Work " << control[0] << "\n";
         cout << "Counter " << counter[0] << "\n";
         cout << "Accumulated " << accumulated[0] << "\n";
     }
