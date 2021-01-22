@@ -41,7 +41,6 @@ int close_mem()
 }
 int main()
 {
-
     open_mem();
     long int none = 0b0;
     long int work = 0b1;
