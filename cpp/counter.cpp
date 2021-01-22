@@ -49,7 +49,7 @@ int main()
     long int clear = 0b10;
     long int square = 0b100;
 
-    cout << "VER " << version[0] << "\n";
+    cout << "HW VER " << version[0] << "\n";
 
     limit[0] = 10;
     cout << "*Limit " << limit[0] << "\n";
