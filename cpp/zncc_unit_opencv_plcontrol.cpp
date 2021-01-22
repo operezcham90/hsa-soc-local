@@ -226,9 +226,11 @@ int main()
     int v1 = 0;
     open_mem();
     init_zncc(-1, -1);
-    for (int x = 0; x < w - n; x++)
+    //for (int x = 0; x < w - n; x++)
+    for (int x = u; x < u + 1; x++)
     {
-        for (int y = 0; y < h - m; y++)
+        //for (int y = 0; y < h - m; y++)
+        for (int y = v; y < v + 1; y++)
         {
             std::cout << "(" << x << "," << y << ")\n";
             init_zncc(x, y);
