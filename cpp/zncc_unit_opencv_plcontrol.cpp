@@ -208,6 +208,9 @@ long int get_acc(long int squared_or_not, long int avg_i, long int avg_t)
         while (axi_gpio_5[0] < limit_fraction)
         {
             cout << "count: " << axi_gpio_5[0] << "\n";
+            cout << "acci: " << axi_gpio_2[0] << "\n";
+            cout << "acct: " << axi_gpio_3[0] << "\n";
+            cout << "acccross: " << axi_gpio_4[0] << "\n";
         }
         acc_i += axi_gpio_2[0];
         acc_t += axi_gpio_3[0];
