@@ -42,8 +42,8 @@ int close_mem()
 int main()
 {
     open_mem();
-    long int none = 0b0;
-    long int work = 0b1;
+    long int none = 0b1;
+    long int work = 0b0;
     long int clear = 0b10;
     long int square = 0b100;
 
