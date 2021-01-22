@@ -58,7 +58,7 @@ int main()
 
     control[0] = work;
     cout << "Work\n";
-    while (true)
+    while (counter[0] <= limit[0])
     {
         cout << "Counter " << counter[0] << "\n";
         cout << "Accumulated " << accumulated[0] << "\n";
