@@ -155,8 +155,15 @@ int clear_acc()
 {
     cout << "Clear acc\n";
     axi_gpio_1[0] = conf_clear;
-    axi_gpio_1[0] = conf_clear;
-    axi_gpio_1[0] = conf_wait;
+    while (!(axi_gpio_5[0] | axi_gpio_2[0] | axi_gpio_3[0] | axi_gpio_4[0]))
+    {
+        // confirmation
+        cout << "count: " << axi_gpio_5[0] << "\n";
+        cout << "acci: " << axi_gpio_2[0] << "\n";
+        cout << "acct: " << axi_gpio_3[0] << "\n";
+        cout << "acccross: " << axi_gpio_4[0] << "\n";
+    }
+    cout << "Clear ready\n";
     axi_gpio_1[0] = conf_wait;
 }
 int set_avg(long int i_avg, long int t_avg)
