@@ -1,4 +1,4 @@
-// g++ zncc_unit_opencv.cpp -o zncc_unit_opencv `pkg-config --cflags --libs opencv`
+// g++ zncc_unit_opencv_plcontrol.cpp -o zncc_unit_opencv_plcontrol `pkg-config --cflags --libs opencv`
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -22,7 +22,6 @@ off_t axi_gpio_2_addr = 0x41220000;
 off_t axi_gpio_3_addr = 0x41230000;
 off_t axi_gpio_4_addr = 0x41240000;
 off_t axi_gpio_5_addr = 0x41250000;
-off_t axi_gpio_6_addr = 0x41260000;
 // AXI pointers
 long int *axi_bram_ctrl_0;
 long int *axi_bram_ctrl_1;
@@ -32,7 +31,6 @@ long int *axi_gpio_2;
 long int *axi_gpio_3;
 long int *axi_gpio_4;
 long int *axi_gpio_5;
-long int *axi_gpio_6;
 // dev mem
 int fd;
 // constants of PL design
@@ -148,7 +146,6 @@ int open_mem()
     axi_gpio_3 = map_mem(gpio_bytes, axi_gpio_3_addr);
     axi_gpio_4 = map_mem(gpio_bytes, axi_gpio_4_addr);
     axi_gpio_5 = map_mem(gpio_bytes, axi_gpio_5_addr);
-    axi_gpio_6 = map_mem(gpio_bytes, axi_gpio_6_addr);
 }
 int close_mem()
 {
@@ -156,11 +153,11 @@ int close_mem()
 }
 int clear_acc()
 {
-    axi_gpio_1[0] = conf_clear | conf_wait;
-    axi_gpio_1[0] = conf_clear | conf_work;
+    axi_gpio_1[0] = conf_clear;
     acc_i = axi_gpio_2[0];
     acc_t = axi_gpio_3[0];
     acc_cross = axi_gpio_4[0];
+    axi_gpio_1[0] = conf_wait;
 }
 int set_avg(long int i_avg, long int t_avg)
 {
@@ -171,11 +168,20 @@ int set_avg(long int i_avg, long int t_avg)
     axi_gpio_1[0] = conf_save;
     axi_gpio_1[0] = conf_wait;
 }
-long int get_acc(long int squared_or_not)
+int set_offset(long int offset)
+{
+    axi_gpio_0[0] = offset;
+    axi_gpio_1[0] = conf_save;
+    axi_gpio_1[0] = conf_wait;
+}
+long int get_acc(long int squared_or_not, long int avg_i, long int avg_t)
 {
     int rounds = n_times_m / bram_length;
     int remain = n_times_m - (bram_length * rounds);
     // for each round
+    acc_i = 0;
+    acc_t = 0;
+    acc_cross = 0;
     for (int r = 0; r < rounds + 1; r++)
     {
         int limit = bram_length;
@@ -194,25 +200,26 @@ long int get_acc(long int squared_or_not)
         start = high_resolution_clock::now();
         int units = 2;
         int limit_fraction = limit / units;
-        for (long int i = 0; i < limit_fraction; i++)
+        set_avg(avg_i, avg_t);
+        set_offset(limit_fraction);
+        axi_gpio_1[0] = conf_work | squared_or_not;
+        while (axi_gpio_5[0] < limit_fraction)
         {
-            axi_gpio_5[0] = i;
-            axi_gpio_6[0] = i + limit_fraction;
-            axi_gpio_1[0] = conf_wait | squared_or_not;
-            axi_gpio_1[0] = conf_work | squared_or_not;
+            cout << "count: " << axi_gpio_5[0] << "\n";
         }
+        acc_i += axi_gpio_2[0];
+        acc_t += axi_gpio_3[0];
+        acc_cross += axi_gpio_4[0];
+        clear_acc();
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
         cout << "Process: " << duration.count() << " us\n";
     }
-    acc_i = axi_gpio_2[0];
-    acc_t = axi_gpio_3[0];
-    acc_cross = axi_gpio_4[0];
 }
 int main()
 {
     double zncc = 0;
-    double max_zncc = -2.0;
+    double max_zncc = -3.0;
     int u1 = 0;
     int v1 = 0;
     open_mem();
@@ -224,15 +231,11 @@ int main()
             std::cout << "(" << x << "," << y << ")\n";
             init_zncc(x, y);
             // get averages
-            clear_acc();
-            set_avg(0, 0);
-            get_acc(conf_not_squared);
+            get_acc(conf_not_squared, 0, 0);
             long int avg_i = acc_i / n_times_m;
             long int avg_t = acc_t / n_times_m;
             // get sum of squared err and cross correlation
-            clear_acc();
-            set_avg(avg_i, avg_t);
-            get_acc(conf_squared);
+            get_acc(conf_squared, avg_i, avg_t);
             double err_i = acc_i * 1.0;
             double err_t = acc_t * 1.0;
             double corr = acc_cross * 1.0;
