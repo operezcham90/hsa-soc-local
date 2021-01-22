@@ -16,7 +16,7 @@ using namespace std::chrono;
 unsigned int gpio_bytes = 4;
 long int *limit;
 long int *control;
-long int *count;
+long int *counter;
 long int *accumulated;
 int fd;
 // open memory
@@ -32,7 +32,7 @@ int open_mem()
     }
     limit = map_mem(gpio_bytes, 0x41200000);
     control = map_mem(gpio_bytes, 0x41200000);
-    count = map_mem(gpio_bytes, 0x41200000);
+    counter = map_mem(gpio_bytes, 0x41200000);
     accumulated = map_mem(gpio_bytes, 0x41230000);
 }
 int close_mem()
@@ -53,14 +53,14 @@ int main()
 
     control[0] = clear;
     cout << "Clear\n";
-    cout << "Count " << count[0] << "\n";
+    cout << "Counter " << counter[0] << "\n";
     cout << "Accumulated " << accumulated[0] << "\n";
 
     control[0] = work;
     cout << "Work\n";
     while (true)
     {
-        cout << "Count " << count[0] << "\n";
+        cout << "Counter " << counter[0] << "\n";
         cout << "Accumulated " << accumulated[0] << "\n";
     }
 
