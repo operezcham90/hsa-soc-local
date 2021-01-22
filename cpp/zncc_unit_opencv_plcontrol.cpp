@@ -155,6 +155,8 @@ int clear_acc()
 {
     cout << "Clear acc\n";
     axi_gpio_1[0] = conf_clear;
+    axi_gpio_1[0] = conf_clear;
+    axi_gpio_1[0] = conf_wait;
     axi_gpio_1[0] = conf_wait;
 }
 int set_avg(long int i_avg, long int t_avg)
