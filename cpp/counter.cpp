@@ -53,7 +53,7 @@ int main()
 
     for (long int i = 1; i < 5; i++)
     {
-        limit[0] = 10;
+        limit[0] = i;
         cout << "*Limit " << limit[0] << "\n";
         control[0] = clear;
         control[0] = none;
