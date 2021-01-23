@@ -62,7 +62,7 @@ int wait_clear()
 }
 int start_work()
 {
-    control[0] = 0b1;
+    control[0] = 0b101;
 }
 int wait_work()
 {
