@@ -51,25 +51,18 @@ int main()
 
     cout << "HW VER " << version[0] << "\n";
 
-    limit[0] = 2000;
-    cout << "*Limit " << limit[0] << "\n";
-
-    control[0] = clear;
-    cout << "Clear " << control[0] << "\n";
-    cout << "Counter " << counter[0] << "\n";
-    cout << "Accumulated " << accumulated[0] << "\n";
-
-    control[0] = work;
-    cout << "Work " << control[0] << "\n";
-    while (counter[0] < limit[0])
+    for (long int i = 1; i < 100; i++)
     {
-        cout << "Work " << control[0] << "\n";
+        limit[0] = i;
+        cout << "*Limit " << limit[0] << "\n";
+        control[0] = clear;
+        control[0] = work;
+        while (counter[0] < limit[0])
+        {
+        }
         cout << "Counter " << counter[0] << "\n";
         cout << "Accumulated " << accumulated[0] << "\n";
     }
-    cout << "Work " << control[0] << "\n";
-    cout << "Counter " << counter[0] << "\n";
-    cout << "Accumulated " << accumulated[0] << "\n";
 
     close_mem();
     return 0;
