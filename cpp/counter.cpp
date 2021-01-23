@@ -19,6 +19,7 @@ long int *control;
 long int *counter;
 long int *accumulated;
 long int *version;
+long int *accumulated1;
 int fd;
 // open memory
 long int *map_mem(unsigned int bytes, off_t addr)
@@ -36,6 +37,7 @@ int open_mem()
     counter = map_mem(gpio_bytes, 0x41220000);
     accumulated = map_mem(gpio_bytes, 0x41230000);
     version = map_mem(gpio_bytes, 0x41240000);
+    accumulated1 = map_mem(gpio_bytes, 0x41250000);
 }
 int close_mem()
 {
@@ -52,10 +54,9 @@ int set_limit(long int lim)
 }
 int wait_clear()
 {
+    control[0] = 0b10;
     while (counter[0] + accumulated[0] > 0)
     {
-        control[0] = 0b10;
-        control[0] = 0b11;
     }
     control[0] = 0b0;
 }
@@ -74,6 +75,7 @@ int print_result()
 {
     cout << "count " << counter[0] << "\n";
     cout << "acc " << accumulated[0] << "\n";
+    cout << "acc1 " << accumulated1[0] << "\n";
 }
 int main()
 {
