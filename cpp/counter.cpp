@@ -82,7 +82,7 @@ int main()
     auto start = high_resolution_clock::now();
     open_mem();
     print_version();
-    for (long int i = 5000; i < 5000; i++)
+    for (long int i = 5000; i < 5001; i++)
     {
         set_limit(i);
         wait_clear();
