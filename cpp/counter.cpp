@@ -51,9 +51,9 @@ int main()
 
     cout << "HW VER " << version[0] << "\n";
 
-    for (long int i = 1; i < 100; i++)
+    for (long int i = 1; i < 5; i++)
     {
-        limit[0] = i;
+        limit[0] = 10;
         cout << "*Limit " << limit[0] << "\n";
         control[0] = clear;
         control[0] = none;
