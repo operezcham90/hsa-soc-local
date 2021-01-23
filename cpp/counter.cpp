@@ -79,9 +79,10 @@ int print_result()
 }
 int main()
 {
+    auto start = high_resolution_clock::now();
     open_mem();
     print_version();
-    for (long int i = 1; i < 10; i++)
+    for (long int i = 5000; i < 5000; i++)
     {
         set_limit(i);
         wait_clear();
@@ -90,5 +91,8 @@ int main()
         print_result();
     }
     close_mem();
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
+    cout << "Time: " << duration.count() << " us\n";
     return 0;
 }
