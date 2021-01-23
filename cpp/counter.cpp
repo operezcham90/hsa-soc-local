@@ -41,31 +41,51 @@ int close_mem()
 {
     close(fd);
 }
+int print_version()
+{
+    cout << "PL VER " << version[0] << "\n";
+}
+int set_limit(long int lim)
+{
+    limit[0] = lim;
+    cout << "limit " << limit[0] << "\n";
+}
+int wait_clear()
+{
+    control[0] = 0b10;
+    while (counter[0] + accumulated[0] > 0)
+    {
+    }
+    control[0] = 0b0;
+}
+int start_work()
+{
+    control[0] = 0b1;
+}
+int wait_work()
+{
+    while (counter[0] < limit[0])
+    {
+    }
+    control[0] = 0b0;
+}
+int print_result()
+{
+    cout << "count " << counter[0] << "\n";
+    cout << "acc " << accumulated[0] << "\n";
+}
 int main()
 {
     open_mem();
-    long int none = 0b0;
-    long int work = 0b1;
-    long int clear = 0b10;
-    long int square = 0b100;
-
-    cout << "HW VER " << version[0] << "\n";
-
-    for (long int i = 1; i < 5; i++)
+    print_version();
+    for (long int i = 1; i < 10; i++)
     {
-        limit[0] = i;
-        cout << "*Limit " << limit[0] << "\n";
-        control[0] = clear;
-        control[0] = none;
-        control[0] = work;
-        while (counter[0] < limit[0])
-        {
-        }
-        control[0] = none;
-        cout << "Counter " << counter[0] << "\n";
-        cout << "Accumulated " << accumulated[0] << "\n";
+        set_limit(i);
+        wait_clear();
+        start_work();
+        wait_work();
+        print_result();
     }
-
     close_mem();
     return 0;
 }
