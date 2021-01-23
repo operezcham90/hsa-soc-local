@@ -14,17 +14,25 @@ using namespace std;
 using namespace std::chrono;
 // AXI pointers
 unsigned int gpio_bytes = 4;
+unsigned int bram_bytes = 2048 * 4;
 long int *limit;
 long int *control;
 long int *counter;
 long int *accumulated;
 long int *version;
-long int *accumulated1;
+long int *img1_bram;
 int fd;
 // open memory
 long int *map_mem(unsigned int bytes, off_t addr)
 {
     return (long int *)mmap(NULL, bytes, PROT_READ | PROT_WRITE, MAP_SHARED, fd, addr);
+}
+int send_img()
+{
+    for (long int i = 0; i < bram_bytes / sizeof(long int); i++)
+    {
+        img1_bram[i] = (i % 2) + 1;
+    }
 }
 int open_mem()
 {
@@ -37,7 +45,7 @@ int open_mem()
     counter = map_mem(gpio_bytes, 0x41220000);
     accumulated = map_mem(gpio_bytes, 0x41230000);
     version = map_mem(gpio_bytes, 0x41240000);
-    accumulated1 = map_mem(gpio_bytes, 0x41250000);
+    img1_bram = map_mem(bram_bytes, 0x40000000);
 }
 int close_mem()
 {
@@ -62,7 +70,7 @@ int wait_clear()
 }
 int start_work()
 {
-    control[0] = 0b101;
+    control[0] = 0b1; //0b101;
 }
 int wait_work()
 {
@@ -75,21 +83,18 @@ int print_result()
 {
     cout << "count " << counter[0] << "\n";
     cout << "acc " << accumulated[0] << "\n";
-    cout << "acc1 " << accumulated1[0] << "\n";
 }
 int main()
 {
     auto start = high_resolution_clock::now();
     open_mem();
     print_version();
-    for (long int i = 5000; i < 5001; i++)
-    {
-        set_limit(i);
-        wait_clear();
-        start_work();
-        wait_work();
-        print_result();
-    }
+    send_img();
+    set_limit(1000);
+    wait_clear();
+    start_work();
+    wait_work();
+    print_result();
     close_mem();
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
