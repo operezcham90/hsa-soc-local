@@ -52,9 +52,10 @@ int set_limit(long int lim)
 }
 int wait_clear()
 {
-    control[0] = 0b10;
     while (counter[0] + accumulated[0] > 0)
     {
+        control[0] = 0b10;
+        control[0] = 0b11;
     }
     control[0] = 0b0;
 }
