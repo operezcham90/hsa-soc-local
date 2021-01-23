@@ -56,10 +56,12 @@ int main()
         limit[0] = i;
         cout << "*Limit " << limit[0] << "\n";
         control[0] = clear;
+        control[0] = none;
         control[0] = work;
         while (counter[0] < limit[0])
         {
         }
+        control[0] = none;
         cout << "Counter " << counter[0] << "\n";
         cout << "Accumulated " << accumulated[0] << "\n";
     }
