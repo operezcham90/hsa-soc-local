@@ -17,7 +17,7 @@ unsigned int gpio_bytes = 4;
 unsigned int bram_bytes = 2048 * 4;
 long int *lim;
 long int *ctrl;
-long int *count;
+long int *cnt;
 long int *acc;
 long int *ver;
 long int *avg;
@@ -43,7 +43,7 @@ int open_mem()
     }
     lim = map_mem(gpio_bytes, 0x41200000);
     ctrl = map_mem(gpio_bytes, 0x41210000);
-    count = map_mem(gpio_bytes, 0x41220000);
+    cnt = map_mem(gpio_bytes, 0x41220000);
     acc = map_mem(gpio_bytes, 0x41230000);
     ver = map_mem(gpio_bytes, 0x41240000);
     avg = map_mem(gpio_bytes, 0x41250000);
@@ -70,7 +70,7 @@ int set_average(long int average)
 int wait_clear()
 {
     ctrl[0] = 0b10;
-    while (count[0] | acc[0] > 0)
+    while (cnt[0] | acc[0] > 0)
     {
     }
     ctrl[0] = 0b0;
@@ -88,14 +88,14 @@ int start_work(int square)
 }
 int wait_work()
 {
-    while (count[0] < lim[0])
+    while (cnt[0] < lim[0])
     {
     }
     ctrl[0] = 0b0;
 }
 int print_result()
 {
-    cout << "count " << count[0] << "\n";
+    cout << "cnt " << cnt[0] << "\n";
     cout << "acc " << acc[0] << "\n";
 }
 int main()
