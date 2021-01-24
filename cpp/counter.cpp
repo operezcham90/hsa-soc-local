@@ -117,12 +117,14 @@ int main()
     auto start = high_resolution_clock::now();
     // send work data
     set_limit(5);
+    set_average(0);
     // work
     wait_clear();
     start_work(0);
     wait_work();
     print_result();
     // send work data
+    set_limit(5);
     set_average(2);
     // work
     wait_clear();
