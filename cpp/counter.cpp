@@ -21,6 +21,8 @@ long int *cnt;
 long int *acc;
 long int *ver;
 long int *avg;
+long int *data;
+long int *res;
 unsigned char *img1_bram;
 int fd;
 // open memory
@@ -47,6 +49,8 @@ int open_mem()
     acc = map_mem(gpio_bytes, 0x41230000);
     ver = map_mem(gpio_bytes, 0x41240000);
     avg = map_mem(gpio_bytes, 0x41250000);
+    data = map_mem(gpio_bytes, 0x41260000);
+    res = map_mem(gpio_bytes, 0x41270000);
     img1_bram = (unsigned char *)map_mem(bram_bytes, 0x40000000);
 }
 int close_mem()
@@ -97,6 +101,8 @@ int print_result()
 {
     cout << "cnt " << cnt[0] << "\n";
     cout << "acc " << acc[0] << "\n";
+    cout << "data " << data[0] << "\n";
+    cout << "res " << res[0] << "\n";
 }
 int main()
 {
