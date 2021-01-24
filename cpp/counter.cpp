@@ -20,7 +20,8 @@ long int *control;
 long int *counter;
 long int *accumulated;
 long int *version;
-long int *img1_bram;
+long int *average;
+unsigned char *img1_bram;
 int fd;
 // open memory
 long int *map_mem(unsigned int bytes, off_t addr)
@@ -29,9 +30,16 @@ long int *map_mem(unsigned int bytes, off_t addr)
 }
 int send_img()
 {
-    for (long int i = 0; i < bram_bytes / sizeof(long int); i++)
+    for (int i = 0; i < bram_bytes; i++)
     {
-        img1_bram[i] = (i % 2) + 1;
+        if (i % 2 == 0)
+        {
+            img1_bram[i] = 1;
+        }
+        else
+        {
+            img1_bram[i] = 3;
+        }
     }
 }
 int open_mem()
@@ -45,7 +53,8 @@ int open_mem()
     counter = map_mem(gpio_bytes, 0x41220000);
     accumulated = map_mem(gpio_bytes, 0x41230000);
     version = map_mem(gpio_bytes, 0x41240000);
-    img1_bram = map_mem(bram_bytes, 0x40000000);
+    average = map_mem(gpio_bytes, 0x41250000);
+    img1_bram = (unsigned char *)map_mem(bram_bytes, 0x40000000);
 }
 int close_mem()
 {
@@ -60,6 +69,11 @@ int set_limit(long int lim)
     limit[0] = lim;
     cout << "limit " << limit[0] << "\n";
 }
+int set_average(long int avg)
+{
+    average[0] = avg;
+    cout << "average " << average[0] << "\n";
+}
 int wait_clear()
 {
     control[0] = 0b10;
@@ -68,9 +82,16 @@ int wait_clear()
     }
     control[0] = 0b0;
 }
-int start_work()
+int start_work(int square)
 {
-    control[0] = 0b1; //0b101;
+    if (square)
+    {
+        control[0] = 0b101;
+    }
+    else
+    {
+        control[0] = 0b1;
+    }
 }
 int wait_work()
 {
@@ -86,18 +107,31 @@ int print_result()
 }
 int main()
 {
-    auto start = high_resolution_clock::now();
+    // begin
     open_mem();
     print_version();
+    auto start = high_resolution_clock::now();
+    // send work data
     send_img();
     set_limit(1000);
+    set_average(0);
+    // work
     wait_clear();
-    start_work();
+    start_work(0);
     wait_work();
     print_result();
+    // send work data
+    set_limit(1000);
+    set_average(2);
+    // work
+    wait_clear();
+    start_work(1);
+    wait_work();
+    print_result();
+    // end
     close_mem();
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    cout << "Time: " << duration.count() << " us\n";
+    cout << "time: " << duration.count() << " us\n";
     return 0;
 }
