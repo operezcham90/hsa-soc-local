@@ -102,10 +102,10 @@ int print_result()
     unsigned char *data_chunk = (unsigned char *)data;
     cout << "cnt " << cnt[0] << "\n";
     cout << "acc " << acc[0] << "\n";
-    cout << "data " << data_chunk[0] << ","
-         << data_chunk[1] << ","
-         << data_chunk[2] << ","
-         << data_chunk[3] << "\n";
+    cout << "data " << (data_chunk[0] + 0) << ","
+         << (data_chunk[1] + 0) << ","
+         << (data_chunk[2] + 0) << ","
+         << (data_chunk[3] + 0) << "\n";
     cout << "res " << res[0] << "\n";
 }
 int main()
