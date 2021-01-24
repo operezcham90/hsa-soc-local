@@ -103,17 +103,17 @@ int main()
     // begin
     open_mem();
     print_version();
+    send_img();
     auto start = high_resolution_clock::now();
     // send work data
-    send_img();
-    set_limit(255);
+    set_limit(2);
     // work
     wait_clear();
     start_work(0);
     wait_work();
     print_result();
     // send work data
-    set_limit(255);
+    set_limit(2);
     set_average(2);
     // work
     wait_clear();
