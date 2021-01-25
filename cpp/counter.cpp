@@ -55,13 +55,13 @@ int main()
     auto start = high_resolution_clock::now();
     wait_clear();
     start_work();
-    while (axi_gpio_cnt[0] > 1000000)
+    while (axi_gpio_cnt[0] < 1000000)
     {
         cout << "cnt: " << axi_gpio_cnt[0] << "\n";
     }
     wait_clear();
     start_work();
-    while (axi_gpio_cnt[0] > 1000)
+    while (axi_gpio_cnt[0] < 1000)
     {
         cout << "cnt: " << axi_gpio_cnt[0] << "\n";
     }
