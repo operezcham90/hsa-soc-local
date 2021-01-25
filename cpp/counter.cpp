@@ -19,6 +19,8 @@ long int *axi_gpio_ctrl;
 long int *axi_gpio_cnt;
 long int *axi_gpio_ver;
 long int *axi_gpio_lim;
+long int *axi_bram_ctrl_0;
+long int *axi_gpio_res;
 int fd;
 // open memory
 long int *map_mem(unsigned int bytes, off_t addr)
@@ -35,6 +37,8 @@ int open_mem()
     axi_gpio_cnt = map_mem(gpio_bytes, 0x41210000);
     axi_gpio_ver = map_mem(gpio_bytes, 0x41220000);
     axi_gpio_lim = map_mem(gpio_bytes, 0x41230000);
+    axi_bram_ctrl_0 = map_mem(bram_bytes, 0x40000000);
+    axi_gpio_res = map_mem(gpio_bytes, 0x41240000);
 }
 int close_mem()
 {
@@ -56,24 +60,30 @@ int start_work()
 {
     axi_gpio_ctrl[0] = 0b1;
 }
+int write_bram()
+{
+    unsigned char *bram = (unsigned char *)axi_bram_ctrl_0;
+    for (int i = 0; i < bram_bytes; i++)
+    {
+        bram[i] = i % 256;
+    }
+}
 int main()
 {
     // begin
     open_mem();
     cout << "ver: " << axi_gpio_ver[0] << "\n";
     auto start = high_resolution_clock::now();
+    write_bram();
     wait_clear();
     set_limit(10);
     start_work();
     while (axi_gpio_cnt[0] < 1000000)
     {
-        cout << "cnt: " << axi_gpio_cnt[0] << "\n";
-    }
-    wait_clear();
-    start_work();
-    while (axi_gpio_cnt[0] < 1000)
-    {
-        cout << "cnt: " << axi_gpio_cnt[0] << "\n";
+        unsigned char *res = (unsigned char *)axi_gpio_res;
+        cout << "cnt: " << axi_gpio_cnt[0]
+             << "res:" << res[0] << "," << res[1] << ","
+             << res[2] << "," << res[3] << "\n";
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
