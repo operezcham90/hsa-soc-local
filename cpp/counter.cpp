@@ -115,22 +115,18 @@ int main()
     print_version();
     send_img();
     auto start = high_resolution_clock::now();
-    // send work data
-    set_limit(5);
-    set_average(0);
-    // work
-    wait_clear();
-    start_work(0);
-    wait_work();
-    print_result();
-    // send work data
-    set_limit(5);
-    set_average(4);
-    // work
-    wait_clear();
-    start_work(1);
-    wait_work();
-    print_result();
+    for (long int i = 0; i < 10; i++)
+    {
+        // send work data
+        set_limit(5);
+        set_average(0);
+        // work
+        wait_clear();
+        start_work(0);
+        wait_work();
+        print_result();
+        cout << "====\n";
+    }
     // end
     close_mem();
     auto stop = high_resolution_clock::now();
