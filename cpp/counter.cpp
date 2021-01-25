@@ -15,27 +15,13 @@ using namespace std::chrono;
 // AXI pointers
 unsigned int gpio_bytes = 4;
 unsigned int bram_bytes = 2048 * 4;
-long int *lim;
-long int *ctrl;
-long int *cnt;
-long int *acc;
-long int *ver;
-long int *avg;
-long int *data;
-long int *res;
-unsigned char *img1_bram;
+long int *axi_gpio_ctrl;
+long int *axi_gpio_cnt;
 int fd;
 // open memory
 long int *map_mem(unsigned int bytes, off_t addr)
 {
     return (long int *)mmap(NULL, bytes, PROT_READ | PROT_WRITE, MAP_SHARED, fd, addr);
-}
-int send_img()
-{
-    for (int i = 0; i < bram_bytes; i++)
-    {
-        img1_bram[i] = i % 0x100;
-    }
 }
 int open_mem()
 {
@@ -43,92 +29,42 @@ int open_mem()
     {
         exit(1);
     }
-    lim = map_mem(gpio_bytes, 0x41200000);
-    ctrl = map_mem(gpio_bytes, 0x41210000);
-    cnt = map_mem(gpio_bytes, 0x41220000);
-    acc = map_mem(gpio_bytes, 0x41230000);
-    ver = map_mem(gpio_bytes, 0x41240000);
-    avg = map_mem(gpio_bytes, 0x41250000);
-    data = map_mem(gpio_bytes, 0x41260000);
-    res = map_mem(gpio_bytes, 0x41270000);
-    img1_bram = (unsigned char *)map_mem(bram_bytes, 0x40000000);
+    axi_gpio_ctrl = map_mem(gpio_bytes, 0x41200000);
+    axi_gpio_cnt = map_mem(gpio_bytes, 0x41210000);
 }
 int close_mem()
 {
     close(fd);
 }
-int print_version()
-{
-    cout << "ver " << ver[0] << "\n";
-}
-int set_limit(long int limit)
-{
-    lim[0] = limit;
-    cout << "lim " << lim[0] << "\n";
-}
-int set_average(long int average)
-{
-    avg[0] = average;
-    cout << "avg " << avg[0] << "\n";
-}
 int wait_clear()
 {
-    ctrl[0] = 0b10;
-    while (cnt[0] | acc[0] > 0)
+    axi_gpio_ctrl[0] = 0b10;
+    while (axi_gpio_cnt[0] > 0)
     {
     }
-    ctrl[0] = 0b0;
+    axi_gpio_ctrl[0] = 0b0;
 }
-int start_work(int square)
+int start_work()
 {
-    if (square)
-    {
-        ctrl[0] = 0b101;
-    }
-    else
-    {
-        ctrl[0] = 0b1;
-    }
-}
-int wait_work()
-{
-    while (cnt[0] < lim[0])
-    {
-    }
-    ctrl[0] = 0b0;
-}
-int print_result()
-{
-    unsigned char *data_chunk = (unsigned char *)data;
-    cout << "cnt " << cnt[0] << "\n";
-    cout << "acc " << acc[0] << "\n";
-    cout << "data " << (data_chunk[0] + 0) << ","
-         << (data_chunk[1] + 0) << ","
-         << (data_chunk[2] + 0) << ","
-         << (data_chunk[3] + 0) << "\n";
-    cout << "res " << res[0] << "\n";
+    axi_gpio_ctrl[0] = 0b1;
 }
 int main()
 {
     // begin
     open_mem();
-    print_version();
-    send_img();
     auto start = high_resolution_clock::now();
-    for (long int i = 0; i < 10; i++)
+    wait_clear();
+    start_work();
+    while (axi_gpio_cnt[0] > 1000000)
     {
-        // send work data
-        set_limit(5);
-        set_average(0);
-        // work
-        wait_clear();
-        start_work(0);
-        wait_work();
-        print_result();
-        cout << "====\n";
+        cout << "cnt: " << axi_gpio_cnt[0] << "\n";
     }
-    // end
-    close_mem();
+    wait_clear();
+    start_work();
+    while (axi_gpio_cnt[0] > 1000)
+    {
+        cout << "cnt: " << axi_gpio_cnt[0] << "\n";
+    }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
     cout << "time: " << duration.count() << " us\n";
