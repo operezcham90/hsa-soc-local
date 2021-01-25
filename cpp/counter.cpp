@@ -17,6 +17,7 @@ unsigned int gpio_bytes = 4;
 unsigned int bram_bytes = 2048 * 4;
 long int *axi_gpio_ctrl;
 long int *axi_gpio_cnt;
+long int *axi_gpio_ver;
 int fd;
 // open memory
 long int *map_mem(unsigned int bytes, off_t addr)
@@ -31,6 +32,7 @@ int open_mem()
     }
     axi_gpio_ctrl = map_mem(gpio_bytes, 0x41200000);
     axi_gpio_cnt = map_mem(gpio_bytes, 0x41210000);
+    axi_gpio_ver = map_mem(gpio_bytes, 0x41220000);
 }
 int close_mem()
 {
@@ -52,6 +54,7 @@ int main()
 {
     // begin
     open_mem();
+    cout << "ver: " << axi_gpio_ver[0] << "\n";
     auto start = high_resolution_clock::now();
     wait_clear();
     start_work();
