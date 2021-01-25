@@ -125,7 +125,7 @@ int main()
     print_result();
     // send work data
     set_limit(5);
-    set_average(2);
+    set_average(4);
     // work
     wait_clear();
     start_work(1);
