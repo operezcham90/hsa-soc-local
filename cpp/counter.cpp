@@ -82,8 +82,8 @@ int main()
     {
         unsigned char *res = (unsigned char *)axi_gpio_res;
         cout << "cnt: " << axi_gpio_cnt[0]
-             << "res:" << res[0] << "," << res[1] << ","
-             << res[2] << "," << res[3] << "\n";
+             << "res:" << res[0] + 0 << "," << res[1] + 0 << ","
+             << res[2] + 0 << "," << res[3] + 0 << "\n";
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
