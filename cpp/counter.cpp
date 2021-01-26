@@ -97,14 +97,11 @@ int main()
     auto start = high_resolution_clock::now();
     write_bram();
     set_avg(0);
-    for (int i = 0; i < 20; i++)
-    {
-        wait_clear();
-        set_limit(i);
-        start_work();
-        wait_work();
-        print_res();
-    }
+    wait_clear();
+    set_limit(bram_bytes);
+    start_work();
+    wait_work();
+    print_res();
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
     cout << "time: " << duration.count() << " us\n";
