@@ -76,7 +76,7 @@ int main()
     auto start = high_resolution_clock::now();
     write_bram();
     wait_clear();
-    set_limit(10);
+    set_limit(9);
     start_work();
     while (axi_gpio_cnt[0] < 1000000)
     {
