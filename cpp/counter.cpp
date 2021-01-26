@@ -80,7 +80,7 @@ int print_res()
 {
     cout << "lim: " << axi_gpio_lim[0]
          << " cnt: " << axi_gpio_cnt[0]
-         << " res: " << axi_gpio_res[0] << "\n";
+         << " res: " << (unsigned long int)axi_gpio_res[0] << "\n";
 }
 int print_ver()
 {
@@ -91,7 +91,7 @@ int write_bram()
     unsigned char *bram = (unsigned char *)axi_bram_ctrl_0;
     for (int i = 0; i < bram_bytes; i++)
     {
-        bram[i] = i % 256;
+        bram[i] = 255;
     }
 }
 int main()
