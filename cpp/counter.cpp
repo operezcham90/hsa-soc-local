@@ -62,6 +62,19 @@ int start_work()
 {
     axi_gpio_ctrl[0] = 0b1;
 }
+int wait_work()
+{
+    while (axi_gpio_cnt[0] < axi_gpio_lim[0])
+    {
+    }
+}
+int print_res()
+{
+    cout << "cnt: " << axi_gpio_cnt[0]
+         << " res: " << axi_gpio_res[0] << "\n";
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
+}
 int write_bram()
 {
     unsigned char *bram = (unsigned char *)axi_bram_ctrl_0;
@@ -77,18 +90,14 @@ int main()
     cout << "ver: " << axi_gpio_ver[0] << "\n";
     auto start = high_resolution_clock::now();
     write_bram();
-    wait_clear();
-    set_limit(9);
-    start_work();
-    while (axi_gpio_cnt[0] < 1000000)
+    for (int i = 0; i < 20; i++)
     {
-        unsigned char *res = (unsigned char *)axi_gpio_res;
-        cout << "cnt: " << axi_gpio_cnt[0]
-             << "res:" << res[0] + 0 << "," << res[1] + 0 << ","
-             << res[2] + 0 << "," << res[3] + 0 << "\n";
+        wait_clear();
+        set_limit(i);
+        start_work();
+        wait_work();
+        print_res();
     }
-    auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(stop - start);
     cout << "time: " << duration.count() << " us\n";
     return 0;
 }
