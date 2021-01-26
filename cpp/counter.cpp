@@ -91,7 +91,7 @@ int write_bram()
     unsigned char *bram = (unsigned char *)axi_bram_ctrl_0;
     for (int i = 0; i < bram_bytes; i++)
     {
-        bram[i] = 0xFF;
+        bram[i] = 0x01;//0xFF;
     }
 }
 int main()
