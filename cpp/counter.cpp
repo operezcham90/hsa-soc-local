@@ -103,7 +103,7 @@ int main()
     write_bram();
     set_avg(0);
     wait_clear();
-    set_limit(bram_bytes);
+    set_limit(2048 * 4);
     start_work();
     wait_work();
     print_res();
