@@ -53,10 +53,12 @@ int wait_clear()
     {
     }
     axi_gpio_ctrl[0] = 0b0;
+    cout << "clear done\n";
 }
 int set_limit(long int val)
 {
     axi_gpio_lim[0] = val;
+    cout << "lim set: " << axi_gpio_lim[0] << "\n";
 }
 int start_work()
 {
@@ -67,10 +69,12 @@ int wait_work()
     while (axi_gpio_cnt[0] < axi_gpio_lim[0])
     {
     }
+    cout << "work done\n";
 }
 int set_avg(long int val)
 {
     axi_gpio_avg[0] = val;
+    cout << "avg set: " << axi_gpio_avg[0] << "\n";
 }
 int print_res()
 {
