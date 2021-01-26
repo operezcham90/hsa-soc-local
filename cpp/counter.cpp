@@ -88,6 +88,7 @@ int main()
     cout << "ver: " << axi_gpio_ver[0] << "\n";
     auto start = high_resolution_clock::now();
     write_bram();
+    axi_gpio_avg[0] = 2;
     for (int i = 0; i < 20; i++)
     {
         wait_clear();
