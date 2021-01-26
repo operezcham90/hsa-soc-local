@@ -21,6 +21,7 @@ long int *axi_gpio_ver;
 long int *axi_gpio_lim;
 long int *axi_bram_ctrl_0;
 long int *axi_gpio_res;
+long int *axi_gpio_avg;
 int fd;
 // open memory
 long int *map_mem(unsigned int bytes, off_t addr)
@@ -39,6 +40,7 @@ int open_mem()
     axi_gpio_lim = map_mem(gpio_bytes, 0x41230000);
     axi_bram_ctrl_0 = map_mem(bram_bytes, 0x40000000);
     axi_gpio_res = map_mem(gpio_bytes, 0x41240000);
+    axi_gpio_avg = map_mem(gpio_bytes, 0x41250000);
 }
 int close_mem()
 {
