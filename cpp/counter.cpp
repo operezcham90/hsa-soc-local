@@ -86,12 +86,12 @@ int print_ver()
 {
     cout << "ver: " << axi_gpio_ver[0] << "\n";
 }
-int write_bram()
+int write_bram(unsigned char val)
 {
     unsigned char *bram = (unsigned char *)axi_bram_ctrl_0;
     for (int i = 0; i < bram_bytes; i++)
     {
-        bram[i] = 0x01;//0xFF;
+        bram[i] = val;
     }
 }
 int main()
@@ -100,7 +100,15 @@ int main()
     open_mem();
     print_ver();
     auto start = high_resolution_clock::now();
-    write_bram();
+    write_bram(0x01);
+    set_avg(0);
+    wait_clear();
+    set_limit(bram_bytes);
+    start_work();
+    wait_work();
+    print_res();
+
+    write_bram(0xFF);
     set_avg(0);
     wait_clear();
     set_limit(bram_bytes);
