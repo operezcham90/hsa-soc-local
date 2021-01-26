@@ -74,7 +74,8 @@ int set_avg(long int val)
 }
 int print_res()
 {
-    cout << "cnt: " << axi_gpio_cnt[0]
+    cout << "lim: " << axi_gpio_lim[0]
+         << " cnt: " << axi_gpio_cnt[0]
          << " res: " << axi_gpio_res[0] << "\n";
 }
 int print_ver()
