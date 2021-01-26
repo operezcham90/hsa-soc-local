@@ -72,8 +72,6 @@ int print_res()
 {
     cout << "cnt: " << axi_gpio_cnt[0]
          << " res: " << axi_gpio_res[0] << "\n";
-    auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(stop - start);
 }
 int write_bram()
 {
@@ -98,6 +96,8 @@ int main()
         wait_work();
         print_res();
     }
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
     cout << "time: " << duration.count() << " us\n";
     return 0;
 }
