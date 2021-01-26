@@ -68,10 +68,18 @@ int wait_work()
     {
     }
 }
+int set_avg(long int val)
+{
+    axi_gpio_avg[0] = val;
+}
 int print_res()
 {
     cout << "cnt: " << axi_gpio_cnt[0]
          << " res: " << axi_gpio_res[0] << "\n";
+}
+int print_ver()
+{
+    cout << "ver: " << axi_gpio_ver[0] << "\n";
 }
 int write_bram()
 {
@@ -85,10 +93,10 @@ int main()
 {
     // begin
     open_mem();
-    cout << "ver: " << axi_gpio_ver[0] << "\n";
+    print_ver();
     auto start = high_resolution_clock::now();
     write_bram();
-    axi_gpio_avg[0] = 2;
+    set_avg(0);
     for (int i = 0; i < 20; i++)
     {
         wait_clear();
