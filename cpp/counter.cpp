@@ -34,13 +34,10 @@ int open_mem()
     {
         exit(1);
     }
-    axi_gpio_ctrl = map_mem(gpio_bytes, 0x41200000);
-    axi_gpio_cnt = map_mem(gpio_bytes, 0x41210000);
-    axi_gpio_ver = map_mem(gpio_bytes, 0x41220000);
-    axi_gpio_lim = map_mem(gpio_bytes, 0x41230000);
-    axi_bram_ctrl_0 = map_mem(bram_bytes, 0x40000000);
-    axi_gpio_res = map_mem(gpio_bytes, 0x41240000);
-    axi_gpio_avg = map_mem(gpio_bytes, 0x41250000);
+    axi_gpio_ctrl = map_mem(gpio_bytes, 0x41210000);
+    axi_gpio_cnt = map_mem(gpio_bytes, 0x41230000);
+    axi_gpio_ver = map_mem(gpio_bytes, 0x41200000);
+    axi_gpio_lim = map_mem(gpio_bytes, 0x41220000);
 }
 int close_mem()
 {
@@ -71,45 +68,37 @@ int wait_work()
     }
     cout << "work done\n";
 }
-int set_avg(long int val)
-{
-    axi_gpio_avg[0] = val;
-    cout << "avg set: " << axi_gpio_avg[0] << "\n";
-}
 int print_res()
 {
     cout << "lim: " << axi_gpio_lim[0]
          << " cnt: " << axi_gpio_cnt[0]
-         << " res: " << (unsigned long int)axi_gpio_res[0] << "\n";
+         << "\n";
 }
 int print_ver()
 {
     cout << "ver: " << axi_gpio_ver[0] << "\n";
 }
-int write_bram(unsigned char val)
+/*int write_bram(unsigned char val)
 {
+    //memcpy(axi_bram_ctrl_0, i_data + (r * bram_length), limit);
     unsigned char *bram = (unsigned char *)axi_bram_ctrl_0;
     for (int i = 0; i < bram_bytes; i++)
     {
         bram[i] = val;
     }
-}
+}*/
 int main()
 {
-    // begin
+    auto start = high_resolution_clock::now();
     open_mem();
     print_ver();
-    auto start = high_resolution_clock::now();
-    write_bram(0x01);
-    set_avg(0);
-    wait_clear();
-    set_limit(bram_bytes);
-    start_work();
-    wait_work();
-    print_res();
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
+    cout << "time0: " << duration.count() << " us\n";
 
-    write_bram(0xFF);
-    set_avg(0);
+    start = high_resolution_clock::now();
+    //write_bram(0x01);
+    //set_avg(0);
     wait_clear();
     set_limit(bram_bytes);
     start_work();
@@ -117,6 +106,19 @@ int main()
     print_res();
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    cout << "time: " << duration.count() << " us\n";
+    cout << "time1: " << duration.count() << " us\n";
+
+    start = high_resolution_clock::now();
+    //write_bram(0xFF);
+    //set_avg(0);
+    wait_clear();
+    set_limit(bram_bytes);
+    start_work();
+    wait_work();
+    print_res();
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
+    cout << "time2: " << duration.count() << " us\n";
+
     return 0;
 }
