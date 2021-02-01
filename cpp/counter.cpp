@@ -38,6 +38,9 @@ int open_mem()
     axi_gpio_cnt = map_mem(gpio_bytes, 0x41230000);
     axi_gpio_ver = map_mem(gpio_bytes, 0x41200000);
     axi_gpio_lim = map_mem(gpio_bytes, 0x41220000);
+    axi_bram_ctrl_0 = map_mem(gpio_bytes, 0x40000000);
+    axi_gpio_res = map_mem(gpio_bytes, 0x41250000);
+    axi_gpio_avg = map_mem(gpio_bytes, 0x41240000);
 }
 int close_mem()
 {
@@ -57,6 +60,11 @@ int set_limit(long int val)
     axi_gpio_lim[0] = val;
     cout << "lim set: " << axi_gpio_lim[0] << "\n";
 }
+int set_avg(long int val)
+{
+    axi_gpio_avg[0] = val;
+    cout << "avg set: " << axi_gpio_avg[0] << "\n";
+}
 int start_work()
 {
     axi_gpio_ctrl[0] = 0b1;
@@ -72,13 +80,14 @@ int print_res()
 {
     cout << "lim: " << axi_gpio_lim[0]
          << " cnt: " << axi_gpio_cnt[0]
+         << " res: " << axi_gpio_res[0]
          << "\n";
 }
 int print_ver()
 {
     cout << "ver: " << axi_gpio_ver[0] << "\n";
 }
-/*int write_bram(unsigned char val)
+int write_bram(unsigned char val)
 {
     //memcpy(axi_bram_ctrl_0, i_data + (r * bram_length), limit);
     unsigned char *bram = (unsigned char *)axi_bram_ctrl_0;
@@ -86,7 +95,7 @@ int print_ver()
     {
         bram[i] = val;
     }
-}*/
+}
 int main()
 {
     auto start = high_resolution_clock::now();
@@ -97,8 +106,8 @@ int main()
     cout << "time0: " << duration.count() << " us\n";
 
     start = high_resolution_clock::now();
-    //write_bram(0x01);
-    //set_avg(0);
+    write_bram(0x01);
+    set_avg(0);
     wait_clear();
     set_limit(bram_bytes);
     start_work();
@@ -109,8 +118,8 @@ int main()
     cout << "time1: " << duration.count() << " us\n";
 
     start = high_resolution_clock::now();
-    //write_bram(0xFF);
-    //set_avg(0);
+    write_bram(0xFF);
+    set_avg(0);
     wait_clear();
     set_limit(bram_bytes);
     start_work();
