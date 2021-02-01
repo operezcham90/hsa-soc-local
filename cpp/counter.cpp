@@ -104,8 +104,8 @@ int main()
     start_work();
     wait_work();
     print_res();
-    auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(stop - start);
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
     cout << "time1: " << duration.count() << " us\n";
 
     start = high_resolution_clock::now();
@@ -116,8 +116,8 @@ int main()
     start_work();
     wait_work();
     print_res();
-    auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(stop - start);
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
     cout << "time2: " << duration.count() << " us\n";
 
     return 0;
