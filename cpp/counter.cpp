@@ -99,11 +99,11 @@ int write_bram(unsigned char val)
         }
         else if (i % 4 == 1)
         {
-            bram[i] = 2;
+            bram[i] = 1;
         }
         else if (i % 4 == 2)
         {
-            bram[i] = 2;
+            bram[i] = 1;
         }
         else
         {
