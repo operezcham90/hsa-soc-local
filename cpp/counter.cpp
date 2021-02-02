@@ -93,22 +93,7 @@ int write_bram(unsigned char val)
     unsigned char *bram = (unsigned char *)axi_bram_ctrl_0;
     for (int i = 0; i < bram_bytes; i++)
     {
-        if (i % 4 == 0)
-        {
-            bram[i] = 1;
-        }
-        else if (i % 4 == 1)
-        {
-            bram[i] = 1;
-        }
-        else if (i % 4 == 2)
-        {
-            bram[i] = 1;
-        }
-        else
-        {
-            bram[i] = 1;
-        }
+        bram[i] = val;
     }
 }
 int main()
