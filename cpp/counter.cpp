@@ -105,29 +105,20 @@ int main()
     auto duration = duration_cast<microseconds>(stop - start);
     cout << "time0: " << duration.count() << " us\n";
 
-    start = high_resolution_clock::now();
-    write_bram(0x01);
-    set_avg(-1);
-    wait_clear();
-    set_limit(bram_bytes);
-    start_work();
-    wait_work();
-    print_res();
-    stop = high_resolution_clock::now();
-    duration = duration_cast<microseconds>(stop - start);
-    cout << "time1: " << duration.count() << " us\n";
-
-    start = high_resolution_clock::now();
-    write_bram(0xFF);
-    set_avg(0);
-    wait_clear();
-    set_limit(bram_bytes);
-    start_work();
-    wait_work();
-    print_res();
-    stop = high_resolution_clock::now();
-    duration = duration_cast<microseconds>(stop - start);
-    cout << "time2: " << duration.count() << " us\n";
+    for (int i = 0; i < 10; i++)
+    {
+        start = high_resolution_clock::now();
+        write_bram(0x01);
+        set_avg(0);
+        wait_clear();
+        set_limit(i);
+        start_work();
+        wait_work();
+        print_res();
+        stop = high_resolution_clock::now();
+        duration = duration_cast<microseconds>(stop - start);
+        cout << "time1: " << duration.count() << " us\n";
+    }
 
     return 0;
 }
