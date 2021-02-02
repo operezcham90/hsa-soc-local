@@ -38,7 +38,7 @@ int open_mem()
     axi_gpio_cnt = map_mem(gpio_bytes, 0x41230000);
     axi_gpio_ver = map_mem(gpio_bytes, 0x41200000);
     axi_gpio_lim = map_mem(gpio_bytes, 0x41220000);
-    axi_bram_ctrl_0 = map_mem(gpio_bytes, 0x40000000);
+    axi_bram_ctrl_0 = map_mem(bram_bytes, 0x40000000);
     axi_gpio_res = map_mem(gpio_bytes, 0x41250000);
     axi_gpio_avg = map_mem(gpio_bytes, 0x41240000);
 }
@@ -89,11 +89,11 @@ int print_ver()
 }
 int write_bram(unsigned char val)
 {
-    //memcpy(axi_bram_ctrl_0, i_data + (r * bram_length), limit);
     unsigned char *bram = (unsigned char *)axi_bram_ctrl_0;
     for (int i = 0; i < bram_bytes; i++)
     {
-        bram[i] = val;
+        //bram[i] = val + i;
+        memcpy(bram + i, &val, 1);
     }
 }
 int main()
@@ -105,20 +105,29 @@ int main()
     auto duration = duration_cast<microseconds>(stop - start);
     cout << "time0: " << duration.count() << " us\n";
 
-    for (int i = 0; i < 10; i++)
-    {
-        start = high_resolution_clock::now();
-        write_bram(0x01);
-        set_avg(0);
-        wait_clear();
-        set_limit(i + 100);
-        start_work();
-        wait_work();
-        print_res();
-        stop = high_resolution_clock::now();
-        duration = duration_cast<microseconds>(stop - start);
-        cout << "time1: " << duration.count() << " us\n";
-    }
+    start = high_resolution_clock::now();
+    write_bram(0x01);
+    set_avg(0);
+    wait_clear();
+    set_limit(bram_bytes);
+    start_work();
+    wait_work();
+    print_res();
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << "time1: " << duration.count() << " us\n";
+
+    start = high_resolution_clock::now();
+    write_bram(0xFF);
+    set_avg(0x0F);
+    wait_clear();
+    set_limit(bram_bytes);
+    start_work();
+    wait_work();
+    print_res();
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << "time1: " << duration.count() << " us\n";
 
     return 0;
 }
