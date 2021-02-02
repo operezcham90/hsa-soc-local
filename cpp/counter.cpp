@@ -93,7 +93,22 @@ int write_bram(unsigned char val)
     unsigned char *bram = (unsigned char *)axi_bram_ctrl_0;
     for (int i = 0; i < bram_bytes; i++)
     {
-        bram[i] = val + i % 4;
+        if (i % 4 == 0)
+        {
+            bram[i] = 1;
+        }
+        else if (i % 4 == 1)
+        {
+            bram[i] = 2;
+        }
+        else if (i % 4 == 2)
+        {
+            bram[i] = 2;
+        }
+        else
+        {
+            bram[i] = 1;
+        }
     }
 }
 int main()
@@ -107,7 +122,7 @@ int main()
 
     start = high_resolution_clock::now();
     write_bram(0x01);
-    set_avg(0);
+    set_avg(-1);
     wait_clear();
     set_limit(bram_bytes);
     start_work();
