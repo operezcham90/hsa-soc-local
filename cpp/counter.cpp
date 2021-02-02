@@ -111,7 +111,7 @@ int main()
         write_bram(0x01);
         set_avg(0);
         wait_clear();
-        set_limit(i);
+        set_limit(i + 100);
         start_work();
         wait_work();
         print_res();
