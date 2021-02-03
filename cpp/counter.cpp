@@ -108,6 +108,10 @@ int main()
     start = high_resolution_clock::now();
     write_bram(0x01);
     set_avg(0);
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << "time write: " << duration.count() << " us\n";
+    start = high_resolution_clock::now();
     wait_clear();
     set_limit(bram_bytes);
     start_work();
@@ -115,11 +119,15 @@ int main()
     print_res();
     stop = high_resolution_clock::now();
     duration = duration_cast<microseconds>(stop - start);
-    cout << "time1: " << duration.count() << " us\n";
+    cout << "time work: " << duration.count() << " us\n";
 
     start = high_resolution_clock::now();
     write_bram(0xFF);
     set_avg(0x0F);
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << "time write: " << duration.count() << " us\n";
+    start = high_resolution_clock::now();
     wait_clear();
     set_limit(bram_bytes);
     start_work();
@@ -127,7 +135,7 @@ int main()
     print_res();
     stop = high_resolution_clock::now();
     duration = duration_cast<microseconds>(stop - start);
-    cout << "time1: " << duration.count() << " us\n";
+    cout << "time work: " << duration.count() << " us\n";
 
     return 0;
 }
