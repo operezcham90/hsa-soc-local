@@ -23,9 +23,9 @@ int main()
         axi_gpio_4 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0x41240000);
         axi_gpio_5 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0x41250000);
 
-        axi_gpio_0[0] = 5;
+        axi_gpio_0[0] = 10;
         axi_gpio_1[0] = 2;
-        axi_gpio_3[0] = 5;
+        axi_gpio_3[0] = 10;
         axi_gpio_4[0] = 2;
         while (true)
         {
