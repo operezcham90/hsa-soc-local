@@ -25,19 +25,13 @@ int main()
 
         axi_gpio_0[0] = 5;
         axi_gpio_1[0] = 2;
-        printf("Res: %ld\n", axi_gpio_2[0]);
-
         axi_gpio_3[0] = 5;
         axi_gpio_4[0] = 2;
-        printf("Res: %ld\n", axi_gpio_5[0]);
-
-        axi_gpio_0[0] = 2;
-        axi_gpio_1[0] = 5;
-        printf("Res: %ld\n", axi_gpio_2[0]);
-
-        axi_gpio_3[0] = 2;
-        axi_gpio_4[0] = 5;
-        printf("Res: %ld\n", axi_gpio_5[0]);
+        while (true)
+        {
+            printf("Res: %ld\n", axi_gpio_2[0]);
+            printf("Res: %ld\n", axi_gpio_5[0]);
+        }
 
         close(fd);
     }
