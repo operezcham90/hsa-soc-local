@@ -51,7 +51,7 @@ int main()
     start = high_resolution_clock::now();
     for (long int i = 0; i < 100000; i++)
     {
-        long int r = sqrt(i);
+        long int r = sqrt((double)i);
     }
     stop = high_resolution_clock::now();
     duration = duration_cast<microseconds>(stop - start);
