@@ -20,4 +20,40 @@ int main()
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
     cout << "Add: " << duration.count() << " us\n";
+
+    start = high_resolution_clock::now();
+    for (long int i = 0; i < 100000; i++)
+    {
+        long int r = i - i;
+    }
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << "Sub: " << duration.count() << " us\n";
+
+    start = high_resolution_clock::now();
+    for (long int i = 0; i < 100000; i++)
+    {
+        long int r = i * i;
+    }
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << "Mul: " << duration.count() << " us\n";
+
+    start = high_resolution_clock::now();
+    for (long int i = 0; i < 100000; i++)
+    {
+        long int r = i / i;
+    }
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << "Div: " << duration.count() << " us\n";
+
+    start = high_resolution_clock::now();
+    for (long int i = 0; i < 100000; i++)
+    {
+        long int r = sqrt(i);
+    }
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << "Sqr: " << duration.count() << " us\n";
 }
