@@ -4,6 +4,8 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <chrono>
+using namespace std;
+using namespace std::chrono;
 int main()
 {
     auto start = high_resolution_clock::now();
