@@ -13,7 +13,7 @@ using namespace std::chrono;
 int main()
 {
     auto start = high_resolution_clock::now();
-    for (long int i = 0; i < 1000; i++)
+    for (long int i = 0; i < 100000; i++)
     {
         long int r = i + i;
     }
