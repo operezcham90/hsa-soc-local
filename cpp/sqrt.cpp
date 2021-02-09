@@ -41,7 +41,7 @@ int main()
     cout << "Mul: " << duration.count() << " us\n";
 
     start = high_resolution_clock::now();
-    for (long int i = 0; i < 100000; i++)
+    for (long int i = 1; i <= 100000; i++)
     {
         long int r = i / i;
     }
