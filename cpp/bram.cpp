@@ -21,10 +21,10 @@ int main()
         axi_gpio_1 = (long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0x41210000);
         unsigned char *axi_bram_ctrl_0_bytes = (unsigned char *)axi_bram_ctrl_0;
 
-        axi_bram_ctrl_0_bytes[0] = 1;
-        axi_bram_ctrl_0_bytes[1] = 2;
-        axi_bram_ctrl_0_bytes[2] = 3;
-        axi_bram_ctrl_0_bytes[3] = 4;
+        axi_bram_ctrl_0_bytes[0] = 4;
+        axi_bram_ctrl_0_bytes[1] = 3;
+        axi_bram_ctrl_0_bytes[2] = 2;
+        axi_bram_ctrl_0_bytes[3] = 1;
 
         axi_gpio_0[0] = 0;
         printf("Count: %ld\n", axi_gpio_1[0]);
