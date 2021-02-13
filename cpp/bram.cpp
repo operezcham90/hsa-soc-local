@@ -43,19 +43,19 @@ int main()
         axi_bram_ctrl_0[0] = 0;
         axi_gpio_0[0] = 1;
         axi_gpio_0[0] = 0;
-        printf("Count: %ld Len: %ld\n", axi_gpio_1[0], axi_gpio_2[0]);
-        printf("Count: %ld Len: %ld\n", axi_gpio_1[0], axi_gpio_2[0]);
-        printf("Count: %ld Len: %ld\n", axi_gpio_1[0], axi_gpio_2[0]);
+        printf("Count: %lu Len: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
+        printf("Count: %lu Len: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
+        printf("Count: %lu Len: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
         axi_bram_ctrl_0[0] = 10000;
-        printf("Count: %ld Len: %ld\n", axi_gpio_1[0], axi_gpio_2[0]);
-        printf("Count: %ld Len: %ld\n", axi_gpio_1[0], axi_gpio_2[0]);
-        printf("Count: %ld Len: %ld\n", axi_gpio_1[0], axi_gpio_2[0]);
+        printf("Count: %lu Len: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
+        printf("Count: %lu Len: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
+        printf("Count: %lu Len: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
         axi_bram_ctrl_0[0] = 0;
         axi_gpio_0[0] = 1;
         axi_gpio_0[0] = 0;
-        printf("Count: %ld Len: %ld\n", axi_gpio_1[0], axi_gpio_2[0]);
-        printf("Count: %ld Len: %ld\n", axi_gpio_1[0], axi_gpio_2[0]);
-        printf("Count: %ld Len: %ld\n", axi_gpio_1[0], axi_gpio_2[0]);
+        printf("Count: %lu Len: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
+        printf("Count: %lu Len: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
+        printf("Count: %lu Len: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
 
         close(fd);
     }
