@@ -38,6 +38,9 @@ int main()
         axi_gpio_0[0] = 3;
         printf("Count: %ld\n", axi_gpio_1[0]);*/
 
+        axi_bram_ctrl_0[0] = 0;
+        axi_gpio_0[0] = 1;
+        axi_gpio_0[0] = 0;
         printf("Count: %ld\n", axi_gpio_1[0]);
         printf("Count: %ld\n", axi_gpio_1[0]);
         printf("Count: %ld\n", axi_gpio_1[0]);
@@ -45,6 +48,7 @@ int main()
         printf("Count: %ld\n", axi_gpio_1[0]);
         printf("Count: %ld\n", axi_gpio_1[0]);
         printf("Count: %ld\n", axi_gpio_1[0]);
+        axi_bram_ctrl_0[0] = 0;
         axi_gpio_0[0] = 1;
         axi_gpio_0[0] = 0;
         printf("Count: %ld\n", axi_gpio_1[0]);
