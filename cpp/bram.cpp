@@ -7,6 +7,7 @@
 unsigned long int *axi_bram_ctrl_0;
 unsigned long int *axi_gpio_0;
 unsigned long int *axi_gpio_1;
+unsigned long int *axi_gpio_2;
 int main()
 {
     // size of bram default block
@@ -19,6 +20,7 @@ int main()
         axi_bram_ctrl_0 = (unsigned long int *)mmap(NULL, bram_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0x40000000);
         axi_gpio_0 = (unsigned long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0x41200000);
         axi_gpio_1 = (unsigned long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0x41210000);
+        axi_gpio_2 = (unsigned long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0x41220000);
         unsigned char *axi_bram_ctrl_0_bytes = (unsigned char *)axi_bram_ctrl_0;
 
         /*axi_bram_ctrl_0_bytes[0] = 4;
@@ -41,19 +43,19 @@ int main()
         axi_bram_ctrl_0[0] = 0;
         axi_gpio_0[0] = 1;
         axi_gpio_0[0] = 0;
-        printf("Count: %ld\n", axi_gpio_1[0]);
-        printf("Count: %ld\n", axi_gpio_1[0]);
-        printf("Count: %ld\n", axi_gpio_1[0]);
+        printf("Count: %ld Len: %ld\n", axi_gpio_1[0], axi_gpio_2[0]);
+        printf("Count: %ld Len: %ld\n", axi_gpio_1[0], axi_gpio_2[0]);
+        printf("Count: %ld Len: %ld\n", axi_gpio_1[0], axi_gpio_2[0]);
         axi_bram_ctrl_0[0] = 10000;
-        printf("Count: %ld\n", axi_gpio_1[0]);
-        printf("Count: %ld\n", axi_gpio_1[0]);
-        printf("Count: %ld\n", axi_gpio_1[0]);
+        printf("Count: %ld Len: %ld\n", axi_gpio_1[0], axi_gpio_2[0]);
+        printf("Count: %ld Len: %ld\n", axi_gpio_1[0], axi_gpio_2[0]);
+        printf("Count: %ld Len: %ld\n", axi_gpio_1[0], axi_gpio_2[0]);
         axi_bram_ctrl_0[0] = 0;
         axi_gpio_0[0] = 1;
         axi_gpio_0[0] = 0;
-        printf("Count: %ld\n", axi_gpio_1[0]);
-        printf("Count: %ld\n", axi_gpio_1[0]);
-        printf("Count: %ld\n", axi_gpio_1[0]);
+        printf("Count: %ld Len: %ld\n", axi_gpio_1[0], axi_gpio_2[0]);
+        printf("Count: %ld Len: %ld\n", axi_gpio_1[0], axi_gpio_2[0]);
+        printf("Count: %ld Len: %ld\n", axi_gpio_1[0], axi_gpio_2[0]);
 
         close(fd);
     }
