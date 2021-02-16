@@ -44,18 +44,14 @@ int main()
             axi_bram_ctrl_0_bytes[i + 4] = 1;
         }
         axi_bram_ctrl_0[0] = 0;
-        axi_gpio_0[0] = 1;
-        axi_gpio_0[0] = 0;
         printf("Count: %lu Acc: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
         printf("Count: %lu Acc: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
         printf("Count: %lu Acc: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
-        axi_bram_ctrl_0[0] = 500;
+        axi_bram_ctrl_0[0] = 10;
         printf("Count: %lu Acc: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
         printf("Count: %lu Acc: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
         printf("Count: %lu Acc: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
         axi_bram_ctrl_0[0] = 0;
-        axi_gpio_0[0] = 1;
-        axi_gpio_0[0] = 0;
         printf("Count: %lu Acc: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
         printf("Count: %lu Acc: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
         printf("Count: %lu Acc: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
