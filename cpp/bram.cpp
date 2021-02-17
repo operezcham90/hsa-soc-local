@@ -23,31 +23,16 @@ int main()
         axi_gpio_2 = (unsigned long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0x41220000);
         unsigned char *axi_bram_ctrl_0_bytes = (unsigned char *)axi_bram_ctrl_0;
 
-        /*axi_bram_ctrl_0_bytes[0] = 4;
-        axi_bram_ctrl_0_bytes[1] = 3;
-        axi_bram_ctrl_0_bytes[2] = 2;
-        axi_bram_ctrl_0_bytes[3] = 1;
-
-        axi_gpio_0[0] = 0;
-        printf("Count: %ld\n", axi_gpio_1[0]);
-
-        axi_gpio_0[0] = 1;
-        printf("Count: %ld\n", axi_gpio_1[0]);
-
-        axi_gpio_0[0] = 2;
-        printf("Count: %ld\n", axi_gpio_1[0]);
-
-        axi_gpio_0[0] = 3;
-        printf("Count: %ld\n", axi_gpio_1[0]);*/
-        for (long int i = 0; i < 10; i++)
+        for (long int i = 0; i < 1000; i++)
         {
-            axi_bram_ctrl_0_bytes[i + 4] = i % 2 + 1; // 5*1 + 5*2
+            axi_bram_ctrl_0_bytes[i + 4] = i % 2 + 1;
         }
+
         axi_bram_ctrl_0[0] = 0;
         printf("Count: %lu Acc: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
         printf("Count: %lu Acc: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
         printf("Count: %lu Acc: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
-        axi_bram_ctrl_0[0] = 10 + 4;
+        axi_bram_ctrl_0[0] = 10;
         printf("Count: %lu Acc: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
         printf("Count: %lu Acc: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
         printf("Count: %lu Acc: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
