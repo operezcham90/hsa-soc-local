@@ -39,7 +39,7 @@ int main()
 
         axi_gpio_0[0] = 3;
         printf("Count: %ld\n", axi_gpio_1[0]);*/
-        for (long int i = 0; i < 500; i++)
+        for (long int i = 0; i < 1; i++)
         {
             axi_bram_ctrl_0_bytes[i + 4] = 1;
         }
