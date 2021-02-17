@@ -41,13 +41,13 @@ int main()
         printf("Count: %ld\n", axi_gpio_1[0]);*/
         for (long int i = 0; i < 10; i++)
         {
-            axi_bram_ctrl_0_bytes[i + 4] = i;
+            axi_bram_ctrl_0_bytes[i + 4] = i % 2 + 1;
         }
         axi_bram_ctrl_0[0] = 0;
         printf("Count: %lu Acc: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
         printf("Count: %lu Acc: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
         printf("Count: %lu Acc: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
-        axi_bram_ctrl_0[0] = 10;
+        axi_bram_ctrl_0[0] = 10 + 4;
         printf("Count: %lu Acc: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
         printf("Count: %lu Acc: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
         printf("Count: %lu Acc: %lu\n", axi_gpio_1[0], axi_gpio_2[0]);
