@@ -27,7 +27,7 @@ int main()
 
         for (long int i = 0; i < 1000; i++)
         {
-            axi_bram_ctrl_0_bytes[i + 4] = 5;
+            axi_bram_ctrl_0_bytes[i + 4] = i + 1;
         }
 
         axi_bram_ctrl_0[0] = 0;
