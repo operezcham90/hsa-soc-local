@@ -25,11 +25,16 @@ int main()
         axi_gpio_3 = (unsigned long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0x41230000);
         unsigned char *axi_bram_ctrl_0_bytes = (unsigned char *)axi_bram_ctrl_0;
 
-        for (int i = 0; i < 1000; i++)
-        {
-            axi_bram_ctrl_0_bytes[i + 4] = (unsigned char)((1 + i) % 256);
-        }
-        axi_bram_ctrl_0_bytes[8] = 1;
+        axi_bram_ctrl_0_bytes[4] = 1;
+        axi_bram_ctrl_0_bytes[5] = 2;
+        axi_bram_ctrl_0_bytes[6] = 3;
+        axi_bram_ctrl_0_bytes[7] = 4;
+        axi_bram_ctrl_0_bytes[8] = 5;
+        axi_bram_ctrl_0_bytes[9] = 6;
+        axi_bram_ctrl_0_bytes[10] = 7;
+        axi_bram_ctrl_0_bytes[11] = 8;
+        axi_bram_ctrl_0_bytes[12] = 9;
+        axi_bram_ctrl_0_bytes[13] = 10;
 
         axi_bram_ctrl_0[0] = 0;
         printf("Count: %lu Avg: %lu Err: %lu\n", axi_gpio_1[0], axi_gpio_2[0], axi_gpio_3[0]);
