@@ -25,9 +25,9 @@ int main()
         axi_gpio_3 = (unsigned long int *)mmap(NULL, gpio_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0x41230000);
         unsigned char *axi_bram_ctrl_0_bytes = (unsigned char *)axi_bram_ctrl_0;
 
-        for (long int i = 0; i < 1000; i++)
+        for (int i = 0; i < 1000; i++)
         {
-            axi_bram_ctrl_0_bytes[i + 4] = 1 + i;
+            axi_bram_ctrl_0_bytes[i + 4] = (unsigned char)((1 + i) % 256);
         }
 
         axi_bram_ctrl_0[0] = 0;
