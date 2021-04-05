@@ -67,7 +67,7 @@ int main()
         printf("Done?\n");
         printf("LEN : %ld\n", axi_bram_ctrl_0[0]);
 
-        for (unsigned long int i = 0; i < 10; i++)
+        for (unsigned long int i = 0; i < 15; i++)
         {
             printf("BRAM %lu : %ld\n", i, axi_bram_ctrl_2[i]);
         }

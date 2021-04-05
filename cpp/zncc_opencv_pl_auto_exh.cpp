@@ -8,6 +8,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <iostream>
+#include <fstream>
 #include <algorithm>
 #include <chrono>
 #include <vector>
@@ -54,6 +55,8 @@ Mat i_img_roi;
 Mat t_img_roi;
 Mat res;
 Rect rect;
+// report
+ofstream result;
 // functions
 int load_image_file(int x, int y)
 {
@@ -138,6 +141,9 @@ int close_mem()
 }
 int main()
 {
+    // report
+    result.open("result.csv");
+
     open_mem();
 
     // template
@@ -151,8 +157,7 @@ int main()
     memcpy(axi_bram_ctrl_1 + 4, t_data, data_len);
 
     // settings
-    int test_count = 2048 - 1;
-    signed long int not_valid_zncc = 257;
+    int test_count = (bram_length / 4) - 1;
     int actual_tests = (w - n) * (h - m);
     int test_cycles = (actual_tests / test_count) + 1;
     int real_test_index = 0;
@@ -169,28 +174,25 @@ int main()
     int best_test_cycle = 0;
     int best_test = 0;
 
+    result << "write,work\n";
     for (int test_cycle = 0; test_cycle < test_cycles; test_cycle++)
     {
         auto start0 = high_resolution_clock::now();
-        for (int i = 0; i <= test_count; i++)
+        if (test_cycle > 0)
         {
-            if (test_cycle > 0)
+            unsigned long int i = axi_gpio_0[0];
+            signed long int z = (signed long int)axi_bram_ctrl_2[i];
+            if (max_zncc < z)
             {
-                signed long int z = (signed long int)axi_bram_ctrl_2[i];
-                if (max_zncc < z && z != not_valid_zncc)
-                {
-                    max_zncc = z;
-                    best_test_cycle = test_cycle - 1;
-                    best_test = i;
-                }
+                max_zncc = z;
+                best_test_cycle = test_cycle - 1;
+                best_test = i;
             }
-            axi_bram_ctrl_2[i] = not_valid_zncc;
         }
-        while (axi_gpio_0[0] % bram_length != 0)
-        {
-            axi_bram_ctrl_0[0] = 1;
-        }
-        axi_bram_ctrl_2[0] = not_valid_zncc;
+
+        // reset the system
+        axi_bram_ctrl_0[0] = 0xFFFFFFFF;
+
         auto stop0 = high_resolution_clock::now();
         auto duration0 = duration_cast<microseconds>(stop0 - start0);
         time_clear += duration0.count();
@@ -209,17 +211,19 @@ int main()
             auto stop = high_resolution_clock::now();
             auto duration = duration_cast<microseconds>(stop - start);
             time_write += duration.count();
+            result << duration.count() << ",";
 
             // copy data length
             auto start2 = high_resolution_clock::now();
             axi_bram_ctrl_0[0] = data_len;
-            while (axi_bram_ctrl_2[i + 1] == not_valid_zncc)
+            // wait for standby signal
+            while (axi_gpio_1[0] != 0)
             {
-                // wait data
             }
             auto stop2 = high_resolution_clock::now();
             auto duration2 = duration_cast<microseconds>(stop2 - start2);
             time_work += duration2.count();
+            result << duration2.count() << "\n";
 
             // progress
             real_test_index++;
@@ -237,6 +241,8 @@ int main()
     cout << "time clear: " << time_clear << " us\n";
     cout << "time write: " << time_write << " us\n";
     cout << "time work: " << time_work << " us\n";
+    result << "sum write,sum work,sum clean\n";
+    result << time_write << "," << time_work << "," << time_clear << "\n";
 
     double time_clear_avg = (double)time_clear / (double)test_cycles;
     double time_write_avg = (double)time_write / (double)actual_tests;
@@ -245,6 +251,8 @@ int main()
     cout << "time clear per cycle: " << time_clear_avg << " us\n";
     cout << "time write per test: " << time_write_avg << " us\n";
     cout << "time work per test: " << time_work_avg << " us\n";
+    result << "avg write,avg work,avg clean\n";
+    result << time_write_avg << "," << time_work_avg << "," << time_clear_avg << "\n";
 
     int i = best_test + best_test_cycle * test_count;
     int u1 = i % (w - n);
@@ -254,5 +262,6 @@ int main()
     cout << "prev: (" << u << "," << v << ")\n";
 
     close_mem();
+    result.close();
     return 0;
 }
