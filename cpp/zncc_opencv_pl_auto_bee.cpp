@@ -509,13 +509,13 @@ int main()
     for (int generation = 0; generation < max_gen; generation++)
     {
         // Evaluate parent population
-        eval_pop(mu_e_bees, mu_e_obj, limits);
+        eval_pop(mu_bees, mu_obj, limits);
 
         // Generate lamdba population
         generate_new_pop(limits);
 
         // Evaluate new population
-        eval_pop(lambda_e_bees, lambda_e_obj, limits);
+        eval_pop(lambda_bees, lambda_obj, limits);
 
         // Mu + Lambda
         merge_pop();
