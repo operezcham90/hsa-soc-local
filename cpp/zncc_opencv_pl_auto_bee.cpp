@@ -456,7 +456,7 @@ void best_mu()
     {
         // The actual index of the ith best bee
         int best = 0;
-        unsigned long int best_val = -1000;
+        signed long int best_val = -1000;
         for (int i = 0; i < num_bees * 2; i++)
         {
             if (best_val < mu_lambda_obj[i])
