@@ -71,9 +71,12 @@ signed long int *mu_lambda_obj;
 int *mu_lambda_order;
 int num_bees = 64;
 int num_bees_comp = 64 * 2;
-double eta_m;
-double eta_c;
+double eta_m = 25;
+double eta_c = 2;
 int max_gen = 2;
+int rate_rand = 0;
+int rate_mut = 0;
+int rate_cross = 0;
 // report
 ofstream result;
 unsigned long int time_clear = 0;
@@ -505,6 +508,9 @@ int main()
     // EXPLORATION PHASE
     // Generate random initial exploration individuals
     initial_random_pop(limits);
+    rate_mut = 39;
+	rate_cross = 6;
+	rate_rand = 19;
 
     for (int generation = 0; generation < max_gen; generation++)
     {
