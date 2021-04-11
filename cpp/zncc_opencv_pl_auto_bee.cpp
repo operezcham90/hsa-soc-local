@@ -119,6 +119,89 @@ double ec_distance(double x1, double y1, double x2, double y2)
     double d = sqrt(a * a + b * b);
     return d;
 }
+int load_image_file(int x, int y)
+{
+    if (x < 0 || y < 0)
+    {
+        auto start = high_resolution_clock::now();
+        i_img = cv::imread("/root/hsa-soc-local/img/dices4.jpg", cv::IMREAD_GRAYSCALE);
+        t_img = cv::imread("/root/hsa-soc-local/img/dices4.jpg", cv::IMREAD_GRAYSCALE);
+        // draw the target for inspection
+        res = i_img.clone();
+        w = t_img.cols;
+        h = t_img.rows;
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        cout << "Read: " << duration.count() << " us\n";
+
+        Mat img0 = t_img.clone();
+        Point pt1(a, b);
+        Point pt2(c, d);
+        rectangle(img0, pt1, pt2, cv::Scalar(0, 0, 0));
+        imwrite("/root/hsa-soc-local/img/dices0.jpg", img0);
+        img0.release();
+    }
+}
+int region_of_interest(int x, int y)
+{
+    if (x < 0 || y < 0 || x >= w || y >= h)
+    {
+        rect = cv::Rect(u, v, n, m);
+        t_img_roi = t_img(rect);
+        t_img_roi.convertTo(t_img_roi, CV_8U);
+        t_data = (long int *)t_img_roi.data;
+    }
+    else
+    {
+        rect = cv::Rect(x, y, n, m);
+        i_img_roi = i_img(rect);
+        i_img_roi.convertTo(i_img_roi, CV_8U);
+        i_data = (long int *)i_img_roi.data;
+    }
+}
+int load_init_file(int x, int y)
+{
+    if (x < 0 || y < 0)
+    {
+        a = 1669 / 4;
+        b = 514 / 4;
+        c = 1888 / 4;
+        d = 664 / 4;
+        u = a;
+        v = b;
+        n = c - a;
+        m = d - b;
+        n_times_m = n * m;
+        data_len = n_times_m;
+    }
+}
+int init_zncc(int x, int y)
+{
+    load_init_file(x, y);
+    load_image_file(x, y);
+    region_of_interest(x, y);
+}
+unsigned long int *map_mem(unsigned int bytes, off_t addr)
+{
+    return (unsigned long int *)mmap(NULL, bytes, PROT_READ | PROT_WRITE, MAP_SHARED, fd, addr);
+}
+int open_mem()
+{
+    if ((fd = open("/dev/mem", O_RDWR | O_SYNC)) == -1)
+    {
+        exit(1);
+    }
+    axi_bram_ctrl_0 = map_mem(bram_bytes, axi_bram_ctrl_0_addr);
+    axi_bram_ctrl_1 = map_mem(bram_bytes, axi_bram_ctrl_1_addr);
+    axi_bram_ctrl_2 = map_mem(bram_bytes, axi_bram_ctrl_2_addr);
+    axi_gpio_0 = map_mem(gpio_bytes, axi_gpio_0_addr);
+    axi_gpio_1 = map_mem(gpio_bytes, axi_gpio_1_addr);
+    axi_gpio_2 = map_mem(gpio_bytes, axi_gpio_2_addr);
+}
+int close_mem()
+{
+    close(fd);
+}
 void initial_random_pop(double *limits)
 {
     for (int bee = 0; bee < num_bees; bee++)
@@ -388,89 +471,6 @@ void best_mu()
         mu_bees[bee * 2 + 1] = mu_lambda_bees[best * 2 + 1];
     }
 }
-int load_image_file(int x, int y)
-{
-    if (x < 0 || y < 0)
-    {
-        auto start = high_resolution_clock::now();
-        i_img = cv::imread("/root/hsa-soc-local/img/dices4.jpg", cv::IMREAD_GRAYSCALE);
-        t_img = cv::imread("/root/hsa-soc-local/img/dices4.jpg", cv::IMREAD_GRAYSCALE);
-        // draw the target for inspection
-        res = i_img.clone();
-        w = t_img.cols;
-        h = t_img.rows;
-        auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<microseconds>(stop - start);
-        cout << "Read: " << duration.count() << " us\n";
-
-        Mat img0 = t_img.clone();
-        Point pt1(a, b);
-        Point pt2(c, d);
-        rectangle(img0, pt1, pt2, cv::Scalar(0, 0, 0));
-        imwrite("/root/hsa-soc-local/img/dices0.jpg", img0);
-        img0.release();
-    }
-}
-int region_of_interest(int x, int y)
-{
-    if (x < 0 || y < 0 || x >= w || y >= h)
-    {
-        rect = cv::Rect(u, v, n, m);
-        t_img_roi = t_img(rect);
-        t_img_roi.convertTo(t_img_roi, CV_8U);
-        t_data = (long int *)t_img_roi.data;
-    }
-    else
-    {
-        rect = cv::Rect(x, y, n, m);
-        i_img_roi = i_img(rect);
-        i_img_roi.convertTo(i_img_roi, CV_8U);
-        i_data = (long int *)i_img_roi.data;
-    }
-}
-int load_init_file(int x, int y)
-{
-    if (x < 0 || y < 0)
-    {
-        a = 1669 / 4;
-        b = 514 / 4;
-        c = 1888 / 4;
-        d = 664 / 4;
-        u = a;
-        v = b;
-        n = c - a;
-        m = d - b;
-        n_times_m = n * m;
-        data_len = n_times_m;
-    }
-}
-int init_zncc(int x, int y)
-{
-    load_init_file(x, y);
-    load_image_file(x, y);
-    region_of_interest(x, y);
-}
-unsigned long int *map_mem(unsigned int bytes, off_t addr)
-{
-    return (unsigned long int *)mmap(NULL, bytes, PROT_READ | PROT_WRITE, MAP_SHARED, fd, addr);
-}
-int open_mem()
-{
-    if ((fd = open("/dev/mem", O_RDWR | O_SYNC)) == -1)
-    {
-        exit(1);
-    }
-    axi_bram_ctrl_0 = map_mem(bram_bytes, axi_bram_ctrl_0_addr);
-    axi_bram_ctrl_1 = map_mem(bram_bytes, axi_bram_ctrl_1_addr);
-    axi_bram_ctrl_2 = map_mem(bram_bytes, axi_bram_ctrl_2_addr);
-    axi_gpio_0 = map_mem(gpio_bytes, axi_gpio_0_addr);
-    axi_gpio_1 = map_mem(gpio_bytes, axi_gpio_1_addr);
-    axi_gpio_2 = map_mem(gpio_bytes, axi_gpio_2_addr);
-}
-int close_mem()
-{
-    close(fd);
-}
 int main()
 {
     // report
@@ -509,8 +509,8 @@ int main()
     // Generate random initial exploration individuals
     initial_random_pop(limits);
     rate_mut = 39;
-	rate_cross = 6;
-	rate_rand = 19;
+    rate_cross = 6;
+    rate_rand = 19;
 
     for (int generation = 0; generation < max_gen; generation++)
     {
