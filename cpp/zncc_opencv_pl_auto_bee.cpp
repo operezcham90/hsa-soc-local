@@ -475,6 +475,13 @@ int main()
 
     open_mem();
 
+    mu_bees = (double *)malloc(num_bees_comp * sizeof(double));
+    mu_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
+    lambda_bees = (double *)malloc(num_bees_comp * sizeof(double));
+    lambda_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
+    mu_lambda_bees = (double *)malloc(num_bees_comp * 2 * sizeof(double));
+    mu_lambda_obj = (signed long int *)malloc(num_bees * 2 * sizeof(signed long int));
+
     // template
     init_zncc(-1, -1);
     cout << "data len: " << data_len << " bytes\n";
