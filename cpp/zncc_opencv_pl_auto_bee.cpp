@@ -251,6 +251,8 @@ void fitness_function(int x, int y)
 }
 void eval_pop(double *bees, signed long int *obj, double *limits)
 {
+    auto start0 = high_resolution_clock::now();
+
     // reset the system
     axi_bram_ctrl_0[0] = 0xFFFFFFFF;
 
@@ -490,7 +492,6 @@ int main()
     cout << "data len: " << data_len << " bytes\n";
     memcpy(axi_bram_ctrl_1 + 4, t_data, data_len);
     result << "write,work\n";
-    auto start0 = high_resolution_clock::now();
 
     double limits[8];
     // First component
