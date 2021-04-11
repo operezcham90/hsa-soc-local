@@ -547,12 +547,12 @@ int main()
     result << "avg write,avg work,avg clean\n";
     result << time_write_avg << "," << time_work_avg << "," << time_clear_avg << "\n";
 
-    int i = best_test + best_test_cycle * test_count;
-    int u1 = i % (w - n);
-    int v1 = i / (w - n);
+    int i = best_test + best_test_cycle * test_count;*/
+    int u1 = mu_bees[0];
+    int v1 = mu_bees[1];
 
     cout << "location: (" << u1 << "," << v1 << ")\n";
-    cout << "prev: (" << u << "," << v << ")\n";*/
+    cout << "prev: (" << u << "," << v << ")\n";
 
     close_mem();
     result.close();
