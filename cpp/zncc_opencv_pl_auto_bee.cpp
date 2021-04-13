@@ -203,7 +203,7 @@ int close_mem()
 {
     close(fd);
 }
-void initial_random_pop(double *limits)
+void initial_random_pop(double *mu_bees, double *limits)
 {
     for (int bee = 0; bee < num_bees; bee++)
     {
@@ -512,7 +512,7 @@ int main()
 
     // EXPLORATION PHASE
     // Generate random initial exploration individuals
-    initial_random_pop(limits);
+    initial_random_pop(mu_e_bees, limits);
     rate_mut = 39;
     rate_cross = 6;
     rate_rand = 19;
