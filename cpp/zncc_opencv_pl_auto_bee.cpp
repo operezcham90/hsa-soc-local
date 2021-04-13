@@ -648,8 +648,8 @@ int main()
     result << time_write_avg << "," << time_work_avg << "," << time_clear_avg << "\n";
 
     int i = best_test + best_test_cycle * test_count;*/
-    int u1 = mu_bees[0];
-    int v1 = mu_bees[1];
+    int u1 = mu_e_bees[0];
+    int v1 = mu_e_bees[1];
 
     cout << "max zncc: " << mu_obj[0] << "\n";
     cout << "location: (" << u1 << "," << v1 << ")\n";
