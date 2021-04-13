@@ -62,10 +62,10 @@ Mat res;
 Rect rect;
 // bees
 CvRNG rng = cvRNG(0xffffffff);
-double *mu_bees;
-signed long int *mu_obj;
-double *lambda_bees;
-signed long int *lambda_obj;
+double *mu_e_bees;
+signed long int *mu_e_obj;
+double *lambda_e_bees;
+signed long int *lambda_e_obj;
 double *mu_lambda_bees;
 signed long int *mu_lambda_obj;
 int *mu_lambda_order;
@@ -342,7 +342,7 @@ void create_children(
     *c2 = v2;
     *c1 = v1;
 }
-void cross_over(int parent1, int parent2, int child1, int child2, double *limits)
+void cross_over(double *mu_bees, double *lambda_bees, int parent1, int parent2, int child1, int child2, double *limits)
 {
     int site;
     int nvar_real = 2;
@@ -360,7 +360,8 @@ void cross_over(int parent1, int parent2, int child1, int child2, double *limits
             upper);
     }
 }
-void generate_new_pop(double *limits)
+void generate_new_pop(double *mu_bees, signed long int *mu_obj,
+                      double *lambda_bees, signed long int *lambda_obj, double *limits)
 {
     int mate1, mate2, num_cross, num_mut, num_rand;
 
@@ -409,7 +410,7 @@ void generate_new_pop(double *limits)
                 mate2 = d;
 
             // crossover SBX
-            cross_over(mate1, mate2, bee, bee + 1, limits);
+            cross_over(mu_bees, lambda_bees, mate1, mate2, bee, bee + 1, limits);
         }
 
         // Random
@@ -431,7 +432,8 @@ void generate_new_pop(double *limits)
         }
     }
 }
-void merge_pop()
+void merge_pop(double *mu_bees, signed long int *mu_obj,
+               double *lambda_bees, signed long int *lambda_obj)
 {
     for (int bee = 0; bee < num_bees; bee++)
     {
@@ -450,11 +452,12 @@ void merge_pop()
         //mu_lambda_order[mu_lambda_bee] = mu_lambda_bee;
     }
 }
-void best_mu()
+void best_mu(double *mu_bees, signed long int *mu_obj)
 {
     for (int bee = 0; bee < num_bees; bee++)
     {
         // The actual index of the ith best bee
+        // a very rudimentary insertion sort
         int best = 0;
         signed long int best_val = -1000;
         for (int i = 0; i < num_bees * 2; i++)
@@ -480,10 +483,10 @@ int main()
 
     open_mem();
 
-    mu_bees = (double *)malloc(num_bees_comp * sizeof(double));
-    mu_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
-    lambda_bees = (double *)malloc(num_bees_comp * sizeof(double));
-    lambda_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
+    mu_e_bees = (double *)malloc(num_bees_comp * sizeof(double));
+    mu_e_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
+    lambda_e_bees = (double *)malloc(num_bees_comp * sizeof(double));
+    lambda_e_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
     mu_lambda_bees = (double *)malloc(num_bees_comp * 2 * sizeof(double));
     mu_lambda_obj = (signed long int *)malloc(num_bees * 2 * sizeof(signed long int));
 
@@ -516,19 +519,114 @@ int main()
     for (int generation = 0; generation < max_gen; generation++)
     {
         // Evaluate parent population
-        eval_pop(mu_bees, mu_obj, limits);
+        eval_pop(mu_e_bees, mu_e_obj, limits);
 
         // Generate lamdba population
-        generate_new_pop(limits);
+        generate_new_pop(mu_e_bees, mu_e_obj, lambda_e_bees, lambda_e_obj, limits);
 
         // Evaluate new population
-        eval_pop(lambda_bees, lambda_obj, limits);
+        eval_pop(lambda_e_bees, lambda_e_obj, limits);
 
         // Mu + Lambda
-        merge_pop();
+        merge_pop(mu_e_bees, mu_e_obj, lambda_e_bees, lambda_e_obj);
 
         // Select best mu
-        best_mu();
+        best_mu(mu_e_bees, mu_e_obj);
+    }
+
+    // RECRUITMENT PHASE
+    int *recruits = (int *)malloc(num_bees * sizeof(int));
+    int last_recruiter;
+    int min_u;
+    int max_u;
+    int min_v;
+    int max_v;
+
+    double sum = 0.0;
+    int recruited_bees = 0;
+
+    // Get accumulated fitness value
+    for (int i = 0; i < num_bees; i++)
+    {
+        // 0 or negative valoes don't contribute
+        if (mu_e_obj[i] > 0.0f)
+            sum += mu_e_obj[i];
+    }
+
+    // Decide resources for each recruiter
+    if (sum > 0.0)
+    {
+        for (int i = 0; i < num_bees; i++)
+        {
+            // 0 or negative bees have no recruits
+            if (mu_e_obj[i] >= 0.0f)
+            {
+                recruits[i] = (mu_e_obj[i] / sum) * num_bees;
+                recruited_bees += recruits[i];
+            }
+            else
+            {
+                recruits[i] = 0;
+            }
+        }
+    }
+    else
+    {
+        // Since the last search gave no results
+        // make a second normal search
+        // using all cores
+        recruits[0] = num_bees;
+        mu_e_bees[0] = u;
+        mu_e_bees[1] = v;
+        for (int i = 1; i < num_bees; i++)
+        {
+            recruits[i] = 0;
+        }
+        recruited_bees = num_bees;
+    }
+
+    // All cores should have some work
+    // Give the difference to the best explorer bee
+    if (recruited_bees < num_bees)
+    {
+        recruits[0] = recruits[0] + (num_bees - recruited_bees);
+    }
+
+    // Assign bees
+    int current_recruiter = 0;
+    for (int i = 0; i < num_bees; i++)
+    {
+        recruiter[i] = current_recruiter;
+        recruits[current_recruiter]--;
+        if (recruits[current_recruiter] <= 0)
+            current_recruiter++;
+    }
+
+    // Count the real recruited bees
+    for (int i = 0; i < num_bees; i++)
+    {
+        recruits[i] = 0;
+    }
+    for (int i = 0; i < num_bees; i++)
+    {
+        recruits[recruiter[i]]++;
+    }
+
+    // Get new boundaries
+    min_u = mu_e_bees[0];
+    max_u = mu_e_bees[0];
+    min_v = mu_e_bees[1];
+    max_v = mu_e_bees[1];
+    for (int i = 1; i < num_bees; i++)
+    {
+        if (mu_e_bees[recruiter[i] * 2] < min_u)
+            min_u = mu_e_bees[recruiter[i] * 2];
+        if (mu_e_bees[recruiter[i] * 2] > max_u)
+            max_u = mu_e_bees[recruiter[i] * 2];
+        if (mu_e_bees[recruiter[i] * 2 + 1] < min_v)
+            min_v = mu_e_bees[recruiter[i] * 2 + 1];
+        if (mu_e_bees[recruiter[i] * 2 + 1] > max_v)
+            max_v = mu_e_bees[recruiter[i] * 2 + 1];
     }
 
     cout << "time clear: " << time_clear << " us\n";
