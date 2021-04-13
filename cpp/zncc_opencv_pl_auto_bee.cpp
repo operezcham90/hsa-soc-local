@@ -71,6 +71,7 @@ signed long int *mu_lambda_obj;
 int *mu_lambda_order;
 int num_bees = 64;
 int num_bees_comp = 64 * 2;
+int *recruiter;
 double eta_m = 25;
 double eta_c = 2;
 int max_gen = 2;
@@ -536,6 +537,7 @@ int main()
 
     // RECRUITMENT PHASE
     int *recruits = (int *)malloc(num_bees * sizeof(int));
+    recruiter = (int *)malloc(num_bees * sizeof(int));
     int last_recruiter;
     int min_u;
     int max_u;
