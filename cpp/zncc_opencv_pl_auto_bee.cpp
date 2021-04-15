@@ -207,9 +207,9 @@ int close_mem()
 {
     close(fd);
 }
-void initial_random_pop(double *mu_bees, double *limits)
+void initial_random_pop(double *mu_bees, double *limits, int first, int last)
 {
-    for (int bee = 0; bee < num_bees; bee++)
+    for (int bee = first; bee <= last; bee++)
     {
         double a = cvRandReal(&rng);
         double up = limits[0];
@@ -518,7 +518,7 @@ int main()
 
     // EXPLORATION PHASE
     // Generate random initial exploration individuals
-    initial_random_pop(mu_e_bees, limits);
+    initial_random_pop(mu_e_bees, limits, 0, num_bees - 1);
     rate_mut = 39;
     rate_cross = 6;
     rate_rand = 19;
@@ -644,30 +644,41 @@ int main()
     result << time_write << "," << time_work << "," << time_clear << "\n";
 
     // FORAGING PHASE
-    // New limits based on the recruiter
-    // First component
-    int bee = 0;
-    limits[0] = mu_e_bees[recruiter[bee] * 2] + 1;
-    limits[1] = mu_e_bees[recruiter[bee] * 2] - 1;
-    limits[2] = max_u + n / 8;
-    limits[3] = min_u - n / 8;
-    if (limits[2] > w - n)
-        limits[2] = w - n;
-    if (limits[3] < 0)
-        limits[3] = 0;
+    int first = 0;
+    int last = 0;
+    for (int r = 0; r < num_bees; r++)
+    {
+        if (recruits[r] < 1)
+        {
+            break;
+        }
+        last += recruits[r] - 1;
+        // New limits based on the recruiter
+        // First component
+        int bee = 0;
+        limits[0] = mu_e_bees[r * 2] + 1;
+        limits[1] = mu_e_bees[r * 2] - 1;
+        limits[2] = max_u + n / 8;
+        limits[3] = min_u - n / 8;
+        if (limits[2] > w - n)
+            limits[2] = w - n;
+        if (limits[3] < 0)
+            limits[3] = 0;
 
-    // Second component
-    limits[4] = mu_e_bees[recruiter[bee] * 2 + 1] + 1;
-    limits[5] = mu_e_bees[recruiter[bee] * 2 + 1] - 1;
-    limits[6] = max_v + m / 8;
-    limits[7] = min_v - m / 8;
-    if (limits[6] > h - m)
-        limits[6] = h - m;
-    if (limits[7] < 0)
-        limits[7] = 0;
+        // Second component
+        limits[4] = mu_e_bees[r * 2 + 1] + 1;
+        limits[5] = mu_e_bees[r * 2 + 1] - 1;
+        limits[6] = max_v + m / 8;
+        limits[7] = min_v - m / 8;
+        if (limits[6] > h - m)
+            limits[6] = h - m;
+        if (limits[7] < 0)
+            limits[7] = 0;
 
-    // Generate random initial individuals
-    initial_random_pop(mu_f_bees, limits);
+        // Generate random initial individuals
+        initial_random_pop(mu_f_bees, limits, first, last);
+        first += recruits[r];
+    }
     rate_mut = 39;
     rate_cross = 20;
     rate_rand = 5;
@@ -690,17 +701,6 @@ int main()
         best_mu(mu_f_bees, mu_f_obj);
     }
 
-    /*double time_clear_avg = (double)time_clear / (double)test_cycles;
-    double time_write_avg = (double)time_write / (double)actual_tests;
-    double time_work_avg = (double)time_work / (double)actual_tests;
-
-    cout << "time clear per cycle: " << time_clear_avg << " us\n";
-    cout << "time write per test: " << time_write_avg << " us\n";
-    cout << "time work per test: " << time_work_avg << " us\n";
-    result << "avg write,avg work,avg clean\n";
-    result << time_write_avg << "," << time_work_avg << "," << time_clear_avg << "\n";
-
-    int i = best_test + best_test_cycle * test_count;*/
     int u1 = mu_f_bees[0];
     int v1 = mu_f_bees[1];
 
