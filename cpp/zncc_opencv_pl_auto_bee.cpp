@@ -705,7 +705,9 @@ int main()
     int v1 = mu_f_bees[1];
 
     cout << "max zncc: " << mu_f_obj[0] << "\n";
-    cout << "location: (" << u1 << "," << v1 << ")\n";
+    cout << "location: (" << mu_f_bees[0] << "," << mu_f_bees[1] << ")\n";
+    cout << "max zncc: " << mu_e_obj[0] << "\n";
+    cout << "location: (" << mu_e_bees[0] << "," << mu_e_bees[1] << ")\n";
     cout << "prev: (" << u << "," << v << ")\n";
 
     close_mem();
