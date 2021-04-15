@@ -646,6 +646,7 @@ int main()
     // FORAGING PHASE
     // New limits based on the recruiter
     // First component
+    int bee = 0;
     limits[0] = mu_e_bees[recruiter[bee] * 2] + 1;
     limits[1] = mu_e_bees[recruiter[bee] * 2] - 1;
     limits[2] = max_u + n / 8;
@@ -656,7 +657,6 @@ int main()
         limits[3] = 0;
 
     // Second component
-    int bee = 0;
     limits[4] = mu_e_bees[recruiter[bee] * 2 + 1] + 1;
     limits[5] = mu_e_bees[recruiter[bee] * 2 + 1] - 1;
     limits[6] = max_v + m / 8;
