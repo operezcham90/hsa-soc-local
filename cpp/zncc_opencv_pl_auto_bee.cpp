@@ -66,6 +66,10 @@ double *mu_e_bees;
 signed long int *mu_e_obj;
 double *lambda_e_bees;
 signed long int *lambda_e_obj;
+double *mu_f_bees;
+signed long int *mu_f_obj;
+double *lambda_f_bees;
+signed long int *lambda_f_obj;
 double *mu_lambda_bees;
 signed long int *mu_lambda_obj;
 int *mu_lambda_order;
@@ -443,14 +447,12 @@ void merge_pop(double *mu_bees, signed long int *mu_obj,
         mu_lambda_obj[mu_lambda_bee] = mu_obj[bee];
         mu_lambda_bees[mu_lambda_bee * 2] = mu_bees[bee * 2];
         mu_lambda_bees[mu_lambda_bee * 2 + 1] = mu_bees[bee * 2 + 1];
-        //mu_lambda_order[mu_lambda_bee] = mu_lambda_bee;
 
         // Copy lambda bee
         mu_lambda_bee++;
         mu_lambda_obj[mu_lambda_bee] = lambda_obj[bee];
         mu_lambda_bees[mu_lambda_bee * 2] = lambda_bees[bee * 2];
         mu_lambda_bees[mu_lambda_bee * 2 + 1] = lambda_bees[bee * 2 + 1];
-        //mu_lambda_order[mu_lambda_bee] = mu_lambda_bee;
     }
 }
 void best_mu(double *mu_bees, signed long int *mu_obj)
@@ -488,6 +490,10 @@ int main()
     mu_e_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
     lambda_e_bees = (double *)malloc(num_bees_comp * sizeof(double));
     lambda_e_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
+    mu_f_bees = (double *)malloc(num_bees_comp * sizeof(double));
+    mu_f_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
+    lambda_f_bees = (double *)malloc(num_bees_comp * sizeof(double));
+    lambda_f_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
     mu_lambda_bees = (double *)malloc(num_bees_comp * 2 * sizeof(double));
     mu_lambda_obj = (signed long int *)malloc(num_bees * 2 * sizeof(signed long int));
 
@@ -550,7 +556,7 @@ int main()
     // Get accumulated fitness value
     for (int i = 0; i < num_bees; i++)
     {
-        // 0 or negative valoes don't contribute
+        // 0 or negative values don't contribute
         if (mu_e_obj[i] > 0.0f)
             sum += mu_e_obj[i];
     }
@@ -637,6 +643,53 @@ int main()
     result << "sum write,sum work,sum clean\n";
     result << time_write << "," << time_work << "," << time_clear << "\n";
 
+    // FORAGING PHASE
+    // New limits based on the recruiter
+    // First component
+    limits[0] = mu_e_bees[recruiter[bee] * 2] + 1;
+    limits[1] = mu_e_bees[recruiter[bee] * 2] - 1;
+    limits[2] = max_u + n / 8;
+    limits[3] = min_u - n / 8;
+    if (limits[2] > w - n)
+        limits[2] = w - n;
+    if (limits[3] < 0)
+        limits[3] = 0;
+
+    // Second component
+    int bee = 0;
+    limits[4] = mu_e_bees[recruiter[bee] * 2 + 1] + 1;
+    limits[5] = mu_e_bees[recruiter[bee] * 2 + 1] - 1;
+    limits[6] = max_v + m / 8;
+    limits[7] = min_v - m / 8;
+    if (limits[6] > h - m)
+        limits[6] = h - m;
+    if (limits[7] < 0)
+        limits[7] = 0;
+
+    // Generate random initial individuals
+    initial_random_pop(mu_f_bees, limits);
+    rate_mut = 39;
+    rate_cross = 20;
+    rate_rand = 5;
+
+    for (int generation = 0; generation < max_gen / 2; generation++)
+    {
+        // Evaluate parent population
+        eval_pop(mu_f_bees, mu_f_obj, limits);
+
+        // Generate lamdba population
+        generate_new_pop(mu_f_bees, mu_f_obj, lambda_f_bees, lambda_f_obj, limits);
+
+        // Evaluate new population
+        eval_pop(lambda_f_bees, lambda_f_obj, limits);
+
+        // Mu + Lambda
+        merge_pop(mu_f_bees, mu_f_obj, lambda_f_bees, lambda_f_obj);
+
+        // Select best mu
+        best_mu(mu_f_bees, mu_f_obj);
+    }
+
     /*double time_clear_avg = (double)time_clear / (double)test_cycles;
     double time_write_avg = (double)time_write / (double)actual_tests;
     double time_work_avg = (double)time_work / (double)actual_tests;
@@ -648,10 +701,10 @@ int main()
     result << time_write_avg << "," << time_work_avg << "," << time_clear_avg << "\n";
 
     int i = best_test + best_test_cycle * test_count;*/
-    int u1 = mu_e_bees[0];
-    int v1 = mu_e_bees[1];
+    int u1 = mu_f_bees[0];
+    int v1 = mu_f_bees[1];
 
-    cout << "max zncc: " << mu_e_obj[0] << "\n";
+    cout << "max zncc: " << mu_f_obj[0] << "\n";
     cout << "location: (" << u1 << "," << v1 << ")\n";
     cout << "prev: (" << u << "," << v << ")\n";
 
