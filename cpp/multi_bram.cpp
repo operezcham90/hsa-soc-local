@@ -21,6 +21,9 @@ unsigned long int *axi_bram_ctrl_2;
 unsigned long int *axi_bram_ctrl_3;
 int main()
 {
+    unsigned int c = thread::hardware_concurrency();
+    cout << "number of cores: " << c << "\n";
+
     // size of bram default block
     unsigned int bram_size = 2048 * 4;
     int fd;
