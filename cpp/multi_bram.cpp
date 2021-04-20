@@ -77,6 +77,12 @@ int main()
 
         unsigned char *axi_bram_ctrl_0_bytes = (unsigned char *)axi_bram_ctrl_0;
         unsigned char *data_bytes = (unsigned char *)data;
+        unsigned char *axi_bram_ctrl_1_bytes = (unsigned char *)axi_bram_ctrl_1;
+        unsigned char *data2_bytes = (unsigned char *)data2;
+        unsigned char *axi_bram_ctrl_2_bytes = (unsigned char *)axi_bram_ctrl_2;
+        unsigned char *data3_bytes = (unsigned char *)data3;
+        unsigned char *axi_bram_ctrl_3_bytes = (unsigned char *)axi_bram_ctrl_3;
+        unsigned char *data4_bytes = (unsigned char *)data4;
 
         /*pthread_t a1;
         pthread_t b1;
@@ -143,25 +149,40 @@ int main()
         cout << "Write 1 BRAM: " << duration.count() << " us\n";
 
         start = high_resolution_clock::now();
-        memcpy(axi_bram_ctrl_0, data, bram_size);
-        memcpy(axi_bram_ctrl_1, data2, bram_size);
+        pos = 0;
+        for (int i = 0; i < pieces; i++)
+        {
+            memcpy(axi_bram_ctrl_0_bytes + pos, data_bytes + pos, step);
+            memcpy(axi_bram_ctrl_1_bytes + pos, data2_bytes + pos, step);
+            pos += step;
+        }
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
         cout << "Write 2 BRAM: " << duration.count() << " us\n";
 
         start = high_resolution_clock::now();
-        memcpy(axi_bram_ctrl_0, data, bram_size);
-        memcpy(axi_bram_ctrl_1, data2, bram_size);
-        memcpy(axi_bram_ctrl_2, data3, bram_size);
+        pos = 0;
+        for (int i = 0; i < pieces; i++)
+        {
+            memcpy(axi_bram_ctrl_0_bytes + pos, data_bytes + pos, step);
+            memcpy(axi_bram_ctrl_1_bytes + pos, data2_bytes + pos, step);
+            memcpy(axi_bram_ctrl_2_bytes + pos, data3_bytes + pos, step);
+            pos += step;
+        }
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
         cout << "Write 3 BRAM: " << duration.count() << " us\n";
 
         start = high_resolution_clock::now();
-        memcpy(axi_bram_ctrl_0, data, bram_size);
-        memcpy(axi_bram_ctrl_1, data2, bram_size);
-        memcpy(axi_bram_ctrl_2, data3, bram_size);
-        memcpy(axi_bram_ctrl_3, data4, bram_size);
+        pos = 0;
+        for (int i = 0; i < pieces; i++)
+        {
+            memcpy(axi_bram_ctrl_0_bytes + pos, data_bytes + pos, step);
+            memcpy(axi_bram_ctrl_1_bytes + pos, data2_bytes + pos, step);
+            memcpy(axi_bram_ctrl_2_bytes + pos, data3_bytes + pos, step);
+            memcpy(axi_bram_ctrl_3_bytes + pos, data4_bytes + pos, step);
+            pos += step;
+        }
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
         cout << "Write 4 BRAM: " << duration.count() << " us\n";
