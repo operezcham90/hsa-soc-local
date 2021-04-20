@@ -138,25 +138,25 @@ int main()
         cout << "Write 1 BRAM: " << duration.count() << " us\n";
 
         start = high_resolution_clock::now();
-        memcpy_own(axi_bram_ctrl_0, data, bram_size);
-        memcpy_own(axi_bram_ctrl_1, data2, bram_size);
+        memcpy(axi_bram_ctrl_0, data, bram_size);
+        memcpy(axi_bram_ctrl_1, data2, bram_size);
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
         cout << "Write 2 BRAM: " << duration.count() << " us\n";
 
         start = high_resolution_clock::now();
-        memcpy_own(axi_bram_ctrl_0, data, bram_size);
-        memcpy_own(axi_bram_ctrl_1, data2, bram_size);
-        memcpy_own(axi_bram_ctrl_2, data3, bram_size);
+        memcpy(axi_bram_ctrl_0, data, bram_size);
+        memcpy(axi_bram_ctrl_1, data2, bram_size);
+        memcpy(axi_bram_ctrl_2, data3, bram_size);
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
         cout << "Write 3 BRAM: " << duration.count() << " us\n";
 
         start = high_resolution_clock::now();
-        memcpy_own(axi_bram_ctrl_0, data, bram_size);
-        memcpy_own(axi_bram_ctrl_1, data2, bram_size);
-        memcpy_own(axi_bram_ctrl_2, data3, bram_size);
-        memcpy_own(axi_bram_ctrl_3, data4, bram_size);
+        memcpy(axi_bram_ctrl_0, data, bram_size);
+        memcpy(axi_bram_ctrl_1, data2, bram_size);
+        memcpy(axi_bram_ctrl_2, data3, bram_size);
+        memcpy(axi_bram_ctrl_3, data4, bram_size);
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
         cout << "Write 4 BRAM: " << duration.count() << " us\n";
