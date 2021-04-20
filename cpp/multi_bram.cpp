@@ -10,7 +10,7 @@
 #include <chrono>
 #include <vector>
 #include <math.h>
-#include <thread>
+#include <pthread.h>
 
 using namespace std;
 using namespace std::chrono;
@@ -23,27 +23,28 @@ unsigned long int *axi_bram_ctrl_3;
 unsigned long int *data;
 unsigned int bram_size = 2048 * 4;
 
-void task1()
+void *task1(void *arg)
 {
     memcpy(axi_bram_ctrl_0, data, bram_size);
+    return NULL;
 }
-void task2()
+void *task2(void *arg)
 {
     memcpy(axi_bram_ctrl_1, data, bram_size);
+    return NULL;
 }
-void task3()
+void *task3(void *arg)
 {
     memcpy(axi_bram_ctrl_2, data, bram_size);
+    return NULL;
 }
-void task4()
+void *task4(void *arg)
 {
     memcpy(axi_bram_ctrl_3, data, bram_size);
+    return NULL;
 }
-int main()
+int *main()
 {
-    unsigned int c = thread::hardware_concurrency();
-    cout << "number of cores: " << c << "\n";
-
     // size of bram default block
     int fd;
     if ((fd = open("/dev/mem", O_RDWR | O_SYNC)) != -1)
@@ -60,44 +61,12 @@ int main()
         }
 
         auto start = high_resolution_clock::now();
-        thread t1(task1);
-        t1.join();
+        pthread_t a1;
+        pthread_create(&a1, NULL, task1, NULL);
+        pthread_join(a1, NULL);
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
         cout << "Write 1 BRAM: " << duration.count() << " us\n";
-
-        start = high_resolution_clock::now();
-        thread t11(task1);
-        thread t21(task2);
-        t11.join();
-        t21.join();
-        stop = high_resolution_clock::now();
-        duration = duration_cast<microseconds>(stop - start);
-        cout << "Write 2 BRAM: " << duration.count() << " us\n";
-
-        start = high_resolution_clock::now();
-        thread t12(task1);
-        thread t22(task2);
-        thread t32(task3);
-        t12.join();
-        t22.join();
-        t32.join();
-        stop = high_resolution_clock::now();
-        duration = duration_cast<microseconds>(stop - start);
-        cout << "Write 3 BRAM: " << duration.count() << " us\n";
-
-        start = high_resolution_clock::now();
-        thread t13(task1);
-        thread t23(task2);
-        thread t33(task3);
-        thread t43(task4);
-        t13.join();
-        t23.join();
-        t33.join();
-        t43.join();
-        stop = high_resolution_clock::now();
-        duration = duration_cast<microseconds>(stop - start);
-        cout << "Write 4 BRAM: " << duration.count() << " us\n";
 
         close(fd);
     }
