@@ -28,6 +28,7 @@ void *task0(void *arg)
     int fd;
     if ((fd = open("/dev/mem", O_RDWR | O_SYNC)) != -1)
     {
+        cout << "devmem open\n";
         // alloc pointers to brams
         axi_bram_ctrl = (unsigned long int **)malloc(brams * sizeof(unsigned long int *));
 
@@ -75,6 +76,7 @@ void *task1(void *arg)
     int fd;
     if ((fd = open("/dev/mem", O_RDWR | O_SYNC)) != -1)
     {
+        cout << "devmem open\n";
         // alloc pointers to brams
         axi_bram_ctrl = (unsigned long int **)malloc(brams * sizeof(unsigned long int *));
 
