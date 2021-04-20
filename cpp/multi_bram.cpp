@@ -17,14 +17,14 @@ using namespace std;
 using namespace std::chrono;
 
 // addresses from vivado block design
-unsigned long int **axi_bram_ctrl;
-unsigned long int **data;
 unsigned int bram_size = 2048 * 4;
 unsigned int half_bram_size = 2048 * 2;
 int brams = 0;
 
 void *task0(void *arg)
 {
+    unsigned long int **axi_bram_ctrl;
+    unsigned long int **data;
     int fd;
     if ((fd = open("/dev/mem", O_RDWR | O_SYNC)) != -1)
     {
@@ -70,6 +70,8 @@ void *task0(void *arg)
 }
 void *task1(void *arg)
 {
+    unsigned long int **axi_bram_ctrl;
+    unsigned long int **data;
     int fd;
     if ((fd = open("/dev/mem", O_RDWR | O_SYNC)) != -1)
     {
@@ -135,6 +137,8 @@ void parallel_copy(int num)
 }
 void sequential_copy(int num)
 {
+    unsigned long int **axi_bram_ctrl;
+    unsigned long int **data;
     brams = num;
     int fd;
     if ((fd = open("/dev/mem", O_RDWR | O_SYNC)) != -1)
