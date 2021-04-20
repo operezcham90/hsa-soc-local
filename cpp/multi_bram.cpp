@@ -140,7 +140,7 @@ int main()
         sequential_copy(i);
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
-        cout << "Seq time " << i << ": " << duration.count() << " us\n";
+        cout << dec << "Seq time " << i << ": " << duration.count() << " us\n";
     }
 
     return 0;
