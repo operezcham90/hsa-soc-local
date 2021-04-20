@@ -30,21 +30,23 @@ unsigned int bram_size = 2048 * 4;
 void *task1(void *arg)
 {
     memcpy(axi_bram_ctrl_0, data, bram_size);
+    memcpy(axi_bram_ctrl_2, data3, bram_size);
     return NULL;
 }
 void *task2(void *arg)
 {
     memcpy(axi_bram_ctrl_1, data2, bram_size);
+    memcpy(axi_bram_ctrl_3, data4, bram_size);
     return NULL;
 }
 void *task3(void *arg)
 {
-    memcpy(axi_bram_ctrl_2, data3, bram_size);
+
     return NULL;
 }
 void *task4(void *arg)
 {
-    memcpy(axi_bram_ctrl_3, data4, bram_size);
+
     return NULL;
 }
 int main()
