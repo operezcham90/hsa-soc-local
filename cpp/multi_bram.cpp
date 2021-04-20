@@ -20,10 +20,6 @@ using namespace std::chrono;
 unsigned int bram_size = 2048 * 4;
 int brams = 16;
 int barrier = 0;
-unsigned long int *axi_bram_ctrl_0;
-unsigned long int *data_0;
-unsigned long int *axi_bram_ctrl_1;
-unsigned long int *data_1;
 
 void sequential_copy(int num, unsigned long int *axi_bram_ctrl, unsigned long int *data)
 {
@@ -43,6 +39,8 @@ void sequential_copy(int num, unsigned long int *axi_bram_ctrl, unsigned long in
 int main()
 {
     // sequential
+    unsigned long int *axi_bram_ctrl_0;
+    unsigned long int *data_0;
     auto start = high_resolution_clock::now();
     for (int i = 0; i < 16; i++)
     {
@@ -56,13 +54,12 @@ int main()
     start = high_resolution_clock::now();
 #pragma omp parallel
     {
+        unsigned long int *axi_bram_ctrl_1;
+        unsigned long int *data_1;
         int thread_num = omp_get_thread_num();
         for (int i = thread_num; i < 16; i += 2)
         {
-            if (thread_num == 0)
-                sequential_copy(i, axi_bram_ctrl_0, data_0);
-            else
-                sequential_copy(i, axi_bram_ctrl_1, data_1);
+            sequential_copy(i, axi_bram_ctrl_1, data_1);
         }
     }
     stop = high_resolution_clock::now();
