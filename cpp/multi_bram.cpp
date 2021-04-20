@@ -105,9 +105,9 @@ void sequential_copy(int num)
         {
             off_t addr = 0x40000000 + 0x2000000 * i;
             axi_bram_ctrl[i] = (unsigned long int *)mmap(NULL, bram_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, addr);
-            cout << "BRAM at ";
+            /*cout << "BRAM at ";
             cout << hex << addr;
-            cout << "ready\n";
+            cout << " ready\n";*/
             data[i] = (unsigned long int *)malloc(bram_size);
         }
 
