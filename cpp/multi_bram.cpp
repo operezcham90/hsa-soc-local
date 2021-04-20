@@ -52,7 +52,7 @@ int main()
 
         if (thread_num == 0)
         {
-            for (int i = 1; i <= 16; i++)
+            for (int i = 0; i < 16; i++)
             {
                 auto start = high_resolution_clock::now();
                 sequential_copy(i);
@@ -60,6 +60,11 @@ int main()
                 auto duration = duration_cast<microseconds>(stop - start);
                 cout << dec << "Seq time " << i << ": " << duration.count() << " us\n";
             }
+        }
+
+        barrier++;
+        while (barrier < 2)
+        {
         }
     }
 
