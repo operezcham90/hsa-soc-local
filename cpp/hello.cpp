@@ -14,9 +14,9 @@ int main()
 
         while (cpu_num != done)
         {
-            std::cout << thread_num << "running in " << cpu_num << std::endl;
-            done++;
         }
+        std::cout << thread_num << " running in " << cpu_num << std::endl;
+        done++;
     }
 
     return 0;
