@@ -26,49 +26,46 @@ int brams = 0;
 void *task0(void *arg)
 {
     // set first data source
-    int longs = half_bram_size / 4;
+    int longs = bram_size / 4;
     for (unsigned long int i = 0; i < longs; i++)
     {
         data[0][i] = i;
     }
 
     // make copies to other data sources
-    for (int i = 1; i < brams; i++)
+    for (int i = 2; i < brams; i += 2)
     {
-        memcpy(data[i], data[0], half_bram_size);
+        memcpy(data[i], data[0], bram_size);
     }
 
     // copy data to bram
-    for (int i = 0; i < brams; i++)
+    for (int i = 0; i < brams; i += 2)
     {
         unsigned char *dest = (unsigned char *)axi_bram_ctrl[i];
-        memcpy(dest, data[i], half_bram_size);
+        memcpy(dest, data[i], bram_size);
     }
     return NULL;
 }
 void *task1(void *arg)
 {
     // set first data source
-    int longs = half_bram_size / 4;
+    int longs = bram_size / 4;
     for (unsigned long int i = 0; i < longs; i++)
     {
-        data[0][i + longs] = i + longs;
+        data[1][i] = i;
     }
 
     // make copies to other data sources
-    for (int i = 1; i < brams; i++)
+    for (int i = 3; i < brams; i += 2)
     {
-        unsigned char *dest = (unsigned char *)data[i];
-        unsigned char *src = (unsigned char *)data[0];
-        memcpy(dest + half_bram_size, src + half_bram_size, half_bram_size);
+        memcpy(data[i], data[1], bram_size);
     }
 
     // copy data to bram
-    for (int i = 0; i < brams; i++)
+    for (int i = 1; i < brams; i += 2)
     {
         unsigned char *dest = (unsigned char *)axi_bram_ctrl[i];
-        unsigned char *src = (unsigned char *)data[i];
-        memcpy(dest + half_bram_size, src + half_bram_size, half_bram_size);
+        memcpy(dest, data[i], bram_size);
     }
     return NULL;
 }
@@ -176,7 +173,7 @@ int main()
         cout << dec << "Seq time " << i << ": " << duration.count() << " us\n";
     }
 
-    for (int i = 1; i <= 16; i++)
+    for (int i = 2; i <= 16; i += 2)
     {
         auto start = high_resolution_clock::now();
         parallel_copy(i);
