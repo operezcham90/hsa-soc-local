@@ -26,21 +26,22 @@ unsigned long int *data2;
 unsigned long int *data3;
 unsigned long int *data4;
 unsigned int bram_size = 2048 * 4;
+unsigned int half_bram_size = 2048 * 2;
 
 void *task1(void *arg)
 {
-    memcpy(axi_bram_ctrl_0, data, bram_size);
-    memcpy(axi_bram_ctrl_2, data3, bram_size);
-    memcpy(axi_bram_ctrl_1, data2, bram_size);
-    memcpy(axi_bram_ctrl_3, data4, bram_size);
+    memcpy(axi_bram_ctrl_0, data, half_bram_size);
+    memcpy(axi_bram_ctrl_2, data3, half_bram_size);
+    memcpy(axi_bram_ctrl_1, data2, half_bram_size);
+    memcpy(axi_bram_ctrl_3, data4, half_bram_size);
     return NULL;
 }
 void *task2(void *arg)
 {
-    memcpy(axi_bram_ctrl_1, data2, bram_size);
-    memcpy(axi_bram_ctrl_3, data4, bram_size);
-    memcpy(axi_bram_ctrl_0, data, bram_size);
-    memcpy(axi_bram_ctrl_2, data3, bram_size);
+    memcpy(axi_bram_ctrl_1 + half_bram_size, data2 + half_bram_size, half_bram_size);
+    memcpy(axi_bram_ctrl_3 + half_bram_size, data4 + half_bram_size, half_bram_size);
+    memcpy(axi_bram_ctrl_0 + half_bram_size, data + half_bram_size, half_bram_size);
+    memcpy(axi_bram_ctrl_2 + half_bram_size, data3 + half_bram_size, half_bram_size);
     return NULL;
 }
 void *task3(void *arg)
