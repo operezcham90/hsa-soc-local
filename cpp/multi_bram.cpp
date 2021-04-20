@@ -60,8 +60,11 @@ int main()
             data[i] = i;
         }
 
-        auto start = high_resolution_clock::now();
         pthread_t a1;
+        pthread_t b1;
+        pthread_t b2;
+
+        auto start = high_resolution_clock::now();
         pthread_create(&a1, NULL, task1, NULL);
         pthread_join(a1, NULL);
         auto stop = high_resolution_clock::now();
@@ -69,8 +72,6 @@ int main()
         cout << "Write 1 BRAM: " << duration.count() << " us\n";
 
         start = high_resolution_clock::now();
-        pthread_t b1;
-        pthread_t b2;
         pthread_create(&b1, NULL, task1, NULL);
         pthread_create(&b2, NULL, task2, NULL);
         pthread_join(b1, NULL);
