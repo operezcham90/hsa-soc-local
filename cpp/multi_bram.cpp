@@ -68,6 +68,17 @@ int main()
         auto duration = duration_cast<microseconds>(stop - start);
         cout << "Write 1 BRAM: " << duration.count() << " us\n";
 
+        start = high_resolution_clock::now();
+        pthread_t b1;
+        pthread_t b2;
+        pthread_create(&b1, NULL, task1, NULL);
+        pthread_create(&b2, NULL, task2, NULL);
+        pthread_join(b1, NULL);
+        pthread_join(b2, NULL);
+        stop = high_resolution_clock::now();
+        duration = duration_cast<microseconds>(stop - start);
+        cout << "Write 2 BRAM: " << duration.count() << " us\n";
+
         close(fd);
     }
     return 0;
