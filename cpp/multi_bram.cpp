@@ -21,6 +21,7 @@ unsigned long int *axi_bram_ctrl;
 unsigned long int *data;
 unsigned int bram_size = 2048 * 4;
 int brams = 16;
+int barrier = 0;
 
 void sequential_copy(int num)
 {
@@ -45,13 +46,26 @@ void sequential_copy(int num)
 }
 int main()
 {
-    for (int i = 1; i <= 16; i++)
+#pragma omp parallel
     {
-        auto start = high_resolution_clock::now();
-        sequential_copy(i);
-        auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<microseconds>(stop - start);
-        cout << dec << "Seq time " << i << ": " << duration.count() << " us\n";
+        int thread_num = omp_get_thread_num();
+
+        if (thread_num == 0)
+        {
+            for (int i = 1; i <= 16; i++)
+            {
+                auto start = high_resolution_clock::now();
+                sequential_copy(i);
+                auto stop = high_resolution_clock::now();
+                auto duration = duration_cast<microseconds>(stop - start);
+                cout << dec << "Seq time " << i << ": " << duration.count() << " us\n";
+            }
+        }
+
+        barrier++;
+        while (barrier < 2)
+        {
+        }
     }
 
     /*for (int i = 2; i <= 16; i += 2)
