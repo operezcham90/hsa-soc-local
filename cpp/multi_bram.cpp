@@ -126,15 +126,6 @@ int main()
         duration = duration_cast<microseconds>(stop - start);
         cout << "Write 4 BRAM: " << duration.count() << " us\n";
 
-        cout << "Conf 0: " << axi_bram_ctrl_0[200] == 200
-                                                          << "\n";
-        cout << "Conf 1: " << axi_bram_ctrl_1[200] == 200
-                                                          << "\n";
-        cout << "Conf 2: " << axi_bram_ctrl_2[200] == 200
-                                                          << "\n";
-        cout << "Conf 3: " << axi_bram_ctrl_3[200] == 200
-                                                          << "\n";
-
         close(fd);
     }
     return 0;
