@@ -127,8 +127,8 @@ int main()
         cout << "Write 4 BRAM: " << duration.count() << " us\n";*/
 
         start = high_resolution_clock::now();
-        int step = bram_size / 200;
-        for (int i = 0; i < 200; i++)
+        int step = bram_size / 128;
+        for (int i = 0; i < 128; i++)
         {
             int pos = step * i;
             memcpy(axi_bram_ctrl_0 + pos, data + pos, step);
