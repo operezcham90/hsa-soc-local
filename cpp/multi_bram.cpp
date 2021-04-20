@@ -32,12 +32,6 @@ void sequential_copy(int num)
         axi_bram_ctrl = (unsigned long int *)mmap(NULL, bram_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, addr);
         data = (unsigned long int *)malloc(bram_size);
 
-        // set data source
-        for (unsigned long int i = 0; i < bram_size / 4; i++)
-        {
-            data[i] = i;
-        }
-
         // copy data to bram
         memcpy(axi_bram_ctrl, data, bram_size);
 
@@ -66,6 +60,7 @@ int main()
         while (barrier < 2)
         {
         }
+        barrier = 0;
     }
 
     /*for (int i = 2; i <= 16; i += 2)
