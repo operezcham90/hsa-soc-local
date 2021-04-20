@@ -128,7 +128,7 @@ int main()
 
         start = high_resolution_clock::now();
         int step = bram_size / 128;
-        int pos = 0;
+        int pos = 4;
         for (int i = 0; i < 100; i++)
         {
             pos += step;
