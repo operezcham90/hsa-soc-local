@@ -97,18 +97,24 @@ void parallel_copy(int num)
 
         pthread_t t0;
         pthread_t t1;
-        pthread_attr_t attr;
-        cpu_set_t cpus;
+        pthread_attr_t attr0;
+        pthread_attr_t attr1;
+        cpu_set_t cpu0;
+        cpu_set_t cpu1;
         sched_param params;
         params.sched_priority = 1000;
-        pthread_attr_init(&attr);
-        CPU_ZERO(&cpus);
-        CPU_SET(0, &cpus);
-        CPU_SET(1, &cpus);
-        pthread_attr_setaffinity_np(&attr, sizeof(cpu_set_t), &cpus);
-        pthread_attr_setschedparam(&attr, &params);
-        pthread_create(&t0, &attr, task0, NULL);
-        pthread_create(&t1, &attr, task1, NULL);
+        pthread_attr_init(&attr0);
+        pthread_attr_init(&attr1);
+        CPU_ZERO(&cpu0);
+        CPU_SET(0, &cpu0);
+        CPU_ZERO(&cpu1);
+        CPU_SET(1, &cpu1);
+        pthread_attr_setaffinity_np(&attr0, sizeof(cpu_set_t), &cpu0);
+        pthread_attr_setaffinity_np(&attr1, sizeof(cpu_set_t), &cpu1);
+        pthread_attr_setschedparam(&attr0, &params);
+        pthread_attr_setschedparam(&attr1, &params);
+        pthread_create(&t0, &attr0, task0, NULL);
+        pthread_create(&t1, &attr1, task1, NULL);
         pthread_join(t0, NULL);
         pthread_join(t1, NULL);
 
