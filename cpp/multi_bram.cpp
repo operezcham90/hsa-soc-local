@@ -134,7 +134,7 @@ void sequential_copy(int num)
 }
 int main()
 {
-    for (int i = 1; i < brams; i++)
+    for (int i = 1; i <= 16; i++)
     {
         auto start = high_resolution_clock::now();
         sequential_copy(i);
