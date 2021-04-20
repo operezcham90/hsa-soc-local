@@ -104,6 +104,7 @@ int main()
         pthread_attr_init(&attr);
         CPU_ZERO(&cpus);
         CPU_SET(0, &cpus);
+        CPU_SET(1, &cpus);
         pthread_attr_setaffinity_np(&attr, sizeof(cpu_set_t), &cpus);
         pthread_create(&a1, &attr, task1, NULL);
         pthread_join(a1, NULL);
