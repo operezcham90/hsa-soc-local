@@ -75,6 +75,9 @@ int main()
         auto duration = duration_cast<microseconds>(stop - start);
         cout << "Preparation: " << duration.count() << " us\n";
 
+        unsigned char *axi_bram_ctrl_0_bytes = (unsigned char *)axi_bram_ctrl_0;
+        unsigned char *data_bytes = (unsigned char *)data;
+
         /*pthread_t a1;
         pthread_t b1;
         pthread_t b2;
@@ -127,9 +130,9 @@ int main()
         cout << "Write 4 BRAM: " << duration.count() << " us\n";*/
 
         start = high_resolution_clock::now();
-        memcpy(axi_bram_ctrl_0, data, 2048);
-        memcpy(axi_bram_ctrl_0 + 2048, data + 2048, 2048);
-        memcpy(axi_bram_ctrl_0 + 4096, data + 4096, 2048);
+        memcpy(axi_bram_ctrl_0_bytes, data_bytes, 2048);
+        memcpy(axi_bram_ctrl_0_bytes + 2048, data_bytes + 2048, 2048);
+        memcpy(axi_bram_ctrl_0_bytes + 4096, data_bytes + 4096, 2048);
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
         cout << "Write 1 BRAM: " << duration.count() << " us\n";
