@@ -117,7 +117,7 @@ int main()
         pthread_create(&d1, NULL, task1, NULL);
         pthread_create(&d2, NULL, task2, NULL);
         pthread_create(&d3, NULL, task3, NULL);
-        pthread_create(&d4, NULL, task3, NULL);
+        pthread_create(&d4, NULL, task4, NULL);
         pthread_join(d1, NULL);
         pthread_join(d2, NULL);
         pthread_join(d3, NULL);
