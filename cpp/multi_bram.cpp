@@ -62,10 +62,10 @@ int main()
             }
             barrier++;
         }
-        while (barrier == 0)
+        while (thread_num != barrier)
         {
         }
-        cout << dec << thread_num;
+        barrier++;
     }
 
     /*for (int i = 2; i <= 16; i += 2)
