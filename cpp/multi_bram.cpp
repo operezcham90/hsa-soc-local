@@ -98,7 +98,6 @@ int main()
         pthread_t d3;
         pthread_t d4;
 
-        start = high_resolution_clock::now();
         pthread_attr_t attr;
         cpu_set_t cpus;
         pthread_attr_init(&attr);
@@ -106,6 +105,8 @@ int main()
         CPU_SET(0, &cpus);
         CPU_SET(1, &cpus);
         pthread_attr_setaffinity_np(&attr, sizeof(cpu_set_t), &cpus);
+
+        start = high_resolution_clock::now();
         pthread_create(&a1, &attr, task1, NULL);
         pthread_join(a1, NULL);
         stop = high_resolution_clock::now();
@@ -113,8 +114,8 @@ int main()
         cout << "Write 1 BRAM: " << duration.count() << " us\n";
 
         start = high_resolution_clock::now();
-        pthread_create(&b1, NULL, task1, NULL);
-        pthread_create(&b2, NULL, task2, NULL);
+        pthread_create(&b1, &attr, task1, NULL);
+        pthread_create(&b2, &attr, task2, NULL);
         pthread_join(b1, NULL);
         pthread_join(b2, NULL);
         stop = high_resolution_clock::now();
@@ -122,9 +123,9 @@ int main()
         cout << "Write 2 BRAM: " << duration.count() << " us\n";
 
         start = high_resolution_clock::now();
-        pthread_create(&c1, NULL, task1, NULL);
-        pthread_create(&c2, NULL, task2, NULL);
-        pthread_create(&c3, NULL, task3, NULL);
+        pthread_create(&c1, &attr, task1, NULL);
+        pthread_create(&c2, &attr, task2, NULL);
+        pthread_create(&c3, &attr, task3, NULL);
         pthread_join(c1, NULL);
         pthread_join(c2, NULL);
         pthread_join(c3, NULL);
@@ -133,10 +134,10 @@ int main()
         cout << "Write 3 BRAM: " << duration.count() << " us\n";
 
         start = high_resolution_clock::now();
-        pthread_create(&d1, NULL, task1, NULL);
-        pthread_create(&d2, NULL, task2, NULL);
-        pthread_create(&d3, NULL, task3, NULL);
-        pthread_create(&d4, NULL, task4, NULL);
+        pthread_create(&d1, &attr, task1, NULL);
+        pthread_create(&d2, &attr, task2, NULL);
+        pthread_create(&d3, &attr, task3, NULL);
+        pthread_create(&d4, &attr, task4, NULL);
         pthread_join(d1, NULL);
         pthread_join(d2, NULL);
         pthread_join(d3, NULL);
