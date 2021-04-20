@@ -84,39 +84,28 @@ int main()
         unsigned char *axi_bram_ctrl_3_bytes = (unsigned char *)axi_bram_ctrl_3;
         unsigned char *data4_bytes = (unsigned char *)data4;
 
-        cpu_set_t cpuset0;
-        cpu_set_t cpuset1;
-        CPU_ZERO(&cpuset0);
-        CPU_ZERO(&cpuset1);
-        CPU_SET(0, &cpuset0);
-        CPU_SET(1, &cpuset1);
-
         pthread_t a1;
-        pthread_setaffinity_np(a1, sizeof(cpuset0), &cpuset0);
 
         pthread_t b1;
         pthread_t b2;
-        pthread_setaffinity_np(b1, sizeof(cpuset0), &cpuset0);
-        pthread_setaffinity_np(b2, sizeof(cpuset1), &cpuset1);
 
         pthread_t c1;
         pthread_t c2;
         pthread_t c3;
-        pthread_setaffinity_np(c1, sizeof(cpuset0), &cpuset0);
-        pthread_setaffinity_np(c2, sizeof(cpuset1), &cpuset1);
-        pthread_setaffinity_np(c3, sizeof(cpuset0), &cpuset0);
 
         pthread_t d1;
         pthread_t d2;
         pthread_t d3;
         pthread_t d4;
-        pthread_setaffinity_np(d1, sizeof(cpuset0), &cpuset0);
-        pthread_setaffinity_np(d2, sizeof(cpuset1), &cpuset1);
-        pthread_setaffinity_np(d3, sizeof(cpuset0), &cpuset0);
-        pthread_setaffinity_np(d4, sizeof(cpuset1), &cpuset1);
 
         start = high_resolution_clock::now();
-        pthread_create(&a1, NULL, task1, NULL);
+        pthread_attr_t attr;
+        cpu_set_t cpus;
+        pthread_attr_init(&attr);
+        CPU_ZERO(&cpus);
+        CPU_SET(0, &cpus);
+        pthread_attr_setaffinity_np(&attr, sizeof(cpu_set_t), &cpus);
+        pthread_create(&a1, &attr, task1, NULL);
         pthread_join(a1, NULL);
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
