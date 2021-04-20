@@ -104,6 +104,8 @@ int main()
         pthread_attr_t attr1;
         cpu_set_t cpus0;
         cpu_set_t cpus1;
+        sched_param params;
+        params.sched_priority = 5;
         pthread_attr_init(&attr0);
         pthread_attr_init(&attr1);
         CPU_ZERO(&cpus0);
@@ -112,6 +114,8 @@ int main()
         CPU_SET(1, &cpus1);
         pthread_attr_setaffinity_np(&attr0, sizeof(cpu_set_t), &cpus0);
         pthread_attr_setaffinity_np(&attr1, sizeof(cpu_set_t), &cpus1);
+        pthread_attr_setschedparam(&attr0, sizeof(cpu_set_t), &params);
+        pthread_attr_setschedparam(&attr1, sizeof(cpu_set_t), &params);
 
         start = high_resolution_clock::now();
         pthread_create(&a1, &attr0, task1, NULL);
