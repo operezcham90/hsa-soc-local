@@ -62,7 +62,7 @@ void *memcpy_own(void *dst, void const *src, size_t len)
     }
 
     char *pcDst = (char *)plDst;
-    char const *pcDst = (char const *)plSrc;
+    char const *pcSrc = (char const *)plSrc;
 
     while (len–)
     {
