@@ -68,9 +68,9 @@ int main()
         }
 
         auto start = high_resolution_clock::now();
-        memcpy_own(data2, data, bram_size);
-        memcpy_own(data3, data, bram_size);
-        memcpy_own(data4, data, bram_size);
+        memcpy(data2, data, bram_size);
+        memcpy(data3, data, bram_size);
+        memcpy(data4, data, bram_size);
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
         cout << "Preparation: " << duration.count() << " us\n";
