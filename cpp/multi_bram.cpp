@@ -47,39 +47,6 @@ void *task4(void *arg)
     memcpy(axi_bram_ctrl_3, data4, bram_size);
     return NULL;
 }
-void *memcpy_own(void *dstpp, const void *srcpp, size_t len)
-{
-    unsigned long int dstp = (long int)dstpp;
-    unsigned long int srcp = (long int)srcpp;
-
-    /* Copy from the beginning to the end.  */
-
-    /* If there not too few bytes to copy, use word copy.  */
-    if (len >= 4)
-    {
-        /* Copy just a few bytes to make DSTP aligned.  */
-        len -= (-dstp) % 0xFFFFFFFC;
-        BYTE_COPY_FWD(dstp, srcp, (-dstp) % 0xFFFFFFFC);
-
-        /* Copy whole pages from SRCP to DSTP by virtual address manipulation,
-	 as much as possible.  */
-
-        PAGE_COPY_FWD_MAYBE(dstp, srcp, len, len);
-
-        /* Copy from SRCP to DSTP taking advantage of the known alignment of
-	 DSTP.  Number of bytes remaining is put in the third argument,
-	 i.e. in LEN.  This number may vary from machine to machine.  */
-
-        WORD_COPY_FWD(dstp, srcp, len, len);
-
-        /* Fall out and copy the tail.  */
-    }
-
-    /* There are just a few bytes to copy.  Use byte memory operations.  */
-    BYTE_COPY_FWD(dstp, srcp, len);
-
-    return dstpp;
-}
 int main()
 {
     // size of bram default block
@@ -160,7 +127,12 @@ int main()
         cout << "Write 4 BRAM: " << duration.count() << " us\n";*/
 
         start = high_resolution_clock::now();
-        memcpy_own(axi_bram_ctrl_0, data, bram_size);
+        int step = bram_size / 200;
+        for (int i = 0; i < 200; i++)
+        {
+            int pos = step * i;
+            memcpy(axi_bram_ctrl_0 + pos, data + pos, step);
+        }
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
         cout << "Write 1 BRAM: " << duration.count() << " us\n";
