@@ -84,16 +84,36 @@ int main()
         unsigned char *axi_bram_ctrl_3_bytes = (unsigned char *)axi_bram_ctrl_3;
         unsigned char *data4_bytes = (unsigned char *)data4;
 
-        /*pthread_t a1;
+        cpu_set_t cpuset0;
+        cpu_set_t cpuset1;
+        CPU_ZERO(&cpuset0);
+        CPU_ZERO(&cpuset1);
+        CPU_SET(0, &cpuset0);
+        CPU_SET(1, &cpuset1);
+
+        pthread_t a1;
+        thread_setaffinity_np(a1, sizeof(cpuset0), &cpuset0);
+
         pthread_t b1;
         pthread_t b2;
+        thread_setaffinity_np(b1, sizeof(cpuset0), &cpuset0);
+        thread_setaffinity_np(b2, sizeof(cpuset1), &cpuset1);
+
         pthread_t c1;
         pthread_t c2;
         pthread_t c3;
+        thread_setaffinity_np(c1, sizeof(cpuset0), &cpuset0);
+        thread_setaffinity_np(c2, sizeof(cpuset1), &cpuset1);
+        thread_setaffinity_np(c3, sizeof(cpuset0), &cpuset0);
+
         pthread_t d1;
         pthread_t d2;
         pthread_t d3;
         pthread_t d4;
+        thread_setaffinity_np(d1, sizeof(cpuset0), &cpuset0);
+        thread_setaffinity_np(d2, sizeof(cpuset1), &cpuset1);
+        thread_setaffinity_np(d3, sizeof(cpuset0), &cpuset0);
+        thread_setaffinity_np(d4, sizeof(cpuset1), &cpuset1);
 
         start = high_resolution_clock::now();
         pthread_create(&a1, NULL, task1, NULL);
@@ -133,9 +153,9 @@ int main()
         pthread_join(d4, NULL);
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
-        cout << "Write 4 BRAM: " << duration.count() << " us\n";*/
+        cout << "Write 4 BRAM: " << duration.count() << " us\n";
 
-        start = high_resolution_clock::now();
+        /*start = high_resolution_clock::now();
         int pieces = 128;
         int step = bram_size / pieces;
         int pos = 0;
@@ -185,7 +205,7 @@ int main()
         }
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
-        cout << "Write 4 BRAM: " << duration.count() << " us\n";
+        cout << "Write 4 BRAM: " << duration.count() << " us\n";*/
 
         close(fd);
     }
