@@ -66,6 +66,7 @@ int main()
         while (barrier < 2)
         {
         }
+        cout << dec << thread_num;
     }
 
     /*for (int i = 2; i <= 16; i += 2)
