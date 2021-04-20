@@ -43,7 +43,7 @@ void *task4(void *arg)
     memcpy(axi_bram_ctrl_3, data, bram_size);
     return NULL;
 }
-int *main()
+int main()
 {
     // size of bram default block
     int fd;
