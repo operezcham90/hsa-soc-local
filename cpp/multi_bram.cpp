@@ -60,12 +60,7 @@ int main()
                 auto duration = duration_cast<microseconds>(stop - start);
                 cout << dec << "Seq time " << i << ": " << duration.count() << " us\n";
             }
-            barrier++;
         }
-        while (thread_num != barrier)
-        {
-        }
-        barrier++;
     }
 
     /*for (int i = 2; i <= 16; i += 2)
