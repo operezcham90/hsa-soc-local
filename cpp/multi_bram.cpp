@@ -100,53 +100,34 @@ int main()
         pthread_t d3;
         pthread_t d4;
 
-        pthread_attr_t attr;
-        cpu_set_t cpus;
-        pthread_attr_init(&attr);
-        CPU_ZERO(&cpus);
-        CPU_SET(0, &cpus);
-        CPU_SET(1, &cpus);
-        pthread_attr_setaffinity_np(&attr, sizeof(cpu_set_t), &cpus);
+        pthread_attr_t attr0;
+        pthread_attr_t attr1;
+        cpu_set_t cpus0;
+        cpu_set_t cpus1;
+        pthread_attr_init(&attr0);
+        pthread_attr_init(&attr1);
+        CPU_ZERO(&cpus0);
+        CPU_ZERO(&cpus1);
+        CPU_SET(0, &cpus0);
+        CPU_SET(1, &cpus1);
+        pthread_attr_setaffinity_np(&attr0, sizeof(cpu_set_t), &cpus0);
+        pthread_attr_setaffinity_np(&attr1, sizeof(cpu_set_t), &cpus1);
 
         start = high_resolution_clock::now();
-        pthread_create(&a1, &attr, task1, NULL);
+        pthread_create(&a1, &attr0, task1, NULL);
         pthread_join(a1, NULL);
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
         cout << "Write 1 BRAM: " << duration.count() << " us\n";
 
         start = high_resolution_clock::now();
-        pthread_create(&b1, &attr, task1, NULL);
-        pthread_create(&b2, &attr, task2, NULL);
+        pthread_create(&b1, &attr0, task1, NULL);
+        pthread_create(&b2, &attr1, task2, NULL);
         pthread_join(b1, NULL);
         pthread_join(b2, NULL);
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
         cout << "Write 2 BRAM: " << duration.count() << " us\n";
-
-        start = high_resolution_clock::now();
-        pthread_create(&c1, &attr, task1, NULL);
-        pthread_create(&c2, &attr, task2, NULL);
-        pthread_create(&c3, &attr, task3, NULL);
-        pthread_join(c1, NULL);
-        pthread_join(c2, NULL);
-        pthread_join(c3, NULL);
-        stop = high_resolution_clock::now();
-        duration = duration_cast<microseconds>(stop - start);
-        cout << "Write 3 BRAM: " << duration.count() << " us\n";
-
-        start = high_resolution_clock::now();
-        pthread_create(&d1, &attr, task1, NULL);
-        pthread_create(&d2, &attr, task2, NULL);
-        pthread_create(&d3, &attr, task3, NULL);
-        pthread_create(&d4, &attr, task4, NULL);
-        pthread_join(d1, NULL);
-        pthread_join(d2, NULL);
-        pthread_join(d3, NULL);
-        pthread_join(d4, NULL);
-        stop = high_resolution_clock::now();
-        duration = duration_cast<microseconds>(stop - start);
-        cout << "Write 4 BRAM: " << duration.count() << " us\n";
 
         /*start = high_resolution_clock::now();
         int pieces = 128;
