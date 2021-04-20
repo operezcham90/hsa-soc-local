@@ -131,7 +131,7 @@ int main()
         for (int i = 0; i < 128; i++)
         {
             int pos = step * i;
-            memcpy(axi_bram_ctrl_0 + pos, data + pos, step);
+            memcpy(&axi_bram_ctrl_0[pos], &data[pos], step);
         }
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
