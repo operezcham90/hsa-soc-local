@@ -78,6 +78,13 @@ int main()
         pthread_t a1;
         pthread_t b1;
         pthread_t b2;
+        pthread_t c1;
+        pthread_t c2;
+        pthread_t c3;
+        pthread_t d1;
+        pthread_t d2;
+        pthread_t d3;
+        pthread_t d4;
 
         start = high_resolution_clock::now();
         pthread_create(&a1, NULL, task1, NULL);
@@ -94,6 +101,39 @@ int main()
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
         cout << "Write 2 BRAM: " << duration.count() << " us\n";
+
+        start = high_resolution_clock::now();
+        pthread_create(&c1, NULL, task1, NULL);
+        pthread_create(&c2, NULL, task2, NULL);
+        pthread_create(&c3, NULL, task3, NULL);
+        pthread_join(c1, NULL);
+        pthread_join(c2, NULL);
+        pthread_join(c3, NULL);
+        stop = high_resolution_clock::now();
+        duration = duration_cast<microseconds>(stop - start);
+        cout << "Write 3 BRAM: " << duration.count() << " us\n";
+
+        start = high_resolution_clock::now();
+        pthread_create(&d1, NULL, task1, NULL);
+        pthread_create(&d2, NULL, task2, NULL);
+        pthread_create(&d3, NULL, task3, NULL);
+        pthread_create(&d4, NULL, task3, NULL);
+        pthread_join(d1, NULL);
+        pthread_join(d2, NULL);
+        pthread_join(d3, NULL);
+        pthread_join(d4, NULL);
+        stop = high_resolution_clock::now();
+        duration = duration_cast<microseconds>(stop - start);
+        cout << "Write 4 BRAM: " << duration.count() << " us\n";
+
+        cout << "Conf 0: " << axi_bram_ctrl_0[200] == 200;
+        << "\n";
+        cout << "Conf 1: " << axi_bram_ctrl_1[200] == 200;
+        << "\n";
+        cout << "Conf 2: " << axi_bram_ctrl_2[200] == 200;
+        << "\n";
+        cout << "Conf 3: " << axi_bram_ctrl_3[200] == 200;
+        << "\n";
 
         close(fd);
     }
