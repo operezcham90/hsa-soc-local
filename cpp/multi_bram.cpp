@@ -130,9 +130,13 @@ int main()
         cout << "Write 4 BRAM: " << duration.count() << " us\n";*/
 
         start = high_resolution_clock::now();
-        memcpy(axi_bram_ctrl_0_bytes, data_bytes, 2048);
-        memcpy(axi_bram_ctrl_0_bytes + 2048, data_bytes + 2048, 2048);
-        memcpy(axi_bram_ctrl_0_bytes + 4096, data_bytes + 4096, 2048);
+        int step = bram_size / 4;
+        int pos = 0;
+        for (int i = 0; i < 4; i++)
+        {
+            memcpy(axi_bram_ctrl_0_bytes + pos, data_bytes + pos, step);
+            pos += step;
+        }
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
         cout << "Write 1 BRAM: " << duration.count() << " us\n";
