@@ -17,13 +17,15 @@ using namespace std;
 using namespace std::chrono;
 
 // addresses from vivado block design
-unsigned long int *axi_bram_ctrl;
-unsigned long int *data;
 unsigned int bram_size = 2048 * 4;
 int brams = 16;
 int barrier = 0;
+unsigned long int *axi_bram_ctrl_0;
+unsigned long int *data_0;
+unsigned long int *axi_bram_ctrl_1;
+unsigned long int *data_1;
 
-void sequential_copy(int num)
+void sequential_copy(int num, unsigned long int *axi_bram_ctrl, unsigned long int *data)
 {
     int fd;
     if ((fd = open("/dev/mem", O_RDWR | O_SYNC)) != -1)
@@ -40,37 +42,32 @@ void sequential_copy(int num)
 }
 int main()
 {
+    // sequential
+    auto start = high_resolution_clock::now();
+    for (int i = 0; i < 16; i++)
+    {
+        sequential_copy(i, axi_bram_ctrl_0, data_0);
+    }
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
+    cout << dec << "Seq time: " << duration.count() << " us\n";
+
+    // parallel
+    start = high_resolution_clock::now();
 #pragma omp parallel
     {
         int thread_num = omp_get_thread_num();
-
-        if (thread_num == 0)
+        for (int i = thread_num; i < 16; i += 2)
         {
-            for (int i = 0; i < 16; i++)
-            {
-                auto start = high_resolution_clock::now();
-                sequential_copy(i);
-                auto stop = high_resolution_clock::now();
-                auto duration = duration_cast<microseconds>(stop - start);
-                cout << dec << "Seq time " << i << ": " << duration.count() << " us\n";
-            }
+            if (thread_num == 0)
+                sequential_copy(i, axi_bram_ctrl_0, data_0);
+            else
+                sequential_copy(i, axi_bram_ctrl_1, data_1);
         }
-
-        barrier++;
-        while (barrier < 2)
-        {
-        }
-        barrier = 0;
     }
-
-    /*for (int i = 2; i <= 16; i += 2)
-    {
-        auto start = high_resolution_clock::now();
-        parallel_copy(i);
-        auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<microseconds>(stop - start);
-        cout << dec << "Par time " << i << ": " << duration.count() << " us\n";
-    }*/
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << dec << "Par time: " << duration.count() << " us\n";
 
     return 0;
 }
