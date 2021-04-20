@@ -113,7 +113,7 @@ int main()
         duration = duration_cast<microseconds>(stop - start);
         cout << "Write 3 BRAM: " << duration.count() << " us\n";
 
-        /*start = high_resolution_clock::now();
+        start = high_resolution_clock::now();
         pthread_create(&d1, NULL, task1, NULL);
         pthread_create(&d2, NULL, task2, NULL);
         pthread_create(&d3, NULL, task3, NULL);
@@ -124,7 +124,7 @@ int main()
         pthread_join(d4, NULL);
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
-        cout << "Write 4 BRAM: " << duration.count() << " us\n";*/
+        cout << "Write 4 BRAM: " << duration.count() << " us\n";
 
         close(fd);
     }
