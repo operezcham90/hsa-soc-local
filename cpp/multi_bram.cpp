@@ -25,23 +25,33 @@ unsigned long int *data;
 unsigned long int *data2;
 unsigned long int *data3;
 unsigned long int *data4;
+
+unsigned char *axi_bram_ctrl_0_bytes;
+unsigned char *data_bytes;
+unsigned char *axi_bram_ctrl_1_bytes;
+unsigned char *data2_bytes;
+unsigned char *axi_bram_ctrl_2_bytes;
+unsigned char *data3_bytes;
+unsigned char *axi_bram_ctrl_3_bytes;
+unsigned char *data4_bytes;
+
 unsigned int bram_size = 2048 * 4;
 unsigned int half_bram_size = 2048 * 2;
 
 void *task1(void *arg)
 {
-    memcpy(axi_bram_ctrl_0, data, half_bram_size);
-    memcpy(axi_bram_ctrl_2, data3, half_bram_size);
-    memcpy(axi_bram_ctrl_1, data2, half_bram_size);
-    memcpy(axi_bram_ctrl_3, data4, half_bram_size);
+    memcpy(axi_bram_ctrl_0_bytes, data_bytes, half_bram_size);
+    memcpy(axi_bram_ctrl_2_bytes, data3_bytes, half_bram_size);
+    memcpy(axi_bram_ctrl_1_bytes, data2_bytes, half_bram_size);
+    memcpy(axi_bram_ctrl_3_bytes, data4_bytes, half_bram_size);
     return NULL;
 }
 void *task2(void *arg)
 {
-    memcpy(axi_bram_ctrl_1 + half_bram_size, data2 + half_bram_size, half_bram_size);
-    memcpy(axi_bram_ctrl_3 + half_bram_size, data4 + half_bram_size, half_bram_size);
-    memcpy(axi_bram_ctrl_0 + half_bram_size, data + half_bram_size, half_bram_size);
-    memcpy(axi_bram_ctrl_2 + half_bram_size, data3 + half_bram_size, half_bram_size);
+    memcpy(axi_bram_ctrl_1_bytes + half_bram_size, data2_bytes + half_bram_size, half_bram_size);
+    memcpy(axi_bram_ctrl_3_bytes + half_bram_size, data4_bytes + half_bram_size, half_bram_size);
+    memcpy(axi_bram_ctrl_0_bytes + half_bram_size, data_bytes + half_bram_size, half_bram_size);
+    memcpy(axi_bram_ctrl_2_bytes + half_bram_size, data3_bytes + half_bram_size, half_bram_size);
     return NULL;
 }
 void *task3(void *arg)
@@ -82,14 +92,14 @@ int main()
         auto duration = duration_cast<microseconds>(stop - start);
         cout << "Preparation: " << duration.count() << " us\n";
 
-        unsigned char *axi_bram_ctrl_0_bytes = (unsigned char *)axi_bram_ctrl_0;
-        unsigned char *data_bytes = (unsigned char *)data;
-        unsigned char *axi_bram_ctrl_1_bytes = (unsigned char *)axi_bram_ctrl_1;
-        unsigned char *data2_bytes = (unsigned char *)data2;
-        unsigned char *axi_bram_ctrl_2_bytes = (unsigned char *)axi_bram_ctrl_2;
-        unsigned char *data3_bytes = (unsigned char *)data3;
-        unsigned char *axi_bram_ctrl_3_bytes = (unsigned char *)axi_bram_ctrl_3;
-        unsigned char *data4_bytes = (unsigned char *)data4;
+        axi_bram_ctrl_0_bytes = (unsigned char *)axi_bram_ctrl_0;
+        data_bytes = (unsigned char *)data;
+        axi_bram_ctrl_1_bytes = (unsigned char *)axi_bram_ctrl_1;
+        data2_bytes = (unsigned char *)data2;
+        axi_bram_ctrl_2_bytes = (unsigned char *)axi_bram_ctrl_2;
+        data3_bytes = (unsigned char *)data3;
+        axi_bram_ctrl_3_bytes = (unsigned char *)axi_bram_ctrl_3;
+        data4_bytes = (unsigned char *)data4;
 
         pthread_t a1;
 
