@@ -18,15 +18,14 @@ using namespace std::chrono;
 
 // addresses from vivado block design
 unsigned int bram_size = 2048 * 4;
-int brams = 16;
 int barrier = 0;
 
-/*void sequential_copy(int num, unsigned long int *axi_bram_ctrl, unsigned long int *data)
+void sequential_copy(int num, unsigned long int *axi_bram_ctrl, unsigned long int *data)
 {
     int fd;
     if ((fd = open("/dev/mem", O_RDWR | O_SYNC)) != -1)
     {
-        off_t addr = 0x40000000 + 0x2000000 * num;
+        off_t addr = 0x40000000 * (num + 1);
         axi_bram_ctrl = (unsigned long int *)mmap(NULL, bram_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, addr);
         data = (unsigned long int *)malloc(bram_size);
 
@@ -35,33 +34,34 @@ int barrier = 0;
 
         close(fd);
     }
-}*/
+}
 int main()
 {
-    // sequential
+    // sequential single channel
     unsigned long int *axi_bram_ctrl_0;
     unsigned long int *data_0;
     auto start = high_resolution_clock::now();
     for (int i = 0; i < 16; i++)
     {
-        int fd0;
-        if ((fd0 = open("/dev/mem", O_RDWR | O_ASYNC)) != -1)
-        {
-            off_t addr = 0x40000000 + 0x2000000 * i;
-            axi_bram_ctrl_0 = (unsigned long int *)mmap(NULL, bram_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd0, addr);
-            data_0 = (unsigned long int *)malloc(bram_size);
-
-            // copy data to bram
-            memcpy(axi_bram_ctrl_0, data_0, bram_size);
-
-            close(fd0);
-        }
+        sequential_copy(0, axi_bram_ctrl_0, data_0);
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    cout << dec << "Seq time: " << duration.count() << " us\n";
+    cout << dec << "Seq 1 time: " << duration.count() << " us\n";
 
-    // parallel
+    // sequential dual channel
+    unsigned long int *axi_bram_ctrl_0;
+    unsigned long int *data_0;
+    auto start = high_resolution_clock::now();
+    for (int i = 0; i < 16; i++)
+    {
+        sequential_copy(i % 2, axi_bram_ctrl_0, data_0);
+    }
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
+    cout << dec << "Seq 2 time: " << duration.count() << " us\n";
+
+    // parallel single channel
     start = high_resolution_clock::now();
 #pragma omp parallel
     {
@@ -70,23 +70,28 @@ int main()
         int thread_num = omp_get_thread_num();
         for (int i = thread_num; i < 16; i += 2)
         {
-            int fd1; // O_ASYNC O_SYNC
-            if ((fd1 = open("/dev/mem", O_RDWR | O_ASYNC)) != -1)
-            {
-                off_t addr = 0x40000000 + 0x2000000 * i;
-                axi_bram_ctrl_1 = (unsigned long int *)mmap(NULL, bram_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd1, addr);
-                data_1 = (unsigned long int *)malloc(bram_size);
-
-                // copy data to bram
-                memcpy(axi_bram_ctrl_1, data_1, bram_size);
-
-                close(fd1);
-            }
+            sequential_copy(0, axi_bram_ctrl_1, data_1);
         }
     }
     stop = high_resolution_clock::now();
     duration = duration_cast<microseconds>(stop - start);
-    cout << dec << "Par time: " << duration.count() << " us\n";
+    cout << dec << "Par 1 time: " << duration.count() << " us\n";
+
+    // parallel dual channel
+    start = high_resolution_clock::now();
+#pragma omp parallel
+    {
+        unsigned long int *axi_bram_ctrl_1;
+        unsigned long int *data_1;
+        int thread_num = omp_get_thread_num();
+        for (int i = thread_num; i < 16; i += 2)
+        {
+            sequential_copy(thread_num, axi_bram_ctrl_1, data_1);
+        }
+    }
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << dec << "Par 2 time: " << duration.count() << " us\n";
 
     return 0;
 }
