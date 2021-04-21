@@ -50,8 +50,6 @@ int main()
     cout << dec << "Seq 1 time: " << duration.count() << " us\n";
 
     // sequential dual channel
-    unsigned long int *axi_bram_ctrl_0;
-    unsigned long int *data_0;
     start = high_resolution_clock::now();
     for (int i = 0; i < 16; i++)
     {
