@@ -23,7 +23,7 @@ int barrier = 0;
 void sequential_copy(int num, unsigned long int *axi_bram_ctrl, unsigned long int *data)
 {
     int fd;
-    if ((fd = open("/dev/mem", O_RDWR | O_SYNC)) != -1)
+    if ((fd = open("/dev/mem", O_RDWR | O_ASYNC)) != -1)
     {
         off_t addr = 0x40000000 * (num + 1);
         axi_bram_ctrl = (unsigned long int *)mmap(NULL, bram_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, addr);
