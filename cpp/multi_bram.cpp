@@ -30,7 +30,7 @@ void sequential_copy(int num, unsigned long int *axi_bram_ctrl, unsigned long in
         data = (unsigned long int *)malloc(bram_size);
 
         // copy data to bram
-        int p_size = 32;
+        int p_size = 256;
         for (int i = 0; i < bram_size / p_size; i++)
         {
             memcpy(axi_bram_ctrl + ((p_size / 4) * i), data + ((p_size / 4) * i), p_size);
