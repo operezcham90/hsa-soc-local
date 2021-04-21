@@ -52,13 +52,13 @@ int main()
     // sequential dual channel
     unsigned long int *axi_bram_ctrl_0;
     unsigned long int *data_0;
-    auto start = high_resolution_clock::now();
+    start = high_resolution_clock::now();
     for (int i = 0; i < 16; i++)
     {
         sequential_copy(i % 2, axi_bram_ctrl_0, data_0);
     }
-    auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(stop - start);
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
     cout << dec << "Seq 2 time: " << duration.count() << " us\n";
 
     // parallel single channel
