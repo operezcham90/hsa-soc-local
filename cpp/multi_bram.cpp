@@ -23,7 +23,7 @@ int barrier = 0;
 void sequential_copy(int num, unsigned long int *axi_bram_ctrl, unsigned long int *data)
 {
     int fd;
-    if ((fd = open("/dev/mem", O_RDWR | O_ASYNC)) != -1)
+    if ((fd = open("/dev/mem", O_RDWR | O_SYNC)) != -1)
     {
         off_t addr = 0x40000000 * (num + 1);
         axi_bram_ctrl = (unsigned long int *)mmap(NULL, bram_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, addr);
@@ -41,7 +41,7 @@ int main()
     unsigned long int *axi_bram_ctrl_0;
     unsigned long int *data_0;
     auto start = high_resolution_clock::now();
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < 16; i++)
     {
         sequential_copy(0, axi_bram_ctrl_0, data_0);
     }
@@ -51,7 +51,7 @@ int main()
 
     // sequential dual channel
     start = high_resolution_clock::now();
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < 16; i++)
     {
         sequential_copy(i % 2, axi_bram_ctrl_0, data_0);
     }
@@ -66,7 +66,7 @@ int main()
         unsigned long int *axi_bram_ctrl_1;
         unsigned long int *data_1;
         int thread_num = omp_get_thread_num();
-        for (int i = thread_num; i < 2; i += 2)
+        for (int i = thread_num; i < 16; i += 2)
         {
             sequential_copy(0, axi_bram_ctrl_1, data_1);
         }
@@ -82,7 +82,7 @@ int main()
         unsigned long int *axi_bram_ctrl_1;
         unsigned long int *data_1;
         int thread_num = omp_get_thread_num();
-        for (int i = thread_num; i < 2; i += 2)
+        for (int i = thread_num; i < 16; i += 2)
         {
             sequential_copy(thread_num, axi_bram_ctrl_1, data_1);
         }
