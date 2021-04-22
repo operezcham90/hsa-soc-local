@@ -39,9 +39,11 @@ void sequential_copy(int num, unsigned long int *axi_bram_ctrl, unsigned long in
         // copy data to bram
         int step = 1024;
         int steps = step / 4;
-        for (int i = 0, int j = 0; i < bram_size; i += step, j += steps)
+        int j = 0;
+        for (int i = 0; i < bram_size; i += step)
         {
             memcpy(axi_bram_ctrl + j, data + j, step);
+            j += steps;
         }
 
         close(fd);
