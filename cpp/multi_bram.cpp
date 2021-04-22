@@ -44,6 +44,23 @@ int main()
     auto start = high_resolution_clock::now();
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
+
+    // parallel more threads dual channel
+    start = high_resolution_clock::now();
+#pragma omp parallel num_threads(4)
+    {
+        int thread_num = omp_get_thread_num() % 2;
+        for (int i = thread_num; i < 128; i += 2)
+        {
+            unsigned long int *axi_bram_ctrl_1;
+            unsigned long int *data_1;
+            sequential_copy(thread_num, axi_bram_ctrl_1, data_1);
+        }
+    }
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << dec << "Par 3 time: " << duration.count() << " us\n";
+
     // parallel dual channel
     start = high_resolution_clock::now();
 #pragma omp parallel
