@@ -39,7 +39,7 @@ void sequential_copy(int num, unsigned long int *axi_bram_ctrl, unsigned long in
         unsigned char *src = (unsigned char *)data;
 
         // copy data to bram
-        int step = 256;
+        int step = 1024;
         for (int i = 0; i < bram_size; i += step)
         {
             memcpy(dest + i, src + i, step);
