@@ -17,24 +17,27 @@ using namespace std;
 using namespace std::chrono;
 
 // addresses from vivado block design
-unsigned int bram_size = 2048 * 4;
-int barrier = 0;
+unsigned int bram_size = 2048 * 2; //2048 * 4;
 
 void sequential_copy(int num, unsigned long int *axi_bram_ctrl, unsigned long int *data)
 {
     int fd;
     if ((fd = open("/dev/mem", O_RDWR | O_SYNC)) != -1)
     {
-        off_t addr = 0x40000000 * (num + 1);
+        off_t addr;
+        if (num == 0)
+            addr = 0x40000000;
+        if (num == 1)
+            addr = 0x80000000;
+        if (num == 2)
+            addr = 0x42000000;
+        if (num == 3)
+            addr = 0x82000000;
         axi_bram_ctrl = (unsigned long int *)mmap(NULL, bram_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, addr);
         data = (unsigned long int *)malloc(bram_size);
 
         // copy data to bram
-        int p_size = 1024;
-        for (int i = 0; i < bram_size / p_size; i++)
-        {
-            memcpy(axi_bram_ctrl + ((p_size / 4) * i), data + ((p_size / 4) * i), p_size);
-        }
+        memcpy(axi_bram_ctrl, data, bram_size);
 
         close(fd);
     }
@@ -45,41 +48,9 @@ int main()
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
 
-    // parallel more threads dual channel
-    start = high_resolution_clock::now();
-#pragma omp parallel num_threads(4)
-    {
-        int thread_num = omp_get_thread_num();
-        for (int i = thread_num; i < 128; i += 4)
-        {
-            unsigned long int *axi_bram_ctrl_1;
-            unsigned long int *data_1;
-            sequential_copy(thread_num % 2, axi_bram_ctrl_1, data_1);
-        }
-    }
-    stop = high_resolution_clock::now();
-    duration = duration_cast<microseconds>(stop - start);
-    cout << dec << "Par 3 time: " << duration.count() << " us\n";
-
-    // parallel dual channel
-    start = high_resolution_clock::now();
-#pragma omp parallel
-    {
-        int thread_num = omp_get_thread_num();
-        for (int i = thread_num; i < 128; i += 2)
-        {
-            unsigned long int *axi_bram_ctrl_1;
-            unsigned long int *data_1;
-            sequential_copy(thread_num, axi_bram_ctrl_1, data_1);
-        }
-    }
-    stop = high_resolution_clock::now();
-    duration = duration_cast<microseconds>(stop - start);
-    cout << dec << "Par 2 time: " << duration.count() << " us\n";
-
     // sequential single channel
     start = high_resolution_clock::now();
-    for (int i = 0; i < 128; i++)
+    for (int i = 0; i < 256; i++)
     {
         unsigned long int *axi_bram_ctrl_0;
         unsigned long int *data_0;
@@ -106,7 +77,7 @@ int main()
 #pragma omp parallel
     {
         int thread_num = omp_get_thread_num();
-        for (int i = thread_num; i < 128; i += 2)
+        for (int i = thread_num; i < 256; i += 2)
         {
             unsigned long int *axi_bram_ctrl_1;
             unsigned long int *data_1;
@@ -116,6 +87,38 @@ int main()
     stop = high_resolution_clock::now();
     duration = duration_cast<microseconds>(stop - start);
     cout << dec << "Par 1 time: " << duration.count() << " us\n";
+
+    // parallel dual channel
+    start = high_resolution_clock::now();
+#pragma omp parallel
+    {
+        int thread_num = omp_get_thread_num();
+        for (int i = thread_num; i < 256; i += 2)
+        {
+            unsigned long int *axi_bram_ctrl_1;
+            unsigned long int *data_1;
+            sequential_copy(thread_num, axi_bram_ctrl_1, data_1);
+        }
+    }
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << dec << "Par 2 time: " << duration.count() << " us\n";
+
+    // parallel 4 channel
+    start = high_resolution_clock::now();
+#pragma omp parallel num_threads(4)
+    {
+        int thread_num = omp_get_thread_num();
+        for (int i = thread_num; i < 256; i += 4)
+        {
+            unsigned long int *axi_bram_ctrl_1;
+            unsigned long int *data_1;
+            sequential_copy(thread_num, axi_bram_ctrl_1, data_1);
+        }
+    }
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << dec << "Par 3 time: " << duration.count() << " us\n";
 
     return 0;
 }
