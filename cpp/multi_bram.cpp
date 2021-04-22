@@ -112,7 +112,7 @@ int main()
     cout << dec << "Par 2 time: " << duration.count() << " us\n";
 
     // parallel 4 channel
-    start = high_resolution_clock::now();
+    /*start = high_resolution_clock::now();
 #pragma omp parallel num_threads(4)
     {
         int thread_num = omp_get_thread_num();
@@ -125,7 +125,7 @@ int main()
     }
     stop = high_resolution_clock::now();
     duration = duration_cast<microseconds>(stop - start);
-    cout << dec << "Par 3 time: " << duration.count() << " us\n";
+    cout << dec << "Par 3 time: " << duration.count() << " us\n";*/
 
     return 0;
 }
