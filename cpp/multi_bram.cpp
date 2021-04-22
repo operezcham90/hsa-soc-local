@@ -41,6 +41,9 @@ void sequential_copy(int num, unsigned long int *axi_bram_ctrl, unsigned long in
 }
 int main()
 {
+    auto start;
+    auto stop;
+    auto duration;
     // parallel dual channel
     start = high_resolution_clock::now();
 #pragma omp parallel
@@ -58,15 +61,15 @@ int main()
     cout << dec << "Par 2 time: " << duration.count() << " us\n";
 
     // sequential single channel
-    auto start = high_resolution_clock::now();
+    start = high_resolution_clock::now();
     for (int i = 0; i < 128; i++)
     {
         unsigned long int *axi_bram_ctrl_0;
         unsigned long int *data_0;
         sequential_copy(0, axi_bram_ctrl_0, data_0);
     }
-    auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(stop - start);
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
     cout << dec << "Seq 1 time: " << duration.count() << " us\n";
 
     // sequential dual channel
