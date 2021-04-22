@@ -35,9 +35,15 @@ void sequential_copy(int num, unsigned long int *axi_bram_ctrl, unsigned long in
             addr = 0x82000000;
         axi_bram_ctrl = (unsigned long int *)mmap(NULL, bram_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, addr);
         data = (unsigned long int *)malloc(bram_size);
+        unsigned char *dest = (unsigned char *)axi_bram_ctrl;
+        unsigned char *src = (unsigned char *)data;
 
         // copy data to bram
-        memcpy(axi_bram_ctrl, data, bram_size);
+        int step = 256;
+        for (int i = 0; i < bram_size; i += step)
+        {
+            memcpy(dest + i, src + i, step);
+        }
 
         close(fd);
     }
