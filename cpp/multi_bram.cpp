@@ -41,9 +41,9 @@ void sequential_copy(int num, unsigned long int *axi_bram_ctrl, unsigned long in
 }
 int main()
 {
-    auto start;
-    auto stop;
-    auto duration;
+    auto start = high_resolution_clock::now();
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
     // parallel dual channel
     start = high_resolution_clock::now();
 #pragma omp parallel
