@@ -17,7 +17,7 @@ using namespace std;
 using namespace std::chrono;
 
 // addresses from vivado block design
-unsigned int bram_size = 2048 * 2; //2048 * 4;
+unsigned int bram_size = 2048 * 4;
 
 void sequential_copy(int num, unsigned long int *axi_bram_ctrl, unsigned long int *data)
 {
@@ -50,7 +50,7 @@ int main()
 
     // sequential single channel
     start = high_resolution_clock::now();
-    for (int i = 0; i < 256; i++)
+    for (int i = 0; i < 128; i++)
     {
         unsigned long int *axi_bram_ctrl_0;
         unsigned long int *data_0;
@@ -77,7 +77,7 @@ int main()
 #pragma omp parallel
     {
         int thread_num = omp_get_thread_num();
-        for (int i = thread_num; i < 256; i += 2)
+        for (int i = thread_num; i < 128; i += 2)
         {
             unsigned long int *axi_bram_ctrl_1;
             unsigned long int *data_1;
@@ -93,7 +93,7 @@ int main()
 #pragma omp parallel
     {
         int thread_num = omp_get_thread_num();
-        for (int i = thread_num; i < 256; i += 2)
+        for (int i = thread_num; i < 128; i += 2)
         {
             unsigned long int *axi_bram_ctrl_1;
             unsigned long int *data_1;
@@ -109,7 +109,7 @@ int main()
 #pragma omp parallel num_threads(4)
     {
         int thread_num = omp_get_thread_num();
-        for (int i = thread_num; i < 256; i += 4)
+        for (int i = thread_num; i < 128; i += 4)
         {
             unsigned long int *axi_bram_ctrl_1;
             unsigned long int *data_1;
