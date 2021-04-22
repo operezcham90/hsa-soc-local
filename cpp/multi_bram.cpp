@@ -49,12 +49,12 @@ int main()
     start = high_resolution_clock::now();
 #pragma omp parallel num_threads(4)
     {
-        int thread_num = omp_get_thread_num() % 2;
-        for (int i = thread_num; i < 128; i += 2)
+        int thread_num = omp_get_thread_num();
+        for (int i = thread_num; i < 128; i += 4)
         {
             unsigned long int *axi_bram_ctrl_1;
             unsigned long int *data_1;
-            sequential_copy(thread_num, axi_bram_ctrl_1, data_1);
+            sequential_copy(thread_num % 2, axi_bram_ctrl_1, data_1);
         }
     }
     stop = high_resolution_clock::now();
