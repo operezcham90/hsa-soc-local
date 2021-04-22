@@ -30,7 +30,7 @@ void sequential_copy(int num, unsigned long int *axi_bram_ctrl, unsigned long in
         data = (unsigned long int *)malloc(bram_size);
 
         // copy data to bram
-        int p_size = 256;
+        int p_size = 1024;
         for (int i = 0; i < bram_size / p_size; i++)
         {
             memcpy(axi_bram_ctrl + ((p_size / 4) * i), data + ((p_size / 4) * i), p_size);
@@ -41,6 +41,22 @@ void sequential_copy(int num, unsigned long int *axi_bram_ctrl, unsigned long in
 }
 int main()
 {
+    // parallel dual channel
+    start = high_resolution_clock::now();
+#pragma omp parallel
+    {
+        int thread_num = omp_get_thread_num();
+        for (int i = thread_num; i < 128; i += 2)
+        {
+            unsigned long int *axi_bram_ctrl_1;
+            unsigned long int *data_1;
+            sequential_copy(thread_num, axi_bram_ctrl_1, data_1);
+        }
+    }
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << dec << "Par 2 time: " << duration.count() << " us\n";
+
     // sequential single channel
     auto start = high_resolution_clock::now();
     for (int i = 0; i < 128; i++)
@@ -80,22 +96,6 @@ int main()
     stop = high_resolution_clock::now();
     duration = duration_cast<microseconds>(stop - start);
     cout << dec << "Par 1 time: " << duration.count() << " us\n";
-
-    // parallel dual channel
-    start = high_resolution_clock::now();
-#pragma omp parallel
-    {
-        int thread_num = omp_get_thread_num();
-        for (int i = thread_num; i < 128; i += 2)
-        {
-            unsigned long int *axi_bram_ctrl_1;
-            unsigned long int *data_1;
-            sequential_copy(thread_num, axi_bram_ctrl_1, data_1);
-        }
-    }
-    stop = high_resolution_clock::now();
-    duration = duration_cast<microseconds>(stop - start);
-    cout << dec << "Par 2 time: " << duration.count() << " us\n";
 
     return 0;
 }
