@@ -37,7 +37,7 @@ void sequential_copy(int num, unsigned long int *axi_bram_ctrl, unsigned long in
         data = (unsigned long int *)malloc(bram_size);
 
         // copy data to bram
-        int step = 1024;
+        int step = 2048;
         int steps = step / 4;
         int j = 0;
         for (int i = 0; i < bram_size; i += step)
