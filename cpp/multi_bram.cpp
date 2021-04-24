@@ -33,7 +33,8 @@ void sequential_copy(int num, unsigned long int *axi_bram_ctrl, unsigned long in
             addr = 0x42000000;
         if (num == 3)
             addr = 0x82000000;
-        axi_bram_ctrl = (unsigned long int *)mmap(NULL, bram_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, addr);
+        //axi_bram_ctrl = (unsigned long int *)mmap(NULL, bram_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, addr);
+        axi_bram_ctrl = (unsigned long int *)mmap(NULL, bram_size, PROT_WRITE, MAP_PRIVATE, fd, addr);
         data = (unsigned long int *)malloc(bram_size);
 
         // copy data to bram
