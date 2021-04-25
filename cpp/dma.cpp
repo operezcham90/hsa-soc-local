@@ -141,7 +141,6 @@ int main()
     unsigned int *virtual_destination_address = mmap(NULL, 65535, PROT_READ | PROT_WRITE, MAP_SHARED, dh, 0x0f000000); // Memory map destination address
 
     virtual_source_address[0] = 0x11223344;     // Write random stuff to source block
-    memset(virtual_destination_address, 0, 32); // Clear destination block
 
     printf("Source memory block:      ");
     memdump(virtual_source_address, 32);
