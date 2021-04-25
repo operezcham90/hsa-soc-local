@@ -28,30 +28,6 @@ unsigned int dma_get(unsigned int *dma_virtual_address, int offset)
     return dma_virtual_address[offset >> 2];
 }
 
-int dma_mm2s_sync(unsigned int *dma_virtual_address)
-{
-    unsigned int mm2s_status = dma_get(dma_virtual_address, MM2S_STATUS_REGISTER);
-    while (!(mm2s_status & 1 << 12) || !(mm2s_status & 1 << 1))
-    {
-        dma_s2mm_status(dma_virtual_address);
-        dma_mm2s_status(dma_virtual_address);
-
-        mm2s_status = dma_get(dma_virtual_address, MM2S_STATUS_REGISTER);
-    }
-}
-
-int dma_s2mm_sync(unsigned int *dma_virtual_address)
-{
-    unsigned int s2mm_status = dma_get(dma_virtual_address, S2MM_STATUS_REGISTER);
-    while (!(s2mm_status & 1 << 12) || !(s2mm_status & 1 << 1))
-    {
-        dma_s2mm_status(dma_virtual_address);
-        dma_mm2s_status(dma_virtual_address);
-
-        s2mm_status = dma_get(dma_virtual_address, S2MM_STATUS_REGISTER);
-    }
-}
-
 void dma_s2mm_status(unsigned int *dma_virtual_address)
 {
     unsigned int status = dma_get(dma_virtual_address, S2MM_STATUS_REGISTER);
@@ -118,9 +94,33 @@ void dma_mm2s_status(unsigned int *dma_virtual_address)
     printf("\n");
 }
 
+int dma_mm2s_sync(unsigned int *dma_virtual_address)
+{
+    unsigned int mm2s_status = dma_get(dma_virtual_address, MM2S_STATUS_REGISTER);
+    while (!(mm2s_status & 1 << 12) || !(mm2s_status & 1 << 1))
+    {
+        dma_s2mm_status(dma_virtual_address);
+        dma_mm2s_status(dma_virtual_address);
+
+        mm2s_status = dma_get(dma_virtual_address, MM2S_STATUS_REGISTER);
+    }
+}
+
+int dma_s2mm_sync(unsigned int *dma_virtual_address)
+{
+    unsigned int s2mm_status = dma_get(dma_virtual_address, S2MM_STATUS_REGISTER);
+    while (!(s2mm_status & 1 << 12) || !(s2mm_status & 1 << 1))
+    {
+        dma_s2mm_status(dma_virtual_address);
+        dma_mm2s_status(dma_virtual_address);
+
+        s2mm_status = dma_get(dma_virtual_address, S2MM_STATUS_REGISTER);
+    }
+}
+
 void memdump(void *virtual_address, int byte_count)
 {
-    char *p = virtual_address;
+    char *p = (char *)virtual_address;
     int offset;
     for (offset = 0; offset < byte_count; offset++)
     {
