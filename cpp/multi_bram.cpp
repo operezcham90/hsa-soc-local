@@ -22,7 +22,8 @@ unsigned int bram_size = 2048 * 4;
 void sequential_copy(int num, unsigned long int *axi_bram_ctrl, unsigned long int *data)
 {
     int fd;
-    if ((fd = open("/dev/mem", O_RDWR | O_SYNC)) != -1)
+    //if ((fd = open("/dev/mem", O_RDWR | O_SYNC)) != -1)
+    if ((fd = open("/dev/mem", O_SYNC)) != -1)
     {
         off_t addr;
         if (num == 0)
