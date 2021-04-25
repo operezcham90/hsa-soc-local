@@ -147,6 +147,8 @@ int main()
     printf("Destination memory block: ");
     memdump(virtual_destination_address, 32);
 
+    return 0;
+
     printf("Resetting DMA\n");
     dma_set(virtual_address, S2MM_CONTROL_REGISTER, 4);
     dma_set(virtual_address, MM2S_CONTROL_REGISTER, 4);

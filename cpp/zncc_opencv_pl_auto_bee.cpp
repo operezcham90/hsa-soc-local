@@ -366,20 +366,21 @@ void cross_over(double *mu_bees, double *lambda_bees, int parent1, int parent2, 
     }
 }
 void generate_new_pop(double *mu_bees, signed long int *mu_obj,
-                      double *lambda_bees, signed long int *lambda_obj, double *limits)
+                      double *lambda_bees, signed long int *lambda_obj, double *limits,
+                      int first, int last)
 {
     int mate1, mate2, num_cross, num_mut, num_rand;
 
-    for (int bee = 0; bee < num_bees; bee++)
+    for (int bee = first; bee <= last; bee++)
     {
         // Mutation
         // bees from 0 to rate_mut - 1
         // Only core 0 of each bee
-        if (bee >= 0 && bee <= rate_mut - 1)
+        if (bee >= 0 + first && bee <= rate_mut - 1 + first)
         {
             // Tournament
-            int a = cvRandInt(&rng) % num_bees;
-            int b = cvRandInt(&rng) % num_bees;
+            int a = (cvRandInt(&rng) % (last - first + 1)) + first;
+            int b = (cvRandInt(&rng) % (last - first + 1)) + first;
             if (mu_obj[a] > mu_obj[b])
                 mate1 = a;
             else
@@ -396,15 +397,15 @@ void generate_new_pop(double *mu_bees, signed long int *mu_obj,
         // Crossover
         // bees from first_bee + rate_mut to first_bee + rate_mut + rate_cross - 1
         // rate_mut must be even if crossover happens since two sons are generated
-        if (bee >= rate_mut &&
-            bee <= rate_mut + rate_cross - 1 &&
+        if (bee >= rate_mut + first &&
+            bee <= rate_mut + rate_cross - 1 + first &&
             bee % 2 == 0)
         {
             //Tournament
-            int a = cvRandInt(&rng) % num_bees;
-            int b = cvRandInt(&rng) % num_bees;
-            int c = cvRandInt(&rng) % num_bees;
-            int d = cvRandInt(&rng) % num_bees;
+            int a = (cvRandInt(&rng) % (last - first + 1)) + first;
+            int b = (cvRandInt(&rng) % (last - first + 1)) + first;
+            int c = (cvRandInt(&rng) % (last - first + 1)) + first;
+            int d = (cvRandInt(&rng) % (last - first + 1)) + first;
             if (mu_obj[a] > mu_obj[b])
                 mate1 = a;
             else
@@ -421,7 +422,8 @@ void generate_new_pop(double *mu_bees, signed long int *mu_obj,
         // Random
         // bees from first_bee + rate_mut + rate_cross to
         // first_bee + rate_mut + rate_cross + rate_rand - 1
-        if (bee >= rate_mut + rate_cross && bee <= rate_mut + rate_cross + rate_rand - 1)
+        if (bee >= rate_mut + rate_cross + first &&
+            bee <= rate_mut + rate_cross + rate_rand - 1 + first)
         {
             int nvar_real = 2;
             float lower;
@@ -519,9 +521,6 @@ int main()
     // EXPLORATION PHASE
     // Generate random initial exploration individuals
     initial_random_pop(mu_e_bees, limits, 0, num_bees - 1);
-    rate_mut = 39;
-    rate_cross = 6;
-    rate_rand = 19;
 
     for (int generation = 0; generation < max_gen; generation++)
     {
@@ -529,7 +528,10 @@ int main()
         eval_pop(mu_e_bees, mu_e_obj, limits);
 
         // Generate lamdba population
-        generate_new_pop(mu_e_bees, mu_e_obj, lambda_e_bees, lambda_e_obj, limits);
+        rate_mut = 39;
+        rate_cross = 6;
+        rate_rand = 19;
+        generate_new_pop(mu_e_bees, mu_e_obj, lambda_e_bees, lambda_e_obj, limits, 0, num_bees - 1);
 
         // Evaluate new population
         eval_pop(lambda_e_bees, lambda_e_obj, limits);
@@ -679,9 +681,6 @@ int main()
         initial_random_pop(mu_f_bees, limits, first, last);
         first += recruits[r];
     }
-    rate_mut = 39;
-    rate_cross = 20;
-    rate_rand = 5;
 
     for (int generation = 0; generation < max_gen / 2; generation++)
     {
@@ -689,6 +688,9 @@ int main()
         eval_pop(mu_f_bees, mu_f_obj, limits);
 
         // Generate lamdba population
+        rate_mut = 39;
+        rate_cross = 20;
+        rate_rand = 5;
         generate_new_pop(mu_f_bees, mu_f_obj, lambda_f_bees, lambda_f_obj, limits);
 
         // Evaluate new population
