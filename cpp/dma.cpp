@@ -135,12 +135,12 @@ void memdump(void *virtual_address, int byte_count)
 
 int main()
 {
-    int dh = open("/dev/mem", O_RDWR | O_SYNC);                                                                        // Open /dev/mem which represents the whole physical memory
-    unsigned int *virtual_address = mmap(NULL, 65535, PROT_READ | PROT_WRITE, MAP_SHARED, dh, 0x40400000);             // Memory map AXI Lite register block
-    unsigned int *virtual_source_address = mmap(NULL, 65535, PROT_READ | PROT_WRITE, MAP_SHARED, dh, 0x0e000000);      // Memory map source address
-    unsigned int *virtual_destination_address = mmap(NULL, 65535, PROT_READ | PROT_WRITE, MAP_SHARED, dh, 0x0f000000); // Memory map destination address
+    int dh = open("/dev/mem", O_RDWR | O_SYNC);                                                                                        // Open /dev/mem which represents the whole physical memory
+    unsigned int *virtual_address = (unsigned int *)mmap(NULL, 65535, PROT_READ | PROT_WRITE, MAP_SHARED, dh, 0x40400000);             // Memory map AXI Lite register block
+    unsigned int *virtual_source_address = (unsigned int *)mmap(NULL, 65535, PROT_READ | PROT_WRITE, MAP_SHARED, dh, 0x0e000000);      // Memory map source address
+    unsigned int *virtual_destination_address = (unsigned int *)mmap(NULL, 65535, PROT_READ | PROT_WRITE, MAP_SHARED, dh, 0x0f000000); // Memory map destination address
 
-    virtual_source_address[0] = 0x11223344;     // Write random stuff to source block
+    virtual_source_address[0] = 0x11223344; // Write random stuff to source block
 
     printf("Source memory block:      ");
     memdump(virtual_source_address, 32);
