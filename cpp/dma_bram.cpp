@@ -160,7 +160,7 @@ int main()
     dma_mm2s_status(virtual_address);
 
     printf("Writing destination address\n");
-    dma_set(virtual_address, S2MM_DESTINATION_ADDRESS, 0xC0000000); // Write destination address
+    dma_set(virtual_address, S2MM_DESTINATION_ADDRESS, 0x40000000); // Write destination address
     dma_s2mm_status(virtual_address);
 
     printf("Writing source address...\n");
