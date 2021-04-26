@@ -15,9 +15,9 @@ int main()
         cout << "devmem fail\n";
         return 1;
     }
-    unsigned long map_size = 0x10000; // 64K
+    unsigned long map_size = 0x2000; // 8K
     unsigned long src_addr = 0x0e000000;
-    unsigned long dest_addr = 0x0f000000;
+    unsigned long dest_addr = 0x40000000;
     unsigned long *cdma = (unsigned long *)mmap(NULL, map_size, PROT_READ | PROT_WRITE, MAP_SHARED, dh, 0x7E200000);
     unsigned long *ddr_src = (unsigned long *)mmap(NULL, map_size, PROT_READ | PROT_WRITE, MAP_SHARED, dh, src_addr);
     unsigned long *ddr_dest = (unsigned long *)mmap(NULL, map_size, PROT_READ | PROT_WRITE, MAP_SHARED, dh, dest_addr);
@@ -47,7 +47,7 @@ int main()
     {
         cdma[0] = 0x00000004;
     }
-    cout << "CDMA in idle state\n";
+    cout << "CDMA ready\n";
     cdma[0] = 0x00000000;
     // set CDMA
     cdma[6] = src_addr;
@@ -57,7 +57,7 @@ int main()
     while ((cdma[1] & 0x00000002) == 0)
     {
     }
-    cout << "CDMA in idle state\n";
+    cout << "CDMA done\n";
     cout << "DEST:\n";
     for (int i = 0; i < 8; i++)
     {
