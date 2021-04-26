@@ -70,14 +70,15 @@ int main(int argc, char *argv[])
     value = *(volatile unsigned int *)(cdma + 0x20);
     printf("Destination Pointer = 0x%08x\n", value);
 
-    //	*(volatile unsigned int *)(cdma + 0x28) = ((volatile unsigned int)0x00004000);
-    *(volatile unsigned int *)(cdma + 0x28) = ((volatile unsigned int)4096 * FILESIZE);
+    *(volatile unsigned int *)(cdma + 0x28) = ((volatile unsigned int)MAP_SIZE);
+    //*(volatile unsigned int *)(cdma + 0x28) = ((volatile unsigned int)4096 * FILESIZE);
     value = *(volatile unsigned int *)(cdma + 0x28);
     printf("Bytes to Transfer (BTT) = 0x%08x\n", value);
 
     //Wait for the "idle" bit to go high.
     while (*(volatile unsigned int *)(cdma + 0x4) & (0x1) == 0)
-        ;
+    {
+    }
 
     for (i = 0; i < 5; i++)
     {
@@ -98,14 +99,6 @@ int main(int argc, char *argv[])
         printf("%d, ", ((volatile unsigned int *)ram)[i]);
     }
     printf("\n");
-    FILE *fp;
-    unsigned int val;
-    fp = fopen("out.txt", "w");
-    for (i = 0; i < ((4096 * FILESIZE) / 4); i++)
-    {
-        fprintf(fp, "%u,", ((volatile unsigned int *)ram)[i]);
-    }
-    fclose(fp);
 
     return 0;
 }
