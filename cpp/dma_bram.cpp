@@ -1,199 +1,112 @@
-/**
- * Proof of concept offloaded memcopy using AXI Direct Memory Access v7.1
- */
-
+#include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <termios.h>
+#include <string.h>
+#include <sys/types.h>
 #include <sys/mman.h>
+#include <stdint.h>
+#include <sched.h>
+#include <time.h>
 
-#define MM2S_CONTROL_REGISTER 0x00
-#define MM2S_STATUS_REGISTER 0x04
-#define MM2S_START_ADDRESS 0x18
-#define MM2S_LENGTH 0x28
+#define MY_SIZE_BYTE 64
 
-#define S2MM_CONTROL_REGISTER 0x30
-#define S2MM_STATUS_REGISTER 0x34
-#define S2MM_DESTINATION_ADDRESS 0x48
-#define S2MM_LENGTH 0x58
+#define MAP_SIZE 4096UL
+#define MAP_MASK (MAP_SIZE - 1)
 
-unsigned int dma_set(unsigned int *dma_virtual_address, int offset, unsigned int value)
-{
-    dma_virtual_address[offset >> 2] = value;
-}
+unsigned long int CDMA = 0x7E200000;
+unsigned long int RAM = 0x00000000;
+unsigned long int BRAM = 0x40000000;
 
-unsigned int dma_get(unsigned int *dma_virtual_address, int offset)
-{
-    return dma_virtual_address[offset >> 2];
-}
-
-void dma_s2mm_status(unsigned int *dma_virtual_address)
-{
-    unsigned int status = dma_get(dma_virtual_address, S2MM_STATUS_REGISTER);
-    printf("Stream to memory-mapped status (0x%08x@0x%02x):", status, S2MM_STATUS_REGISTER);
-    if (status & 0x00000001)
-        printf(" halted");
-    else
-        printf(" running");
-    if (status & 0x00000002)
-        printf(" idle");
-    if (status & 0x00000008)
-        printf(" SGIncld");
-    if (status & 0x00000010)
-        printf(" DMAIntErr");
-    if (status & 0x00000020)
-        printf(" DMASlvErr");
-    if (status & 0x00000040)
-        printf(" DMADecErr");
-    if (status & 0x00000100)
-        printf(" SGIntErr");
-    if (status & 0x00000200)
-        printf(" SGSlvErr");
-    if (status & 0x00000400)
-        printf(" SGDecErr");
-    if (status & 0x00001000)
-        printf(" IOC_Irq");
-    if (status & 0x00002000)
-        printf(" Dly_Irq");
-    if (status & 0x00004000)
-        printf(" Err_Irq");
-    printf("\n");
-}
-
-void dma_mm2s_status(unsigned int *dma_virtual_address)
-{
-    unsigned int status = dma_get(dma_virtual_address, MM2S_STATUS_REGISTER);
-    printf("Memory-mapped to stream status (0x%08x@0x%02x):", status, MM2S_STATUS_REGISTER);
-    if (status & 0x00000001)
-        printf(" halted");
-    else
-        printf(" running");
-    if (status & 0x00000002)
-        printf(" idle");
-    if (status & 0x00000008)
-        printf(" SGIncld");
-    if (status & 0x00000010)
-        printf(" DMAIntErr");
-    if (status & 0x00000020)
-        printf(" DMASlvErr");
-    if (status & 0x00000040)
-        printf(" DMADecErr");
-    if (status & 0x00000100)
-        printf(" SGIntErr");
-    if (status & 0x00000200)
-        printf(" SGSlvErr");
-    if (status & 0x00000400)
-        printf(" SGDecErr");
-    if (status & 0x00001000)
-        printf(" IOC_Irq");
-    if (status & 0x00002000)
-        printf(" Dly_Irq");
-    if (status & 0x00004000)
-        printf(" Err_Irq");
-    printf("\n");
-}
-
-int dma_mm2s_sync(unsigned int *dma_virtual_address)
-{
-    unsigned int mm2s_status = dma_get(dma_virtual_address, MM2S_STATUS_REGISTER);
-    while (!(mm2s_status & 1 << 12) || !(mm2s_status & 1 << 1))
-    {
-        dma_s2mm_status(dma_virtual_address);
-        dma_mm2s_status(dma_virtual_address);
-
-        mm2s_status = dma_get(dma_virtual_address, MM2S_STATUS_REGISTER);
-    }
-}
-
-int dma_s2mm_sync(unsigned int *dma_virtual_address)
-{
-    unsigned int s2mm_status = dma_get(dma_virtual_address, S2MM_STATUS_REGISTER);
-    while (!(s2mm_status & 1 << 12) || !(s2mm_status & 1 << 1))
-    {
-        dma_s2mm_status(dma_virtual_address);
-        dma_mm2s_status(dma_virtual_address);
-
-        s2mm_status = dma_get(dma_virtual_address, S2MM_STATUS_REGISTER);
-    }
-}
-
-void memdump(void *virtual_address, int byte_count)
-{
-    char *p = (char *)virtual_address;
-    int offset;
-    for (offset = 0; offset < byte_count; offset++)
-    {
-        printf("%02x", p[offset]);
-        if (offset % 4 == 3)
-        {
-            printf(" ");
-        }
-    }
-    printf("\n");
-}
+unsigned long int FILESIZE = 8; //16384;
 
 int main()
 {
-    int dh = open("/dev/mem", O_RDWR | O_SYNC);                                                                                        // Open /dev/mem which represents the whole physical memory
-    unsigned int *virtual_address = (unsigned int *)mmap(NULL, 65535, PROT_READ | PROT_WRITE, MAP_SHARED, dh, 0x40400000);             // Memory map AXI Lite register block
-    unsigned int *virtual_source_address = (unsigned int *)mmap(NULL, 65535, PROT_READ | PROT_WRITE, MAP_SHARED, dh, 0x00000000);      // Memory map source address
-    unsigned int *virtual_destination_address = (unsigned int *)mmap(NULL, 65535, PROT_READ | PROT_WRITE, MAP_SHARED, dh, 0x40000000); // Memory map destination address
+    volatile unsigned int i;
+    volatile int value;
 
-    virtual_source_address[0] = 0x11223344; // Write random stuff to source block
+    int fd = open("/dev/mem", O_RDWR | O_SYNC);
+    void *cdma = mmap(0, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, CDMA);
+    void *bram = mmap(0, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, BRAM);
+    void *ram = mmap(0, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, RAM);
 
-    printf("Source memory block:      ");
-    memdump(virtual_source_address, 32);
-    printf("Destination memory block: ");
-    memdump(virtual_destination_address, 32);
+    printf("RAM contents: ");
+    for (i = 0; i < 20; i++)
+    {
+        printf("%d, ", ((volatile unsigned int *)ram)[i]);
+    }
+    printf("\n");
+
+    printf("Writing test stuff to the RAM.\n");
+    for (i = 0; i < 1024; i++)
+    {
+        ((volatile unsigned int *)ram)[i] = ((unsigned int)i);
+    }
+
+    printf("some new RAM contents: ");
+    for (i = 0; i < 20; i++)
+    {
+        printf("%d, ", ((volatile unsigned int *)ram)[i]);
+    }
+    printf("\n");
+
+    printf("BRAM contents: ");
+    for (i = 0; i < 20; i++)
+    {
+        printf("%d, ", ((volatile unsigned int *)bram)[i]);
+    }
+    printf("\n");
+
+    /*printf("This shit too: ");
+    for (i = 0; i < 80; i++)
+    {
+        printf("%d, ", *(volatile unsigned int *)(ram + i));
+    }
+    printf("\n");*/
+
+    printf("Setting DMA to write to BRAM.\n");
+
+    *(volatile unsigned int *)(cdma + 0x00) = ((unsigned int)0x00000000);
+    value = *(volatile unsigned int *)(cdma + 0x00);
+    printf("Control Register = 0x%08x\n", value);
+
+    *(volatile unsigned int *)(cdma + 0x18) = (volatile unsigned int)(RAM);
+    value = *(volatile unsigned int *)(cdma + 0x18);
+    printf("Source Pointer = 0x%08x\n", value);
+
+    *(volatile unsigned int *)(cdma + 0x20) = (volatile unsigned int)(BRAM);
+    value = *(volatile unsigned int *)(cdma + 0x20);
+    printf("Destination Pointer = 0x%08x\n", value);
+
+    //	*(volatile unsigned int *)(cdma + 0x28) = ((volatile unsigned int)0x00004000);
+    *(volatile unsigned int *)(cdma + 0x28) = ((volatile unsigned int)FILESIZE);
+    value = *(volatile unsigned int *)(cdma + 0x28);
+    printf("Bytes to Transfer (BTT) = 0x%08x\n", value);
+
+    //Wait for the "idle" bit to go high.
+    while (*(volatile unsigned int *)(cdma + 0x4) & (0x1) == 0)
+    {
+    }
+
+    for (i = 0; i < 5; i++)
+    {
+        //Read status register
+        value = ((volatile unsigned int *)cdma)[0x4];
+        printf("status = 0x%08x\n", value);
+    }
+
+    //	printf("BRAM contents: ");
+    //	for (i=0; i<20; i++) {
+    //		printf("%d, ",((volatile unsigned int *)bram)[i]);
+    //	}
+    //	printf("\n");
+
+    printf("BRAM contents: ");
+    for (i = 0; i < 20; i++)
+    {
+        printf("%d, ", ((volatile unsigned int *)bram)[i]);
+    }
+    printf("\n");
 
     return 0;
-
-    printf("Resetting DMA\n");
-    dma_set(virtual_address, S2MM_CONTROL_REGISTER, 4);
-    dma_set(virtual_address, MM2S_CONTROL_REGISTER, 4);
-    dma_s2mm_status(virtual_address);
-    dma_mm2s_status(virtual_address);
-
-    printf("Halting DMA\n");
-    dma_set(virtual_address, S2MM_CONTROL_REGISTER, 0);
-    dma_set(virtual_address, MM2S_CONTROL_REGISTER, 0);
-    dma_s2mm_status(virtual_address);
-    dma_mm2s_status(virtual_address);
-
-    printf("Writing destination address\n");
-    dma_set(virtual_address, S2MM_DESTINATION_ADDRESS, 0x40000000); // Write destination address
-    dma_s2mm_status(virtual_address);
-
-    printf("Writing source address...\n");
-    dma_set(virtual_address, MM2S_START_ADDRESS, 0x00000000); // Write source address
-    dma_mm2s_status(virtual_address);
-
-    printf("Starting S2MM channel with all interrupts masked...\n");
-    dma_set(virtual_address, S2MM_CONTROL_REGISTER, 0xf001);
-    dma_s2mm_status(virtual_address);
-
-    printf("Starting MM2S channel with all interrupts masked...\n");
-    dma_set(virtual_address, MM2S_CONTROL_REGISTER, 0xf001);
-    dma_mm2s_status(virtual_address);
-
-    printf("Writing S2MM transfer length...\n");
-    dma_set(virtual_address, S2MM_LENGTH, 32);
-    dma_s2mm_status(virtual_address);
-
-    printf("Writing MM2S transfer length...\n");
-    dma_set(virtual_address, MM2S_LENGTH, 32);
-    dma_mm2s_status(virtual_address);
-
-    printf("Waiting for MM2S synchronization...\n");
-    dma_mm2s_sync(virtual_address);
-
-    printf("Waiting for S2MM sychronization...\n");
-    dma_s2mm_sync(virtual_address); // If this locks up make sure all memory ranges are assigned under Address Editor!
-
-    dma_s2mm_status(virtual_address);
-    dma_mm2s_status(virtual_address);
-
-    printf("Destination memory block: ");
-    memdump(virtual_destination_address, 32);
 }
