@@ -78,7 +78,9 @@ int main()
     value = *(volatile unsigned int *)(cdma + 0x20);
     printf("Destination Pointer = 0x%08x\n", value);
 
-    *(volatile unsigned int *)(cdma + 0x28) = ((volatile unsigned int)0x00004000);
+    value = *(volatile unsigned int *)(cdma + 0x28);
+    printf("Bytes to Transfer (BTT) = 0x%08x\n", value);
+    *(volatile unsigned int *)(cdma + 0x28) = ((volatile unsigned int)0x0000800);
     //*(volatile unsigned int *)(cdma + 0x28) = ((volatile unsigned int)FILESIZE);
     value = *(volatile unsigned int *)(cdma + 0x28);
     printf("Bytes to Transfer (BTT) = 0x%08x\n", value);
@@ -86,10 +88,10 @@ int main()
     //Wait for the "idle" bit to go high.
     while (*(volatile unsigned int *)(cdma + 0x4) & (0x1) == 0)
     {
-        //Read status register
-        value = ((volatile unsigned int *)cdma)[0x4];
-        printf("status = 0x%08x\n", value);
     }
+    //Read status register
+    value = ((volatile unsigned int *)cdma)[0x4];
+    printf("status = 0x%08x\n", value);
 
     //	printf("BRAM contents: ");
     //	for (i=0; i<20; i++) {
