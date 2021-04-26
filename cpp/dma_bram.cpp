@@ -86,10 +86,6 @@ int main()
     //Wait for the "idle" bit to go high.
     while (*(volatile unsigned int *)(cdma + 0x4) & (0x1) == 0)
     {
-    }
-
-    for (i = 0; i < 5; i++)
-    {
         //Read status register
         value = ((volatile unsigned int *)cdma)[0x4];
         printf("status = 0x%08x\n", value);
