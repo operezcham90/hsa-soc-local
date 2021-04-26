@@ -4,11 +4,16 @@
 #include <termios.h>
 #include <sys/mman.h>
 #include <iostream>
+#include <chrono>
 
 using namespace std;
+using namespace std::chrono;
 
 int main()
 {
+    auto start = high_resolution_clock::now();
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
     int dh = open("/dev/mem", O_RDWR | O_SYNC);
     if (dh == -1)
     {
@@ -42,6 +47,7 @@ int main()
         cout << hex << ddr_dest[i] << " ";
     }
     // reset CDMA
+    start = high_resolution_clock::now();
     cout << "\nCDMA reset\n";
     while ((cdma[1] & 0x00000002) == 0)
     {
@@ -58,6 +64,9 @@ int main()
     {
     }
     cout << "CDMA done\n";
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << dec << "Time: " << duration.count() << " us\n";
     cout << "DEST:\n";
     for (int i = 0; i < 8; i++)
     {
