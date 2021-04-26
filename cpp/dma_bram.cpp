@@ -31,9 +31,9 @@ int main(int argc, char *argv[])
     volatile int value;
 
     int fd = open("/dev/mem", O_RDWR | O_SYNC);
-    void *cdma = mmap(0, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, CDMA);
-    void *bram = mmap(0, 8 * MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, BRAM);
-    void *ram = mmap(0, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, RAM);
+    void *cdma = mmap(NULL, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, CDMA);
+    void *bram = mmap(NULL, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, BRAM);
+    void *ram = mmap(NULL, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, RAM);
 
     printf("BRAM contents: ");
     for (i = 0; i < 20; i++)
