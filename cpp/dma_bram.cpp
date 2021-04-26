@@ -22,7 +22,7 @@ int main()
     unsigned long *ddr_src = (unsigned long *)mmap(NULL, map_size, PROT_READ | PROT_WRITE, MAP_SHARED, dh, src_addr);
     unsigned long *ddr_dest = (unsigned long *)mmap(NULL, map_size, PROT_READ | PROT_WRITE, MAP_SHARED, dh, dest_addr);
     // write source
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < 0x800; i++)
     {
         ddr_src[i] = i + 1;
     }
@@ -32,7 +32,7 @@ int main()
         cout << hex << ddr_src[i] << " ";
     }
     // write destiny
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < 0x800; i++)
     {
         ddr_dest[i] = 0;
     }
@@ -62,5 +62,19 @@ int main()
     for (int i = 0; i < 8; i++)
     {
         cout << hex << ddr_dest[i] << " ";
+    }
+    // confirmation
+    int i = 0;
+    for (int i = 0; i < 0x800; i++)
+    {
+        i += ddr_src[i] - ddr_dest[i];
+    }
+    if (i == 0)
+    {
+        cout << "\nComparison successful\n";
+    }
+    else
+    {
+        cout << "\nComparison failed\n";
     }
 }
