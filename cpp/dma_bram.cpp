@@ -15,8 +15,8 @@
 #define MAP_MASK (MAP_SIZE - 1)
 
 unsigned long int CDMA = 0x7E200000;
-unsigned long int RAM = 0x10000000;
-unsigned long int BRAM = 0x10001000;
+unsigned long int RAM = 0x00000000;
+unsigned long int BRAM = 0x00001000;
 
 unsigned long int FILESIZE = 1;
 
