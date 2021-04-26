@@ -78,8 +78,8 @@ int main()
     value = *(volatile unsigned int *)(cdma + 0x20);
     printf("Destination Pointer = 0x%08x\n", value);
 
-    //	*(volatile unsigned int *)(cdma + 0x28) = ((volatile unsigned int)0x00004000);
-    *(volatile unsigned int *)(cdma + 0x28) = ((volatile unsigned int)FILESIZE);
+    *(volatile unsigned int *)(cdma + 0x28) = ((volatile unsigned int)0x00004000);
+    //*(volatile unsigned int *)(cdma + 0x28) = ((volatile unsigned int)FILESIZE);
     value = *(volatile unsigned int *)(cdma + 0x28);
     printf("Bytes to Transfer (BTT) = 0x%08x\n", value);
 
