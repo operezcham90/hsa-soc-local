@@ -15,13 +15,18 @@
 #define MAP_MASK (MAP_SIZE - 1)
 
 unsigned long int CDMA = 0x7E200000;
-unsigned long int RAM = 0x00000000;
-unsigned long int BRAM = 0x40000000;
+unsigned long int RAM = 0x10000000;
+unsigned long int BRAM = 0x10008000;
 
-unsigned long int FILESIZE = 8; //16384;
+unsigned long int FILESIZE = 16384;
 
-int main()
+int main(int argc, char *argv[])
 {
+    //	if (argc > 3)
+    //		sleepTime=(unsigned int)atoi(argv[3]);
+    if (argc > 1)
+        FILESIZE = (unsigned int)atoi(argv[1]);
+
     volatile unsigned int i;
     volatile int value;
 
@@ -30,6 +35,26 @@ int main()
     void *bram = mmap(0, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, BRAM);
     void *ram = mmap(0, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, RAM);
 
+    printf("BRAM contents: ");
+    for (i = 0; i < 20; i++)
+    {
+        printf("%d, ", ((volatile unsigned int *)bram)[i]);
+    }
+    printf("\n");
+
+    printf("Writing test stuff to the BRAM.\n");
+    for (i = 0; i < 1024; i++)
+    {
+        ((volatile unsigned int *)bram)[i] = ((unsigned int)i);
+    }
+
+    printf("some new BRAM contents: ");
+    for (i = 0; i < 20; i++)
+    {
+        printf("%d, ", ((volatile unsigned int *)bram)[i]);
+    }
+    printf("\n");
+
     printf("RAM contents: ");
     for (i = 0; i < 20; i++)
     {
@@ -37,61 +62,42 @@ int main()
     }
     printf("\n");
 
-    printf("Writing test stuff to the RAM.\n");
-    for (i = 0; i < 1024; i++)
-    {
-        ((volatile unsigned int *)ram)[i] = ((unsigned int)i);
-    }
-
-    printf("some new RAM contents: ");
-    for (i = 0; i < 20; i++)
-    {
-        printf("%d, ", ((volatile unsigned int *)ram)[i]);
-    }
-    printf("\n");
-
-    printf("BRAM contents: ");
-    for (i = 0; i < 20; i++)
-    {
-        printf("%d, ", ((volatile unsigned int *)bram)[i]);
-    }
-    printf("\n");
-
-    /*printf("This shit too: ");
+    printf("This shit too: ");
     for (i = 0; i < 80; i++)
     {
         printf("%d, ", *(volatile unsigned int *)(ram + i));
     }
-    printf("\n");*/
+    printf("\n");
 
-    printf("Setting DMA to write to BRAM.\n");
+    printf("Setting DMA to write to RAM.\n");
 
     *(volatile unsigned int *)(cdma + 0x00) = ((unsigned int)0x00000000);
     value = *(volatile unsigned int *)(cdma + 0x00);
     printf("Control Register = 0x%08x\n", value);
 
-    *(volatile unsigned int *)(cdma + 0x18) = (volatile unsigned int)(RAM);
+    *(volatile unsigned int *)(cdma + 0x18) = (volatile unsigned int)(0x10008000);
     value = *(volatile unsigned int *)(cdma + 0x18);
     printf("Source Pointer = 0x%08x\n", value);
 
-    *(volatile unsigned int *)(cdma + 0x20) = (volatile unsigned int)(BRAM);
+    *(volatile unsigned int *)(cdma + 0x20) = (volatile unsigned int)(0x10000000);
     value = *(volatile unsigned int *)(cdma + 0x20);
     printf("Destination Pointer = 0x%08x\n", value);
 
-    value = *(volatile unsigned int *)(cdma + 0x28);
-    printf("Bytes to Transfer (BTT) = 0x%08x\n", value);
-    *(volatile unsigned int *)(cdma + 0x28) = ((volatile unsigned int)0x0000800);
-    //*(volatile unsigned int *)(cdma + 0x28) = ((volatile unsigned int)FILESIZE);
+    //	*(volatile unsigned int *)(cdma + 0x28) = ((volatile unsigned int)0x00004000);
+    *(volatile unsigned int *)(cdma + 0x28) = ((volatile unsigned int)FILESIZE);
     value = *(volatile unsigned int *)(cdma + 0x28);
     printf("Bytes to Transfer (BTT) = 0x%08x\n", value);
 
     //Wait for the "idle" bit to go high.
     while (*(volatile unsigned int *)(cdma + 0x4) & (0x1) == 0)
+        ;
+
+    for (i = 0; i < 5; i++)
     {
+        //Read status register
+        value = ((volatile unsigned int *)cdma)[0x4];
+        printf("status = 0x%08x\n", value);
     }
-    //Read status register
-    value = ((volatile unsigned int *)cdma)[0x4];
-    printf("status = 0x%08x\n", value);
 
     //	printf("BRAM contents: ");
     //	for (i=0; i<20; i++) {
@@ -99,12 +105,20 @@ int main()
     //	}
     //	printf("\n");
 
-    printf("BRAM contents: ");
+    printf("RAM contents: ");
     for (i = 0; i < 20; i++)
     {
-        printf("%d, ", ((volatile unsigned int *)bram)[i]);
+        printf("%d, ", ((volatile unsigned int *)ram)[i]);
     }
     printf("\n");
+    FILE *fp;
+    unsigned int val;
+    fp = fopen("out.txt", "w");
+    for (i = 0; i < (FILESIZE / 4); i++)
+    {
+        fprintf(fp, "%u,", ((volatile unsigned int *)ram)[i]);
+    }
+    fclose(fp);
 
     return 0;
 }
