@@ -62,11 +62,11 @@ int main(int argc, char *argv[])
     value = *(volatile unsigned int *)(cdma + 0x00);
     printf("Control Register = 0x%08x\n", value);
 
-    *(volatile unsigned int *)(cdma + 0x18) = (volatile unsigned int)(0xC0000000);
+    *(volatile unsigned int *)(cdma + 0x18) = (volatile unsigned int)(BRAM);
     value = *(volatile unsigned int *)(cdma + 0x18);
     printf("Source Pointer = 0x%08x\n", value);
 
-    *(volatile unsigned int *)(cdma + 0x20) = (volatile unsigned int)(0x10000000);
+    *(volatile unsigned int *)(cdma + 0x20) = (volatile unsigned int)(RAM);
     value = *(volatile unsigned int *)(cdma + 0x20);
     printf("Destination Pointer = 0x%08x\n", value);
 
