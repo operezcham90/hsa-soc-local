@@ -19,13 +19,13 @@ int main()
     unsigned int *cdma = (unsigned int *)mmap(NULL, map_size, PROT_READ | PROT_WRITE, MAP_SHARED, dh, 0x7E200000);
     unsigned int *ddr_src = (unsigned int *)mmap(NULL, map_size, PROT_READ | PROT_WRITE, MAP_SHARED, dh, 0x0e000000);
     unsigned int *ddr_dest = (unsigned int *)mmap(NULL, map_size, PROT_READ | PROT_WRITE, MAP_SHARED, dh, 0x0f000000);
-    if (cdma[1] & 0x2 == 0x2)
+    if ((cdma[1] & 0x00000002) != 0)
     {
         cout << "CDMA in idle state";
     }
     else
     {
-        cout << "CDMA state: " << hex << cdma[1];
+        cout << "CDMA not in idle state";
     }
     for (int i = 0; i < 8; i++)
     {
