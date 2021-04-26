@@ -23,9 +23,13 @@ int main()
     {
         cout << "CDMA in idle state";
     }
+    else
+    {
+        cout << "CDMA state: " << hex << cdma[1];
+    }
     for (int i = 0; i < 8; i++)
     {
-        ddr_src[i] = i;
+        ddr_src[i] = i + 1;
     }
     cout << "\nSRC data:\n";
     for (int i = 0; i < 8; i++)
@@ -37,7 +41,7 @@ int main()
         ddr_dest[i] = 0;
     }
     cout << "\nDEST:\n";
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < 8; i++)
     {
         cout << hex << ddr_dest[i] << " ";
     }
