@@ -48,12 +48,12 @@ int main()
     }
     // reset CDMA
     start = high_resolution_clock::now();
-    cout << "\nCDMA reset\n";
+    //cout << "\nCDMA reset\n";
     while ((cdma[1] & 0x00000002) == 0)
     {
         cdma[0] = 0x00000004;
     }
-    cout << "CDMA ready\n";
+    //cout << "CDMA ready\n";
     cdma[0] = 0x00000000;
     // set CDMA
     cdma[6] = src_addr;
@@ -63,7 +63,7 @@ int main()
     while ((cdma[1] & 0x00000002) == 0)
     {
     }
-    cout << "CDMA done\n";
+    //cout << "CDMA done\n";
     stop = high_resolution_clock::now();
     duration = duration_cast<microseconds>(stop - start);
     cout << dec << "Time: " << duration.count() << " us\n";
