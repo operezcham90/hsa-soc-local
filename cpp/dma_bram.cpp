@@ -147,11 +147,11 @@ int main()
     mapped_dev_base_1 = mapped_base_1 + (dev_base_1 & DDR_MAP_MASK);
 
     // Check if memory is in a valid range
-    if (mapped_base_1 >= 0x20000000)
+    /*if (mapped_base_1 >= 0x20000000)
     {
         printf("Memory is over 0x20000000\n", mapped_base_1);
         //exit(0);
-    }
+    }*/
 
     /*======================================================================================
      STEP 3 : Copy the Data to the DDR Memory at location 0x20000000
