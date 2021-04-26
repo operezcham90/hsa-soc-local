@@ -15,17 +15,12 @@ int main()
         cout << "devmem fail\n";
         return 1;
     }
-    int map_size = 0x10000; // 64K
-    unsigned int *cdma = (unsigned int *)mmap(NULL, map_size, PROT_READ | PROT_WRITE, MAP_SHARED, dh, 0x7E200000);
-    unsigned int *ddr_src = (unsigned int *)mmap(NULL, map_size, PROT_READ | PROT_WRITE, MAP_SHARED, dh, 0x0e000000);
-    unsigned int *ddr_dest = (unsigned int *)mmap(NULL, map_size, PROT_READ | PROT_WRITE, MAP_SHARED, dh, 0x0f000000);
-    // reset CDMA
-    cout << "CDMA reset\n";
-    while ((cdma[1] & 0x00000002) == 0)
-    {
-        cdma[0] = 0x00000004;
-    }
-    cout << "CDMA in idle state\n";
+    unsigned long map_size = 0x10000; // 64K
+    unsigned long src_addr = 0x0e000000;
+    unsigned long dest_addr = 0x0f000000;
+    unsigned long *cdma = (unsigned long *)mmap(NULL, map_size, PROT_READ | PROT_WRITE, MAP_SHARED, dh, 0x7E200000);
+    unsigned long *ddr_src = (unsigned long *)mmap(NULL, map_size, PROT_READ | PROT_WRITE, MAP_SHARED, dh, src_addr);
+    unsigned long *ddr_dest = (unsigned long *)mmap(NULL, map_size, PROT_READ | PROT_WRITE, MAP_SHARED, dh, dest_addr);
     // write source
     for (int i = 0; i < 8; i++)
     {
@@ -42,6 +37,28 @@ int main()
         ddr_dest[i] = 0;
     }
     cout << "\nDEST:\n";
+    for (int i = 0; i < 8; i++)
+    {
+        cout << hex << ddr_dest[i] << " ";
+    }
+    // reset CDMA
+    cout << "\nCDMA reset\n";
+    while ((cdma[1] & 0x00000002) == 0)
+    {
+        cdma[0] = 0x00000004;
+    }
+    cout << "CDMA in idle state\n";
+    cdma[0] = 0x00000000;
+    // set CDMA
+    cdma[6] = src_addr;
+    cdma[8] = dest_addr;
+    cdma[10] = map_size;
+    // wait transfer
+    while ((cdma[1] & 0x00000002) == 0)
+    {
+    }
+    cout << "CDMA in idle state\n";
+    cout << "DEST:\n";
     for (int i = 0; i < 8; i++)
     {
         cout << hex << ddr_dest[i] << " ";
