@@ -40,6 +40,6 @@ int main()
     duration = duration_cast<microseconds>(stop - start);
     cout << dec << "Open: " << duration.count() << " us\n";
     cout << hex << MAP_SHARED << "\n";
-    cout << hex << PROT_READ | PROT_WRITE << "\n";
-    cout << hex << O_RDWR | O_SYNC << "\n";
+    cout << hex << (PROT_READ | PROT_WRITE) << "\n";
+    cout << hex << (O_RDWR | O_SYNC) << "\n";
 }
