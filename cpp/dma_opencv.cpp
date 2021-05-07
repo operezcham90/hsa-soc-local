@@ -23,24 +23,6 @@ unsigned long *cdma_1;
 unsigned long *cdma_2;
 unsigned long *cdma_3;
 
-unsigned long *open_cdma()
-{
-    int dh = open("/dev/mem", O_RDWR | O_SYNC);
-    cdma_0 = (unsigned long *)mmap(NULL, 40, PROT_READ | PROT_WRITE, MAP_SHARED, dh, axi_cdma_0);
-    cdma_1 = (unsigned long *)mmap(NULL, 40, PROT_READ | PROT_WRITE, MAP_SHARED, dh, axi_cdma_1);
-    cdma_2 = (unsigned long *)mmap(NULL, 40, PROT_READ | PROT_WRITE, MAP_SHARED, dh, axi_cdma_2);
-    cdma_3 = (unsigned long *)mmap(NULL, 40, PROT_READ | PROT_WRITE, MAP_SHARED, dh, axi_cdma_3);
-}
-
-/*void reset_cdma()
-{
-    while ((cdma[1] & 0x00000002) == 0 && (cdma1[1] & 0x00000002) == 0)
-    {
-        cdma[0] = 0x00000004;
-        cdma1[0] = 0x00000004;
-    }
-}*/
-
 int main()
 {
     // time metrics
@@ -49,7 +31,11 @@ int main()
     auto duration = duration_cast<microseconds>(stop - start);
     // open cdma
     start = high_resolution_clock::now();
-    open_cdma();
+    int dh = open("/dev/mem", O_RDWR | O_SYNC);
+    cdma_0 = (unsigned long *)mmap(NULL, 40, PROT_READ | PROT_WRITE, MAP_SHARED, dh, axi_cdma_0);
+    cdma_1 = (unsigned long *)mmap(NULL, 40, PROT_READ | PROT_WRITE, MAP_SHARED, dh, axi_cdma_1);
+    cdma_2 = (unsigned long *)mmap(NULL, 40, PROT_READ | PROT_WRITE, MAP_SHARED, dh, axi_cdma_2);
+    cdma_3 = (unsigned long *)mmap(NULL, 40, PROT_READ | PROT_WRITE, MAP_SHARED, dh, axi_cdma_3);
     stop = high_resolution_clock::now();
     duration = duration_cast<microseconds>(stop - start);
     cout << dec << "Open: " << duration.count() << " us\n";
