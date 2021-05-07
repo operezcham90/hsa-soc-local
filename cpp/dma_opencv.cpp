@@ -9,13 +9,6 @@
 using namespace std;
 using namespace std::chrono;
 
-unsigned long axi_cdma_0 = 0x7E200000;
-unsigned long axi_cdma_1 = 0x7E210000;
-unsigned long axi_cdma_2 = 0x7E220000;
-unsigned long axi_cdma_3 = 0x7E230000;
-unsigned long axi_gpio_0 = 0x41200000;
-unsigned long axi_gpio_1 = 0x41210000;
-unsigned long slave_axi_bram_ctrl = 0xC0000000;
 unsigned long slave_ddr = 0x00000000;
 unsigned long bytes_8k = 0x2000;
 unsigned long *cdma_0;
@@ -39,4 +32,35 @@ int main()
     stop = high_resolution_clock::now();
     duration = duration_cast<microseconds>(stop - start);
     cout << dec << "Open: " << duration.count() << " us\n";
+    // reset cdma
+    start = high_resolution_clock::now();
+    while (!(cdma_0[1] & 0x2) && !(cdma_1[1] & 0x2) && !(cdma_2[1] & 0x2) && !(cdma_3[1] & 0x2))
+    {
+        cdma_0[0] = 0x4;
+        cdma_1[0] = 0x4;
+        cdma_2[0] = 0x4;
+        cdma_3[0] = 0x4;
+    }
+    cdma_0[0] = 0x0;
+    cdma_1[0] = 0x0;
+    cdma_2[0] = 0x0;
+    cdma_3[0] = 0x0;
+    cdma_0[8] = 0xC0000000;
+    cdma_1[8] = 0xC0000000;
+    cdma_2[8] = 0xC0000000;
+    cdma_3[8] = 0xC0000000;
+    cdma_0[6] = 0x00000000;
+    cdma_1[6] = 0x00002000;
+    cdma_2[6] = 0x00004000;
+    cdma_3[6] = 0x00006000;
+    cdma_0[10] = 0x2000;
+    cdma_1[10] = 0x2000;
+    cdma_2[10] = 0x2000;
+    cdma_3[10] = 0x2000;
+    while (!(cdma_0[1] & 0x2) && !(cdma_1[1] & 0x2) && !(cdma_2[1] & 0x2) && !(cdma_3[1] & 0x2))
+    {
+    }
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << dec << "Send: " << duration.count() << " us\n";
 }
