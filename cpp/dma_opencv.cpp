@@ -76,12 +76,14 @@ int main()
     cout << dec << "Write: " << duration.count() << " us\n";
     // reset cdma
     start = high_resolution_clock::now();
+    cout << hex << cdma_0[1] << "\n";
     while (!(cdma_0[1] & BUSY) && !(cdma_1[1] & BUSY) && !(cdma_2[1] & BUSY) && !(cdma_3[1] & BUSY))
     {
         cdma_0[0] = RESET;
         cdma_1[0] = RESET;
         cdma_2[0] = RESET;
         cdma_3[0] = RESET;
+        cout << hex << cdma_0[1] << "\n";
     }
     // cdma config
     cdma_0[0] = STDBY;
@@ -104,8 +106,10 @@ int main()
     cdma_2[10] = B_8K;
     cdma_3[10] = B_8K;
     // wait work
+    cout << hex << cdma_0[1] << "\n";
     while (!(cdma_0[1] & BUSY) && !(cdma_1[1] & BUSY) && !(cdma_2[1] & BUSY) && !(cdma_3[1] & BUSY))
     {
+        cout << hex << cdma_0[1] << "\n";
     }
     stop = high_resolution_clock::now();
     duration = duration_cast<microseconds>(stop - start);
