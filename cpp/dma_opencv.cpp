@@ -16,10 +16,10 @@
 #define CDMA_1 0x7E210000
 #define CDMA_2 0x7E220000
 #define CDMA_3 0x7E230000
-#define DDR_0 0x00000000
-#define DDR_1 0x00002000
-#define DDR_2 0x00004000
-#define DDR_3 0x00006000
+#define DDR_0 0x0A000000
+#define DDR_1 0x0B000000
+#define DDR_2 0x0C000000
+#define DDR_3 0x0D000000
 #define BUSY 0x2
 #define RESET 0x4
 #define STDBY 0x0
