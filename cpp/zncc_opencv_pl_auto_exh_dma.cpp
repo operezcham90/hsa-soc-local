@@ -1,4 +1,4 @@
-// g++ zncc_opencv_pl_auto.cpp -o zncc_opencv_pl_auto `pkg-config --cflags --libs opencv`
+// g++ zncc_opencv_pl_auto_exh_dma.cpp -o zncc_opencv_pl_auto_exh_dma `pkg-config --cflags --libs opencv`
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -154,7 +154,7 @@ int main()
     cout << "data len: " << data_len << " bytes\n";
     //memcpy(axi_bram_ctrl_1 + 4, t_data, data_len);
     // set CDMA
-    axi_cdma_0[6] = addressof(t_data);
+    axi_cdma_0[6] = &t_data;
     axi_cdma_0[8] = axi_bram_ctrl_t_addr + 4;
     axi_cdma_0[10] = data_len;
     // wait transfer
@@ -207,7 +207,7 @@ int main()
         unsigned long int reset = 0xFFFFFFFF;
         // reset the system
         // set CDMA
-        axi_cdma_0[6] = addressof(reset);
+        axi_cdma_0[6] = (unsigned long int)&reset;
         axi_cdma_0[8] = axi_bram_ctrl_0_addr;
         axi_cdma_0[10] = 4;
         // wait transfer
@@ -231,7 +231,7 @@ int main()
             auto start = high_resolution_clock::now();
             //memcpy(axi_bram_ctrl_0 + 4, i_data, data_len);
             // set CDMA
-            axi_cdma_0[6] = addressof(i_data);
+            axi_cdma_0[6] = (unsigned long int)&i_data;
             axi_cdma_0[8] = axi_bram_ctrl_0_addr + 4;
             axi_cdma_0[10] = data_len;
             // wait transfer
@@ -247,7 +247,7 @@ int main()
             auto start2 = high_resolution_clock::now();
             //axi_bram_ctrl_0[0] = data_len;
             // set CDMA
-            axi_cdma_0[6] = addressof(data_len);
+            axi_cdma_0[6] = (unsigned long int)&data_len;
             axi_cdma_0[8] = axi_bram_ctrl_0_addr;
             axi_cdma_0[10] = 4;
             // wait transfer
