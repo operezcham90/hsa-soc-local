@@ -128,7 +128,7 @@ int open_mem()
     {
         exit(1);
     }
-    axi_cdma_0 = map_mem(cdma_bytes, axi_cdma_0);
+    axi_cdma_0 = map_mem(cdma_bytes, axi_cdma_0_addr);
     axi_gpio_0 = map_mem(gpio_bytes, axi_gpio_0_addr);
     axi_gpio_1 = map_mem(gpio_bytes, axi_gpio_1_addr);
     res_bram = map_mem(bram_bytes, 0xe0000000);
