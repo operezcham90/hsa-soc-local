@@ -20,7 +20,9 @@ using namespace std::chrono;
 unsigned long int *axi_cdma_0;
 unsigned long int *axi_gpio_0;
 unsigned long int *axi_gpio_1;
-unsigned long int *res_bram;
+unsigned long int *bram_r;
+unsigned long int *bram_t;
+unsigned long int *bram_i_0;
 // AXI addresses
 off_t axi_cdma_0_addr = 0x7E200000;
 off_t axi_bram_ctrl_0_addr = 0xC0000000;
@@ -131,7 +133,9 @@ int open_mem()
     axi_cdma_0 = map_mem(cdma_bytes, axi_cdma_0_addr);
     axi_gpio_0 = map_mem(gpio_bytes, axi_gpio_0_addr);
     axi_gpio_1 = map_mem(gpio_bytes, axi_gpio_1_addr);
-    res_bram = map_mem(bram_bytes, 0xe0000000);
+    bram_r = map_mem(bram_bytes, 0xe0000000);
+    bram_t = map_mem(bram_bytes, 0xe2000000);
+    bram_i_0 = map_mem(bram_bytes, 0xe4000000);
 }
 int close_mem()
 {
@@ -152,11 +156,12 @@ int main()
         data_len = bram_length - 4;
     }
     cout << "data len: " << data_len << " bytes\n";
-    //memcpy(axi_bram_ctrl_1 + 4, t_data, data_len);
+    memcpy(bram_t + 4, t_data, data_len);
+    bram_t[0] = 0;
     // set CDMA
-    axi_cdma_0[6] = (unsigned long int)&t_data;
-    axi_cdma_0[8] = axi_bram_ctrl_t_addr + 4;
-    axi_cdma_0[10] = data_len;
+    axi_cdma_0[6] = 0xe2000000;
+    axi_cdma_0[8] = axi_bram_ctrl_t_addr;
+    axi_cdma_0[10] = data_len + 4;
     // wait transfer
     while ((axi_cdma_0[1] & 0x00000002) == 0)
     {
@@ -207,7 +212,8 @@ int main()
         unsigned long int reset = 0xFFFFFFFF;
         // reset the system
         // set CDMA
-        axi_cdma_0[6] = (unsigned long int)&reset;
+        bram_i_0[0] = reset;
+        axi_cdma_0[6] = 0xe4000000;
         axi_cdma_0[8] = axi_bram_ctrl_0_addr;
         axi_cdma_0[10] = 4;
         // wait transfer
@@ -229,11 +235,12 @@ int main()
 
             // copy blocks of data to PL
             auto start = high_resolution_clock::now();
-            //memcpy(axi_bram_ctrl_0 + 4, i_data, data_len);
+            memcpy(bram_i_0 + 4, i_data, data_len);
+            bram_i_0[0] = 0;
             // set CDMA
-            axi_cdma_0[6] = (unsigned long int)&i_data;
-            axi_cdma_0[8] = axi_bram_ctrl_0_addr + 4;
-            axi_cdma_0[10] = data_len;
+            axi_cdma_0[6] = 0xe4000000;
+            axi_cdma_0[8] = axi_bram_ctrl_0_addr;
+            axi_cdma_0[10] = data_len + 4;
             // wait transfer
             while ((axi_cdma_0[1] & 0x00000002) == 0)
             {
@@ -245,9 +252,9 @@ int main()
 
             // copy data length
             auto start2 = high_resolution_clock::now();
-            //axi_bram_ctrl_0[0] = data_len;
+            bram_i_0[0] = data_len;
             // set CDMA
-            axi_cdma_0[6] = (unsigned long int)&data_len;
+            axi_cdma_0[6] = 0xe4000000;
             axi_cdma_0[8] = axi_bram_ctrl_0_addr;
             axi_cdma_0[10] = 4;
             // wait transfer
