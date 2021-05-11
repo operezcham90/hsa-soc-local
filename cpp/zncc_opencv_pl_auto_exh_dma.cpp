@@ -20,7 +20,7 @@ using namespace std::chrono;
 unsigned long int *axi_cdma_0;
 unsigned long int *axi_gpio_0;
 unsigned long int *axi_gpio_1;
-unsigned long int *res;
+unsigned long int *res_bram;
 // AXI addresses
 off_t axi_cdma_0_addr = 0x7E200000;
 off_t axi_bram_ctrl_0_addr = 0xC0000000;
@@ -131,7 +131,7 @@ int open_mem()
     axi_cdma_0 = map_mem(cdma_bytes, axi_cdma_0);
     axi_gpio_0 = map_mem(gpio_bytes, axi_gpio_0_addr);
     axi_gpio_1 = map_mem(gpio_bytes, axi_gpio_1_addr);
-    res = map_mem(bram_bytes, 0xe0000000);
+    res_bram = map_mem(bram_bytes, 0xe0000000);
 }
 int close_mem()
 {
@@ -154,7 +154,7 @@ int main()
     cout << "data len: " << data_len << " bytes\n";
     //memcpy(axi_bram_ctrl_1 + 4, t_data, data_len);
     // set CDMA
-    axi_cdma_0[6] = &t_data;
+    axi_cdma_0[6] = (unsigned long int)&t_data;
     axi_cdma_0[8] = axi_bram_ctrl_t_addr + 4;
     axi_cdma_0[10] = data_len;
     // wait transfer
@@ -195,7 +195,7 @@ int main()
             {
             }
             unsigned long int i = axi_gpio_1[0];
-            signed long int z = (signed long int)res[i];
+            signed long int z = (signed long int)res_bram[i];
             if (max_zncc < z)
             {
                 max_zncc = z;
