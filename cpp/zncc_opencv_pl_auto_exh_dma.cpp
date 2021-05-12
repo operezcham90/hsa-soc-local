@@ -98,6 +98,7 @@ int region_of_interest(int x, int y)
         i_img_roi.convertTo(i_img_roi, CV_8U);
         i_data = (long int *)i_img_roi.data;
     }
+    cout << "ROI: done\n";
 }
 int load_init_file(int x, int y)
 {
@@ -113,12 +114,14 @@ int load_init_file(int x, int y)
         m = d - b;
         n_times_m = n * m;
     }
+    cout << "Init: done\n";
 }
 int init_zncc(int x, int y)
 {
     load_init_file(x, y);
     load_image_file(x, y);
     region_of_interest(x, y);
+    cout << "Begin ZNCC: done\n";
 }
 unsigned long int *map_mem(unsigned int bytes, off_t addr)
 {
@@ -136,10 +139,12 @@ int open_mem()
     bram_r = map_mem(bram_bytes, 0xe0000000);
     bram_t = map_mem(bram_bytes, 0xe2000000);
     bram_i_0 = map_mem(bram_bytes, 0xe4000000);
+    cout << "Mem: open\n";
 }
 int close_mem()
 {
     close(fd);
+    cout << "Mem: closed\n";
 }
 int main()
 {
