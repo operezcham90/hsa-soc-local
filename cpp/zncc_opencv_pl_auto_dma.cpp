@@ -145,7 +145,7 @@ int main()
     cout << "data len: " << data_len << " bytes\n";
     //memcpy(axi_bram_ctrl_1 + 4, t_data, data_len);
     // set CDMA
-    axi_cdma_0[6] = addressof(t_data);
+    axi_cdma_0[6] = addressof(p);
     axi_cdma_0[8] = axi_bram_ctrl_t_addr;
     axi_cdma_0[10] = bram_bytes;
     // wait transfer

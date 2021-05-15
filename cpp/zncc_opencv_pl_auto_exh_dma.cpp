@@ -49,8 +49,8 @@ int m;
 int w;
 int h;
 unsigned int n_times_m;
-long int *t_data;
-long int *i_data;
+unsigned long int *t_data;
+unsigned long int *i_data;
 Mat i_img;
 Mat t_img;
 Mat i_img_roi;
@@ -89,14 +89,14 @@ int region_of_interest(int x, int y)
         rect = cv::Rect(u, v, n, m);
         t_img_roi = t_img(rect);
         t_img_roi.convertTo(t_img_roi, CV_8U);
-        t_data = (long int *)t_img_roi.data;
+        t_data = (unsigned long int *)t_img_roi.data;
     }
     else
     {
         rect = cv::Rect(x, y, n, m);
         i_img_roi = i_img(rect);
         i_img_roi.convertTo(i_img_roi, CV_8U);
-        i_data = (long int *)i_img_roi.data;
+        i_data = (unsigned long int *)i_img_roi.data;
     }
     cout << "ROI: done\n";
 }
@@ -136,9 +136,9 @@ int open_mem()
     axi_cdma_0 = map_mem(cdma_bytes, axi_cdma_0_addr);
     axi_gpio_0 = map_mem(gpio_bytes, axi_gpio_0_addr);
     axi_gpio_1 = map_mem(gpio_bytes, axi_gpio_1_addr);
-    bram_r = map_mem(bram_bytes, 0xe0000000);
-    bram_t = map_mem(bram_bytes, 0xe2000000);
-    bram_i_0 = map_mem(bram_bytes, 0xe4000000);
+    bram_r = map_mem(bram_bytes, 0x0e000000);
+    bram_t = map_mem(bram_bytes, 0x0f000000);
+    bram_i_0 = map_mem(bram_bytes, 0x10000000);
     cout << "Mem: open\n";
 }
 int close_mem()
@@ -163,8 +163,13 @@ int main()
     cout << "data len: " << data_len << " bytes\n";
     memcpy(bram_t + 4, t_data, data_len);
     bram_t[0] = 0;
+    // reset
+    while ((axi_cdma_0[1] & 0x00000002) == 0)
+    {
+        axi_cdma_0[0] = 0x00000004;
+    }
     // set CDMA
-    axi_cdma_0[6] = 0xe2000000;
+    axi_cdma_0[6] = 0x0f000000;
     axi_cdma_0[8] = axi_bram_ctrl_t_addr;
     axi_cdma_0[10] = data_len + 4;
     // wait transfer
@@ -198,7 +203,7 @@ int main()
         {
             // set CDMA
             axi_cdma_0[6] = axi_bram_ctrl_r_0_addr;
-            axi_cdma_0[8] = 0xe0000000;
+            axi_cdma_0[8] = 0x0e000000;
             axi_cdma_0[10] = bram_bytes;
             // wait transfer
             while ((axi_cdma_0[1] & 0x00000002) == 0)
@@ -218,7 +223,7 @@ int main()
         // reset the system
         // set CDMA
         bram_i_0[0] = reset;
-        axi_cdma_0[6] = 0xe4000000;
+        axi_cdma_0[6] = 0x10000000;
         axi_cdma_0[8] = axi_bram_ctrl_0_addr;
         axi_cdma_0[10] = 4;
         // wait transfer
@@ -243,7 +248,7 @@ int main()
             memcpy(bram_i_0 + 4, i_data, data_len);
             bram_i_0[0] = 0;
             // set CDMA
-            axi_cdma_0[6] = 0xe4000000;
+            axi_cdma_0[6] = 0x10000000;
             axi_cdma_0[8] = axi_bram_ctrl_0_addr;
             axi_cdma_0[10] = data_len + 4;
             // wait transfer
@@ -259,7 +264,7 @@ int main()
             auto start2 = high_resolution_clock::now();
             bram_i_0[0] = data_len;
             // set CDMA
-            axi_cdma_0[6] = 0xe4000000;
+            axi_cdma_0[6] = 0x10000000;
             axi_cdma_0[8] = axi_bram_ctrl_0_addr;
             axi_cdma_0[10] = 4;
             // wait transfer
