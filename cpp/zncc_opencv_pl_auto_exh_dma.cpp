@@ -211,6 +211,7 @@ int main()
             }
             unsigned long int i = axi_gpio_1[0];
             signed long int z = (signed long int)bram_r[i];
+            cout << "max " << i << " : " << z;
             if (max_zncc < z)
             {
                 max_zncc = z;
