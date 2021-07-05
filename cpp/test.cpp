@@ -264,14 +264,18 @@ int load_image_file()
     h = t_img.rows;
     cout << "load_image_file\n";
 }
-int region_of_interest(int x, int y, int unit)
+void region_of_interest(int x, int y, int unit)
 {
     if (x < 0 || y < 0 || x >= w || y >= h)
     {
         rect = cv::Rect(u, v, n, m);
+        cout << "rect\n";
         t_img_roi = t_img(rect);
+        cout << "roi\n";
         t_img_roi.convertTo(t_img_roi, CV_8U);
+        cout << "convert\n";
         memcpy(data_t, t_img_roi.data, n_times_m);
+        cout << "memcpy\n";
     }
     else
     {
