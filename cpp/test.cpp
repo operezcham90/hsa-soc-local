@@ -124,22 +124,18 @@ int open_mem()
     ddr_6 = map_mem(BRAM_BYTES, DDR_6_ADDR);
     ddr_7 = map_mem(BRAM_BYTES, DDR_7_ADDR);
     ddr_8 = map_mem(BRAM_BYTES, DDR_8_ADDR);
-    cout << "open_mem\n";
 }
 int close_mem()
 {
     close(fd);
-    cout << "close_mem\n";
 }
 void print_version()
 {
     cout << "version:" << axi_gpio_0[0] << "\n";
-    cout << "print_version\n";
 }
 void clear_signal()
 {
     axi_gpio_1[0] = CLEAR_ZNCC;
-    cout << "clear_signal\n";
 }
 void write_t_data()
 {
@@ -151,7 +147,6 @@ void write_t_data()
     while (!(axi_cdma_0[1] & DONE_CDMA))
     {
     }
-    cout << "write_t_data\n";
 }
 void write_i_data()
 {
@@ -182,20 +177,17 @@ void write_i_data()
         !(axi_cdma_3[1] & DONE_CDMA))
     {
     }
-    cout << "write_i_data\n";
 }
 void start_signal()
 {
     axi_gpio_2[0] = idx;
     axi_gpio_1[0] = num_elem;
-    cout << "start_signal\n";
 }
 void wait_done()
 {
     while (axi_gpio_3[0] != 0x7)
     {
     }
-    cout << "wait_done\n";
 }
 void read_data()
 {
@@ -226,7 +218,6 @@ void read_data()
         !(axi_cdma_3[1] & DONE_CDMA))
     {
     }
-    cout << "read_data\n";
 }
 void print_results()
 {
@@ -234,7 +225,6 @@ void print_results()
     cout << "bram 1:" << results_1[idx / 4] << "\n";
     cout << "bram 2:" << results_2[idx / 4] << "\n";
     cout << "bram 3:" << results_3[idx / 4] << "\n";
-    cout << "print_results\n";
 }
 void set_names()
 {
@@ -247,7 +237,6 @@ void set_names()
     results_1 = ddr_4;
     results_2 = ddr_6;
     results_3 = ddr_8;
-    cout << "set_names\n";
 }
 int load_image_file()
 {
@@ -320,8 +309,8 @@ int load_init_file()
 int main()
 {
     // general
-    set_names();
     open_mem();
+    set_names();
     print_version();
     // template
     load_init_file();
