@@ -55,7 +55,6 @@ unsigned char *data_i_0;
 unsigned char *data_i_1;
 unsigned char *data_i_2;
 unsigned char *data_i_3;
-unsigned char *data_src;
 unsigned long int *results_0;
 unsigned long int *results_1;
 unsigned long int *results_2;
@@ -259,14 +258,9 @@ void region_of_interest(int x, int y, int unit)
     if (x < 0 || y < 0 || x >= w || y >= h)
     {
         rect = cv::Rect(u, v, n, m);
-        cout << "rect\n";
         t_img_roi = t_img(rect);
-        cout << "roi\n";
         t_img_roi.convertTo(t_img_roi, CV_8U);
-        cout << "convert\n";
-        data_src = (unsigned char *)t_img_roi.data;
-        memcpy(data_t, data_src, 5);
-        cout << "memcpy\n";
+        memcpy(data_t, t_img_roi.data, n_times_m);
     }
     else
     {
@@ -290,7 +284,6 @@ void region_of_interest(int x, int y, int unit)
             memcpy(data_i_3, i_img_roi.data, n_times_m);
         }
     }
-    cout << "region_of_interest\n";
 }
 int load_init_file()
 {
@@ -304,7 +297,6 @@ int load_init_file()
     m = d - b;
     n_times_m = n * m;
     num_elem = n_times_m;
-    cout << "load_init_file\n";
 }
 int main()
 {
