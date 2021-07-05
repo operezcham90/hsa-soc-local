@@ -274,7 +274,7 @@ void region_of_interest(int x, int y, int unit)
         cout << "roi\n";
         t_img_roi.convertTo(t_img_roi, CV_8U);
         cout << "convert\n";
-        memcpy(data_t, t_img_roi.data, n_times_m);
+        memcpy(data_t, (unsigned char *)t_img_roi.data, n_times_m);
         cout << "memcpy\n";
     }
     else
