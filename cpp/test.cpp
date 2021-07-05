@@ -177,7 +177,7 @@ void write_i_data()
     {
     }
 }
-void set_index(idx)
+void set_index(int idx)
 {
     axi_gpio_2[0] = idx;
 }
