@@ -284,7 +284,7 @@ int region_of_interest(int x, int y, int unit)
         }
     }
 }
-int load_init_file(int x, int y)
+int load_init_file()
 {
     a = 1669 / 4;
     b = 514 / 4;
@@ -295,6 +295,7 @@ int load_init_file(int x, int y)
     n = c - a;
     m = d - b;
     n_times_m = n * m;
+    num_elem = n_times_m;
 }
 int main()
 {
