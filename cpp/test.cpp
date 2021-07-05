@@ -76,7 +76,7 @@ unsigned long int *ddr_5;
 unsigned long int *ddr_6;
 unsigned long int *ddr_7;
 unsigned long int *ddr_8;
-unsigned long int idx = 4;
+//unsigned long int idx = 4;
 unsigned long int num_elem = 4;
 int a;
 int b;
@@ -177,9 +177,12 @@ void write_i_data()
     {
     }
 }
-void start_signal()
+void set_index(idx)
 {
     axi_gpio_2[0] = idx;
+}
+void start_signal()
+{
     axi_gpio_1[0] = num_elem;
 }
 void wait_done()
@@ -309,15 +312,30 @@ int main()
     load_image_file();
     region_of_interest(-1, -1, 0);
     write_t_data();
-    // image parts
-    clear_signal();
-    region_of_interest(u, v, 0);
-    region_of_interest(u - 1, v - 1, 1);
-    region_of_interest(u + 1, v + 1, 2);
-    region_of_interest(u - 1, v + 1, 3);
-    write_i_data();
-    start_signal();
-    wait_done();
+    // write values to res.data
+    int idx = 0;
+    for (int v = 0; v < h; v++)
+    {
+        for (int u = 0; u < w; u += 4)
+        {
+            // image parts
+            clear_signal();
+            region_of_interest(u, v, 0);
+            region_of_interest(u + 1, v, 1);
+            region_of_interest(u + 2, v, 2);
+            region_of_interest(u + 3, v, 3);
+            write_i_data();
+            set_index(idx);
+            start_signal();
+            wait_done();
+            idx++;
+        }
+        if (idx / 4 >= BRAM_BYTES)
+        {
+            cout << "too many tests\n";
+            exit(1)
+        }
+    }
     // present results
     read_data();
     print_results();
