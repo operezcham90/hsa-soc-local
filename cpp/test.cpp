@@ -333,7 +333,7 @@ int main()
         if (idx / 4 >= BRAM_BYTES)
         {
             cout << "too many tests\n";
-            exit(1)
+            exit(1);
         }
     }
     // present results
