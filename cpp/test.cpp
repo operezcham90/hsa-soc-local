@@ -254,11 +254,10 @@ int load_image_file()
     img0.release();
     w = t_img.cols;
     h = t_img.rows;
-    cout << "load_image_file\n";
 }
 void region_of_interest(int x, int y, int unit)
 {
-    if (x < 0 || y < 0 || x >= w || y >= h)
+    if (x < 0 || y < 0 || x >= w - n || y >= h - m)
     {
         rect = cv::Rect(u, v, n, m);
         t_img_roi = t_img(rect);
