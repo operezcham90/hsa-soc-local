@@ -55,6 +55,7 @@ unsigned char *data_i_0;
 unsigned char *data_i_1;
 unsigned char *data_i_2;
 unsigned char *data_i_3;
+unsigned char *data_src;
 unsigned long int *results_0;
 unsigned long int *results_1;
 unsigned long int *results_2;
@@ -274,7 +275,8 @@ void region_of_interest(int x, int y, int unit)
         cout << "roi\n";
         t_img_roi.convertTo(t_img_roi, CV_8U);
         cout << "convert\n";
-        memcpy(data_t, (unsigned char *)t_img_roi.data, n_times_m);
+        data_src = (unsigned char *)t_img_roi.data;
+        memcpy(data_t, data_src, n_times_m);
         cout << "memcpy\n";
     }
     else
