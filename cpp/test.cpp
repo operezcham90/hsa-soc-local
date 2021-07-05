@@ -223,10 +223,10 @@ void read_data()
 }
 void print_results()
 {
-    cout << "bram 0:" << results_0[idx / 4] << "\n";
-    cout << "bram 1:" << results_1[idx / 4] << "\n";
-    cout << "bram 2:" << results_2[idx / 4] << "\n";
-    cout << "bram 3:" << results_3[idx / 4] << "\n";
+    //cout << "bram 0:" << results_0[idx / 4] << "\n";
+    //cout << "bram 1:" << results_1[idx / 4] << "\n";
+    //cout << "bram 2:" << results_2[idx / 4] << "\n";
+    //cout << "bram 3:" << results_3[idx / 4] << "\n";
 }
 void set_names()
 {
