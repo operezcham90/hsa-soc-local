@@ -88,6 +88,8 @@ int n;
 int m;
 int w;
 int h;
+int p;
+int q;
 unsigned int n_times_m;
 Mat i_img;
 Mat t_img;
@@ -225,10 +227,10 @@ void print_results()
 {
     for (int pix = 0; pix < w - n; pix += 4)
     {
-        res.data[(v * w) + pix] = results_0[pix / 4] / 257;
-        res.data[(v * w) + pix + 1] = results_1[pix / 4] / 257;
-        res.data[(v * w) + pix + 2] = results_2[pix / 4] / 257;
-        res.data[(v * w) + pix + 3] = results_3[pix / 4] / 257;
+        res.data[(q * w) + pix] = results_0[pix / 4] / 257;
+        res.data[(q * w) + pix + 1] = results_1[pix / 4] / 257;
+        res.data[(q * w) + pix + 2] = results_2[pix / 4] / 257;
+        res.data[(q * w) + pix + 3] = results_3[pix / 4] / 257;
     }
     imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
     //cout << "bram 0:" << results_0[idx / 4] << "\n";
@@ -319,17 +321,17 @@ int main()
     load_image_file();
     region_of_interest(-1, -1, 0);
     write_t_data();
-    for (v = 0; v < h - m; v++)
+    for (q = 0; q < h - m; q++)
     {
         idx = 0;
-        for (u = 0; u < w - n; u += 4)
+        for (p = 0; p < w - n; p += 4)
         {
             // image parts
             clear_signal();
-            region_of_interest(u, v, 0);
-            region_of_interest(u + 1, v, 1);
-            region_of_interest(u + 2, v, 2);
-            region_of_interest(u + 3, v, 3);
+            region_of_interest(p, q, 0);
+            region_of_interest(p + 1, q, 1);
+            region_of_interest(p + 2, q, 2);
+            region_of_interest(p + 3, q, 3);
             write_i_data();
             set_index(idx);
             start_signal();
