@@ -103,6 +103,7 @@ unsigned long int time_write_i = 0;
 unsigned long int time_read_res = 0;
 unsigned long int time_read_file = 0;
 unsigned long int time_slice_data = 0;
+unsigned long int time_work = 0;
 unsigned long int tests = 0;
 unsigned long int *map_mem(unsigned int bytes, off_t addr)
 {
@@ -193,19 +194,17 @@ void write_i_data()
     auto duration = duration_cast<microseconds>(stop - start);
     time_write_i += duration.count();
 }
-void set_index(int idx)
+void work(int idx)
 {
+    auto start = high_resolution_clock::now();
     axi_gpio_2[0] = idx;
-}
-void start_signal()
-{
     axi_gpio_1[0] = num_elem;
-}
-void wait_done()
-{
     while (axi_gpio_3[0] != 0x7)
     {
     }
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
+    time_work += duration.count();
 }
 void read_data()
 {
@@ -274,7 +273,7 @@ int load_image_file()
     Point pt1(a, b);
     Point pt2(c, d);
     rectangle(img0, pt1, pt2, cv::Scalar(0, 0, 0));
-    imwrite("/root/hsa-soc-local/img/dices0.jpg", img0);
+    cv::imwrite("/root/hsa-soc-local/img/dices0.jpg", img0);
     img0.release();
     w = t_img.cols;
     h = t_img.rows;
@@ -355,9 +354,7 @@ int main()
             region_of_interest(p + 2, q, 2);
             region_of_interest(p + 3, q, 3);
             write_i_data();
-            set_index(idx);
-            start_signal();
-            wait_done();
+            work(idx);
             idx += 4;
             tests += 4;
         }
@@ -371,6 +368,7 @@ int main()
     cout << "Read res: " << time_read_res << " us\n";
     cout << "Read file: " << time_read_file << " us\n";
     cout << "Slice data: " << time_slice_data << " us\n";
+    cout << "Work: " << time_work << " us\n";
     cout << "Tests: " << tests << "\n";
     return 0;
 }
