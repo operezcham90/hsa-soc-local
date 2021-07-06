@@ -209,10 +209,10 @@ void read_data()
     axi_cdma_2[8] = DDR_6_ADDR;
     axi_cdma_3[6] = BRAM_8_ADDR;
     axi_cdma_3[8] = DDR_8_ADDR;
-    axi_cdma_0[10] = u - n;
-    axi_cdma_1[10] = u - n;
-    axi_cdma_2[10] = u - n;
-    axi_cdma_3[10] = u - n;
+    axi_cdma_0[10] = w - n;
+    axi_cdma_1[10] = w - n;
+    axi_cdma_2[10] = w - n;
+    axi_cdma_3[10] = w - n;
     while (
         !(axi_cdma_0[1] & DONE_CDMA) &&
         !(axi_cdma_1[1] & DONE_CDMA) &&
@@ -223,12 +223,12 @@ void read_data()
 }
 void print_results()
 {
-    for (int pix = 0; pix < u - n; pix += 4)
+    for (int pix = 0; pix < w - n; pix += 4)
     {
-        res.data[(v * w) + pix] = results_0[pix / 4] / 512;
-        res.data[(v * w) + pix + 1] = results_1[pix / 4] / 512;
-        res.data[(v * w) + pix + 2] = results_2[pix / 4] / 512;
-        res.data[(v * w) + pix + 3] = results_3[pix / 4] / 512;
+        res.data[(v * w) + pix] = results_0[pix / 4] / 257;
+        res.data[(v * w) + pix + 1] = results_1[pix / 4] / 257;
+        res.data[(v * w) + pix + 2] = results_2[pix / 4] / 257;
+        res.data[(v * w) + pix + 3] = results_3[pix / 4] / 257;
     }
     imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
     //cout << "bram 0:" << results_0[idx / 4] << "\n";
@@ -319,9 +319,9 @@ int main()
     load_image_file();
     region_of_interest(-1, -1, 0);
     write_t_data();
-    idx = 0;
     for (v = 0; v < h - m; v++)
     {
+        idx = 0;
         for (u = 0; u < w - n; u += 4)
         {
             // image parts
@@ -339,7 +339,6 @@ int main()
         // present results
         read_data();
         print_results();
-        idx = 0;
     }
     close_mem();
     return 0;
