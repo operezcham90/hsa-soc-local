@@ -251,7 +251,6 @@ int load_image_file()
     i_img = cv::imread("/root/hsa-soc-local/img/dices.jpg", cv::IMREAD_GRAYSCALE);
     t_img = cv::imread("/root/hsa-soc-local/img/dices.jpg", cv::IMREAD_GRAYSCALE);
     // draw the target for inspection
-    res(w - n, h - m, CV_8U, cv::Scalar(0, 0, 0));
     Mat img0 = t_img.clone();
     Point pt1(a, b);
     Point pt2(c, d);
@@ -260,6 +259,7 @@ int load_image_file()
     img0.release();
     w = t_img.cols;
     h = t_img.rows;
+    res = Mat(w - n, h - m, CV_8U, cv::Scalar(0, 0, 0));
 }
 void region_of_interest(int x, int y, int unit)
 {
