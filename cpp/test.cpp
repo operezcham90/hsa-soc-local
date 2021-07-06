@@ -227,10 +227,10 @@ void print_results()
 {
     for (int pix = 0; pix < w - n; pix++)
     {
-        res.data[(q * w) + pix] = results_0[pix] / 257;
-        res.data[(q * w) + pix] = results_1[pix] / 257;
-        res.data[(q * w) + pix] = results_2[pix] / 257;
-        res.data[(q * w) + pix] = results_3[pix] / 257;
+        res.data[(q * (w - n)) + pix] = results_0[pix] / 257;
+        res.data[(q * (w - n)) + pix] = results_1[pix] / 257;
+        res.data[(q * (w - n)) + pix] = results_2[pix] / 257;
+        res.data[(q * (w - n)) + pix] = results_3[pix] / 257;
     }
     imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
 }
