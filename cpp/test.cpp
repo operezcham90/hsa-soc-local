@@ -157,7 +157,7 @@ void write_t_data()
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    time_write_t += duration * 0.1;
+    time_write_t += (double)duration;
 }
 void write_i_data()
 {
@@ -191,7 +191,7 @@ void write_i_data()
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    time_write_i += duration * 0.1;
+    time_write_i += (double)duration;
 }
 void set_index(int idx)
 {
@@ -239,7 +239,7 @@ void read_data()
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    time_read_res += duration * 0.1;
+    time_read_res += (double)duration;
 }
 void print_results()
 {
@@ -281,7 +281,7 @@ int load_image_file()
     res = Mat(h - m, w - n, CV_8U, cv::Scalar(0, 0, 0));
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    time_read_file += duration * 0.1;
+    time_read_file += (double)duration;
 }
 void region_of_interest(int x, int y, int unit)
 {
@@ -317,7 +317,7 @@ void region_of_interest(int x, int y, int unit)
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    time_slice_data += duration * 0.1;
+    time_slice_data += (double)duration;
 }
 int load_init_file()
 {
