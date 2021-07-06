@@ -359,11 +359,11 @@ int main()
             start_signal();
             wait_done();
             idx += 4;
+            tests += 4;
         }
         // present results
         read_data();
         print_results();
-        tests += 4;
     }
     close_mem();
     cout << "Write t: " << time_write_t << " us\n";
