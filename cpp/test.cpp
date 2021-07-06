@@ -225,10 +225,10 @@ void print_results()
 {
     for (int pix = 0; pix < u - n; pix += 4)
     {
-        res.data[(v * w) + pix] = results_0[pix / 4] / 512;
+        /*res.data[(v * w) + pix] = results_0[pix / 4] / 512;
         res.data[(v * w) + pix + 1] = results_1[pix / 4] / 512;
         res.data[(v * w) + pix + 2] = results_2[pix / 4] / 512;
-        res.data[(v * w) + pix + 3] = results_3[pix / 4] / 512;
+        res.data[(v * w) + pix + 3] = results_3[pix / 4] / 512;*/
     }
     imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
     //cout << "bram 0:" << results_0[idx / 4] << "\n";
