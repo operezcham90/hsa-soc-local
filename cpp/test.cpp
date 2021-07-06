@@ -98,12 +98,12 @@ Mat t_img_roi;
 Mat res;
 Rect rect;
 ofstream result;
-double time_write_t = 0;
-double time_write_i = 0;
-double time_read_res = 0;
-double time_read_file = 0;
-double time_slice_data = 0;
-double tests = 0;
+unsigned long int time_write_t = 0;
+unsigned long int time_write_i = 0;
+unsigned long int time_read_res = 0;
+unsigned long int time_read_file = 0;
+unsigned long int time_slice_data = 0;
+unsigned long int tests = 0;
 unsigned long int *map_mem(unsigned int bytes, off_t addr)
 {
     return (unsigned long int *)mmap(NULL, bytes, PROT_READ | PROT_WRITE, MAP_SHARED, fd, addr);
@@ -157,7 +157,7 @@ void write_t_data()
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    time_write_t += (double)duration;
+    time_write_t += duration;
 }
 void write_i_data()
 {
@@ -191,7 +191,7 @@ void write_i_data()
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    time_write_i += (double)duration;
+    time_write_i += duration;
 }
 void set_index(int idx)
 {
@@ -239,7 +239,7 @@ void read_data()
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    time_read_res += (double)duration;
+    time_read_res += duration;
 }
 void print_results()
 {
@@ -281,7 +281,7 @@ int load_image_file()
     res = Mat(h - m, w - n, CV_8U, cv::Scalar(0, 0, 0));
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    time_read_file += (double)duration;
+    time_read_file += duration;
 }
 void region_of_interest(int x, int y, int unit)
 {
@@ -317,7 +317,7 @@ void region_of_interest(int x, int y, int unit)
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    time_slice_data += (double)duration;
+    time_slice_data += duration;
 }
 int load_init_file()
 {
