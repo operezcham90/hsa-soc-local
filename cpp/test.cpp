@@ -157,7 +157,7 @@ void write_t_data()
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    time_write_t += duration;
+    time_write_t += duration.count();
 }
 void write_i_data()
 {
@@ -191,7 +191,7 @@ void write_i_data()
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    time_write_i += duration;
+    time_write_i += duration.count();
 }
 void set_index(int idx)
 {
@@ -239,7 +239,7 @@ void read_data()
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    time_read_res += duration;
+    time_read_res += duration.count();
 }
 void print_results()
 {
@@ -281,7 +281,7 @@ int load_image_file()
     res = Mat(h - m, w - n, CV_8U, cv::Scalar(0, 0, 0));
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    time_read_file += duration;
+    time_read_file += duration.count();
 }
 void region_of_interest(int x, int y, int unit)
 {
@@ -317,7 +317,7 @@ void region_of_interest(int x, int y, int unit)
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    time_slice_data += duration;
+    time_slice_data += duration.count();
 }
 int load_init_file()
 {
@@ -372,10 +372,5 @@ int main()
     cout << "Read file: " << time_read_file << " us\n";
     cout << "Slice data: " << time_slice_data << " us\n";
     cout << "Tests: " << tests << "\n";
-    cout << "Write t per test: " << time_write_t / tests << " us\n";
-    cout << "Write i per test: " << time_write_i / tests << " us\n";
-    cout << "Read res per test: " << time_read_res / tests << " us\n";
-    cout << "Read file per test: " << time_read_file / tests << " us\n";
-    cout << "Slice data per test: " << time_slice_data / tests << " us\n";
     return 0;
 }
