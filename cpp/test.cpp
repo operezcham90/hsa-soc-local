@@ -267,12 +267,16 @@ int load_image_file()
 }
 void region_of_interest(int x, int y, int unit)
 {
-    if (x < 0 || y < 0 || x >= w - n || y >= h - m)
+    if (x < 0 || y < 0)
     {
-        rect = cv::Rect(v, u, n, m);
+        rect = cv::Rect(u, v, n, m);
         t_img_roi = t_img(rect);
         t_img_roi.convertTo(t_img_roi, CV_8U);
         memcpy(data_t, t_img_roi.data, n_times_m);
+    }
+    else if (x >= w - n || y >= h - m)
+    {
+        // ignore
     }
     else
     {
