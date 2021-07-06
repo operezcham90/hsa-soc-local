@@ -225,10 +225,10 @@ void print_results()
 {
     for (int pix = 0; pix < u - n; pix += 4)
     {
-        /*res.data[(v * w) + pix] = results_0[pix / 4] / 512;
+        res.data[(v * w) + pix] = results_0[pix / 4] / 512;
         res.data[(v * w) + pix + 1] = results_1[pix / 4] / 512;
         res.data[(v * w) + pix + 2] = results_2[pix / 4] / 512;
-        res.data[(v * w) + pix + 3] = results_3[pix / 4] / 512;*/
+        res.data[(v * w) + pix + 3] = results_3[pix / 4] / 512;
     }
     imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
     //cout << "bram 0:" << results_0[idx / 4] << "\n";
@@ -320,9 +320,9 @@ int main()
     region_of_interest(-1, -1, 0);
     write_t_data();
     idx = 0;
-    for (v = 0; v < h; v++)
+    for (v = 0; v < h - m; v++)
     {
-        for (u = 0; u < w; u += 4)
+        for (u = 0; u < w - n; u += 4)
         {
             // image parts
             clear_signal();
