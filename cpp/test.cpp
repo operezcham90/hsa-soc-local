@@ -233,10 +233,6 @@ void print_results()
         res.data[(q * w) + pix] = results_3[pix] / 257;
     }
     imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
-    //cout << "bram 0:" << results_0[idx / 4] << "\n";
-    //cout << "bram 1:" << results_1[idx / 4] << "\n";
-    //cout << "bram 2:" << results_2[idx / 4] << "\n";
-    //cout << "bram 3:" << results_3[idx / 4] << "\n";
 }
 void set_names()
 {
@@ -340,7 +336,7 @@ int main()
             set_index(idx);
             start_signal();
             wait_done();
-            idx++;
+            idx += 4;
         }
         // present results
         read_data();
