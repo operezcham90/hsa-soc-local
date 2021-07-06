@@ -259,7 +259,7 @@ int load_image_file()
     img0.release();
     w = t_img.cols;
     h = t_img.rows;
-    res = Mat(w - n, h - m, CV_8U, cv::Scalar(0, 0, 0));
+    res = Mat(h - m, w - n, CV_8U, cv::Scalar(0, 0, 0));
 }
 void region_of_interest(int x, int y, int unit)
 {
