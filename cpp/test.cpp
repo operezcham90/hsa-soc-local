@@ -98,6 +98,9 @@ Mat t_img_roi;
 Mat res;
 Rect rect;
 ofstream result;
+auto start;
+auto stop;
+auto duration;
 unsigned long int *map_mem(unsigned int bytes, off_t addr)
 {
     return (unsigned long int *)mmap(NULL, bytes, PROT_READ | PROT_WRITE, MAP_SHARED, fd, addr);
@@ -140,6 +143,7 @@ void clear_signal()
 }
 void write_t_data()
 {
+    start = high_resolution_clock::now();
     axi_cdma_0[0] = CLEAR_CDMA;
     axi_cdma_0[0] = STANDBY_CDMA;
     axi_cdma_0[6] = DDR_0_ADDR;
@@ -148,9 +152,13 @@ void write_t_data()
     while (!(axi_cdma_0[1] & DONE_CDMA))
     {
     }
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << "Write t: " << duration.count() << " us\n";
 }
 void write_i_data()
 {
+    start = high_resolution_clock::now();
     axi_cdma_0[0] = CLEAR_CDMA;
     axi_cdma_1[0] = CLEAR_CDMA;
     axi_cdma_2[0] = CLEAR_CDMA;
@@ -178,6 +186,9 @@ void write_i_data()
         !(axi_cdma_3[1] & DONE_CDMA))
     {
     }
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << "Write i: " << duration.count() << " us\n";
 }
 void set_index(int idx)
 {
@@ -195,6 +206,7 @@ void wait_done()
 }
 void read_data()
 {
+    start = high_resolution_clock::now();
     axi_cdma_0[0] = CLEAR_CDMA;
     axi_cdma_1[0] = CLEAR_CDMA;
     axi_cdma_2[0] = CLEAR_CDMA;
@@ -222,6 +234,9 @@ void read_data()
         !(axi_cdma_3[1] & DONE_CDMA))
     {
     }
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << "Read res: " << duration.count() << " us\n";
 }
 void print_results()
 {
@@ -248,6 +263,7 @@ void set_names()
 }
 int load_image_file()
 {
+    start = high_resolution_clock::now();
     i_img = cv::imread("/root/hsa-soc-local/img/dices.jpg", cv::IMREAD_GRAYSCALE);
     t_img = cv::imread("/root/hsa-soc-local/img/dices.jpg", cv::IMREAD_GRAYSCALE);
     // draw the target for inspection
@@ -260,9 +276,13 @@ int load_image_file()
     w = t_img.cols;
     h = t_img.rows;
     res = Mat(h - m, w - n, CV_8U, cv::Scalar(0, 0, 0));
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << "Read file: " << duration.count() << " us\n";
 }
 void region_of_interest(int x, int y, int unit)
 {
+    start = high_resolution_clock::now();
     if (x < 0 || y < 0 || x >= w - n || y >= h - m)
     {
         rect = cv::Rect(u, v, n, m);
@@ -292,6 +312,9 @@ void region_of_interest(int x, int y, int unit)
             memcpy(data_i_3, i_img_roi.data, n_times_m);
         }
     }
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << "Slice data: " << duration.count() << " us\n";
 }
 int load_init_file()
 {
