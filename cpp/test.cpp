@@ -209,10 +209,10 @@ void read_data()
     axi_cdma_2[8] = DDR_6_ADDR;
     axi_cdma_3[6] = BRAM_8_ADDR;
     axi_cdma_3[8] = DDR_8_ADDR;
-    axi_cdma_0[10] = w - n;
-    axi_cdma_1[10] = w - n;
-    axi_cdma_2[10] = w - n;
-    axi_cdma_3[10] = w - n;
+    axi_cdma_0[10] = (w - n) / 4;
+    axi_cdma_1[10] = (w - n) / 4;
+    axi_cdma_2[10] = (w - n) / 4;
+    axi_cdma_3[10] = (w - n) / 4;
     while (
         !(axi_cdma_0[1] & DONE_CDMA) &&
         !(axi_cdma_1[1] & DONE_CDMA) &&
