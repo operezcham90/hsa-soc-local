@@ -211,10 +211,10 @@ void read_data()
     axi_cdma_2[8] = DDR_6_ADDR;
     axi_cdma_3[6] = BRAM_8_ADDR;
     axi_cdma_3[8] = DDR_8_ADDR;
-    axi_cdma_0[10] = (w - n);
-    axi_cdma_1[10] = (w - n);
-    axi_cdma_2[10] = (w - n);
-    axi_cdma_3[10] = (w - n);
+    axi_cdma_0[10] = (w - n) * 4;
+    axi_cdma_1[10] = (w - n) * 4;
+    axi_cdma_2[10] = (w - n) * 4;
+    axi_cdma_3[10] = (w - n) * 4;
     while (
         !(axi_cdma_0[1] & DONE_CDMA) &&
         !(axi_cdma_1[1] & DONE_CDMA) &&
@@ -263,16 +263,12 @@ int load_image_file()
 }
 void region_of_interest(int x, int y, int unit)
 {
-    if (x < 0 || y < 0)
+    if (x < 0 || y < 0 || x >= w - n || y >= h - m)
     {
         rect = cv::Rect(u, v, n, m);
         t_img_roi = t_img(rect);
         t_img_roi.convertTo(t_img_roi, CV_8U);
         memcpy(data_t, t_img_roi.data, n_times_m);
-    }
-    else if (x >= w - n || y >= h - m)
-    {
-        // ignore
     }
     else
     {
