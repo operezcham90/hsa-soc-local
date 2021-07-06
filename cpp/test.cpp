@@ -328,10 +328,10 @@ int main()
         {
             // image parts
             clear_signal();
-            region_of_interest(q, p, 0);
-            region_of_interest(q, p, 1);
-            region_of_interest(q, p, 2);
-            region_of_interest(q, p, 3);
+            region_of_interest(p, q, 0);
+            region_of_interest(p, q, 1);
+            region_of_interest(p, q, 2);
+            region_of_interest(p, q, 3);
             write_i_data();
             set_index(idx);
             start_signal();
