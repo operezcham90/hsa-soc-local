@@ -327,7 +327,7 @@ int main()
             region_of_interest(p, q, 0);
             region_of_interest(p, q, 1);
             region_of_interest(p, q, 2);
-            region_of_interest(u, v, 3);
+            region_of_interest(p, q, 3);
             write_i_data();
             set_index(idx);
             start_signal();
