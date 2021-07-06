@@ -269,7 +269,7 @@ void region_of_interest(int x, int y, int unit)
 {
     if (x < 0 || y < 0 || x >= w - n || y >= h - m)
     {
-        rect = cv::Rect(u, v, n, m);
+        rect = cv::Rect(v, u, n, m);
         t_img_roi = t_img(rect);
         t_img_roi.convertTo(t_img_roi, CV_8U);
         memcpy(data_t, t_img_roi.data, n_times_m);
