@@ -98,6 +98,12 @@ Mat t_img_roi;
 Mat res;
 Rect rect;
 ofstream result;
+double time_write_t = 0;
+double time_write_i = 0;
+double time_read_res = 0;
+double time_read_file = 0;
+double time_slice_data = 0;
+double tests = 0;
 unsigned long int *map_mem(unsigned int bytes, off_t addr)
 {
     return (unsigned long int *)mmap(NULL, bytes, PROT_READ | PROT_WRITE, MAP_SHARED, fd, addr);
@@ -151,7 +157,7 @@ void write_t_data()
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    cout << "Write t: " << duration.count() << " us\n";
+    time_write_t += duration;
 }
 void write_i_data()
 {
@@ -185,7 +191,7 @@ void write_i_data()
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    cout << "Write i: " << duration.count() << " us\n";
+    time_write_i += duration;
 }
 void set_index(int idx)
 {
@@ -233,7 +239,7 @@ void read_data()
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    cout << "Read res: " << duration.count() << " us\n";
+    time_read_res += duration;
 }
 void print_results()
 {
@@ -275,7 +281,7 @@ int load_image_file()
     res = Mat(h - m, w - n, CV_8U, cv::Scalar(0, 0, 0));
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    cout << "Read file: " << duration.count() << " us\n";
+    time_read_file += duration;
 }
 void region_of_interest(int x, int y, int unit)
 {
@@ -311,7 +317,7 @@ void region_of_interest(int x, int y, int unit)
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    cout << "Slice data: " << duration.count() << " us\n";
+    time_slice_data += duration;
 }
 int load_init_file()
 {
@@ -357,7 +363,19 @@ int main()
         // present results
         read_data();
         print_results();
+        tests += 4;
     }
     close_mem();
+    cout << "Write t: " << time_write_t << " us\n";
+    cout << "Write i: " << time_write_i << " us\n";
+    cout << "Read res: " << time_read_res << " us\n";
+    cout << "Read file: " << time_read_file << " us\n";
+    cout << "Slice data: " << time_slice_data << " us\n";
+    cout << "Tests: " << tests << "\n";
+    cout << "Write t per test: " << time_write_t / tests << " us\n";
+    cout << "Write i per test: " << time_write_i / tests << " us\n";
+    cout << "Read res per test: " << time_read_res / tests << " us\n";
+    cout << "Read file per test: " << time_read_file / tests << " us\n";
+    cout << "Slice data per test: " << time_slice_data / tests << " us\n";
     return 0;
 }
