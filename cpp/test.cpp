@@ -76,7 +76,7 @@ unsigned long int *ddr_5;
 unsigned long int *ddr_6;
 unsigned long int *ddr_7;
 unsigned long int *ddr_8;
-//unsigned long int idx = 4;
+unsigned long int idx = 4;
 unsigned long int num_elem = 4;
 int a;
 int b;
@@ -209,10 +209,10 @@ void read_data()
     axi_cdma_2[8] = DDR_6_ADDR;
     axi_cdma_3[6] = BRAM_8_ADDR;
     axi_cdma_3[8] = DDR_8_ADDR;
-    axi_cdma_0[10] = BRAM_BYTES;
-    axi_cdma_1[10] = BRAM_BYTES;
-    axi_cdma_2[10] = BRAM_BYTES;
-    axi_cdma_3[10] = BRAM_BYTES;
+    axi_cdma_0[10] = u - n;
+    axi_cdma_1[10] = u - n;
+    axi_cdma_2[10] = u - n;
+    axi_cdma_3[10] = u - n;
     while (
         !(axi_cdma_0[1] & DONE_CDMA) &&
         !(axi_cdma_1[1] & DONE_CDMA) &&
@@ -223,6 +223,14 @@ void read_data()
 }
 void print_results()
 {
+    for (int pix = 0; pix < u - n; pix += 4)
+    {
+        res.data[(v * w) + pix] = results_0[pix / 4] / 512;
+        res.data[(v * w) + pix + 1] = results_1[pix / 4] / 512;
+        res.data[(v * w) + pix + 2] = results_2[pix / 4] / 512;
+        res.data[(v * w) + pix + 3] = results_3[pix / 4] / 512;
+    }
+    imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
     //cout << "bram 0:" << results_0[idx / 4] << "\n";
     //cout << "bram 1:" << results_1[idx / 4] << "\n";
     //cout << "bram 2:" << results_2[idx / 4] << "\n";
@@ -311,11 +319,10 @@ int main()
     load_image_file();
     region_of_interest(-1, -1, 0);
     write_t_data();
-    // write values to res.data
-    int idx = 0;
-    for (int v = 0; v < h; v++)
+    idx = 0;
+    for (v = 0; v < h; v++)
     {
-        for (int u = 0; u < w; u += 4)
+        for (u = 0; u < w; u += 4)
         {
             // image parts
             clear_signal();
@@ -329,15 +336,11 @@ int main()
             wait_done();
             idx++;
         }
-        if (idx / 4 >= BRAM_BYTES)
-        {
-            cout << "too many tests\n";
-            exit(1);
-        }
+        // present results
+        read_data();
+        print_results();
+        idx = 0;
     }
-    // present results
-    read_data();
-    print_results();
     close_mem();
     return 0;
 }
