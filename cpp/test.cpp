@@ -361,6 +361,7 @@ int main()
         // present results
         read_data();
         print_results();
+        cout << "row: " << q << "\n";
     }
     close_mem();
     cout << "Write t: " << time_write_t << " us\n";
