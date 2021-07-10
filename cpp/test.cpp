@@ -285,6 +285,9 @@ int load_image_file()
     img0.release();
     w = t_img.cols;
     h = t_img.rows;
+    h_minus_m = h - m;
+    w_minus_n = w - n;
+    res_bytes_per_unit = w_minus_n * 4 / parallel_units;
     res = Mat(h_minus_m, w_minus_n, CV_8U, cv::Scalar(0, 0, 0));
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
@@ -338,9 +341,6 @@ int load_init_file()
     m = d - b;
     n_times_m = n * m;
     num_elem = n_times_m;
-    h_minus_m = h - m;
-    w_minus_n = w - n;
-    res_bytes_per_unit = w_minus_n * 4 / parallel_units;
 }
 int main()
 {
