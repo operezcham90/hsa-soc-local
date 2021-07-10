@@ -1,7 +1,7 @@
 # ALOV dataset
 
-The ALOV dataset mirror that this project uses is from the (Universiteit van Amsterdam
-)[https://isis-data.science.uva.nl/alov/]. The size is greater that 8GB so a external memory device is required.
+The ALOV dataset mirror that this project uses is from the [Universiteit van Amsterdam
+](https://isis-data.science.uva.nl/alov/). The size is greater that 8GB so a external memory device is required.
 
 # HSA SoC Local Server
 
