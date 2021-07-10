@@ -46,6 +46,7 @@
 #define DONE_CDMA 0x2
 #define STANDBY_CDMA 0x0
 #define CLEAR_ZNCC 0x0
+#define ZNCC_DONE 0x7
 using namespace cv;
 using namespace std;
 using namespace std::chrono;
@@ -76,8 +77,9 @@ unsigned long int *ddr_5;
 unsigned long int *ddr_6;
 unsigned long int *ddr_7;
 unsigned long int *ddr_8;
-unsigned long int idx = 4;
-unsigned long int num_elem = 4;
+unsigned long int idx;
+unsigned long int num_elem;
+unsigned int parallel_units = 4;
 int a;
 int b;
 int c;
@@ -91,6 +93,9 @@ int h;
 int p;
 int q;
 unsigned int n_times_m;
+unsigned int h_minus_m;
+unsigned int w_minus_n;
+unsigned int res_bytes_per_unit;
 Mat i_img;
 Mat t_img;
 Mat i_img_roi;
@@ -199,7 +204,7 @@ void work(int idx)
     auto start = high_resolution_clock::now();
     axi_gpio_2[0] = idx;
     axi_gpio_1[0] = num_elem;
-    while (axi_gpio_3[0] != 0x7)
+    while (axi_gpio_3[0] != ZNCC_DONE)
     {
     }
     auto stop = high_resolution_clock::now();
@@ -225,10 +230,10 @@ void read_data()
     axi_cdma_2[8] = DDR_6_ADDR;
     axi_cdma_3[6] = BRAM_8_ADDR;
     axi_cdma_3[8] = DDR_8_ADDR;
-    axi_cdma_0[10] = ((w - n) * 4) / 4;
-    axi_cdma_1[10] = ((w - n) * 4) / 4;
-    axi_cdma_2[10] = ((w - n) * 4) / 4;
-    axi_cdma_3[10] = ((w - n) * 4) / 4;
+    axi_cdma_0[10] = res_bytes_per_unit;
+    axi_cdma_1[10] = res_bytes_per_unit;
+    axi_cdma_2[10] = res_bytes_per_unit;
+    axi_cdma_3[10] = res_bytes_per_unit;
     while (
         !(axi_cdma_0[1] & DONE_CDMA) &&
         !(axi_cdma_1[1] & DONE_CDMA) &&
@@ -242,12 +247,15 @@ void read_data()
 }
 void print_results()
 {
-    for (int pix = 0; pix < w - n; pix += 4)
+    int pix_idx = 0;
+    int row = w_minus_n * q;
+    for (int pix = 0; pix < w_minus_n; pix += parallel_units)
     {
-        res.data[(q * (w - n)) + pix] = results_0[pix / 4] / 257;
-        res.data[(q * (w - n)) + pix + 1] = results_1[pix / 4] / 257;
-        res.data[(q * (w - n)) + pix + 2] = results_2[pix / 4] / 257;
-        res.data[(q * (w - n)) + pix + 3] = results_3[pix / 4] / 257;
+        res.data[row + pix] = results_0[pix_idx] >> 9;
+        res.data[row + pix + 1] = results_1[pix_idx] >> 9;
+        res.data[row + pix + 2] = results_2[pix_idx] >> 9;
+        res.data[row + pix + 3] = results_3[pix_idx] >> 9;
+        pix_idx++;
     }
     imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
 }
@@ -277,7 +285,7 @@ int load_image_file()
     img0.release();
     w = t_img.cols;
     h = t_img.rows;
-    res = Mat(h - m, w - n, CV_8U, cv::Scalar(0, 0, 0));
+    res = Mat(h_minus_m, w_minus_n, CV_8U, cv::Scalar(0, 0, 0));
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
     time_read_file += duration.count();
@@ -285,7 +293,7 @@ int load_image_file()
 void region_of_interest(int x, int y, int unit)
 {
     auto start = high_resolution_clock::now();
-    if (x < 0 || y < 0 || x >= w - n || y >= h - m)
+    if (x < 0 || y < 0 || x >= w_minus_n || y >= h_minus_m)
     {
         rect = cv::Rect(u, v, n, m);
         t_img_roi = t_img(rect);
@@ -330,6 +338,9 @@ int load_init_file()
     m = d - b;
     n_times_m = n * m;
     num_elem = n_times_m;
+    h_minus_m = h - m;
+    w_minus_n = w - n;
+    res_bytes_per_unit = w_minus_n * 4 / parallel_units;
 }
 int main()
 {
@@ -342,10 +353,10 @@ int main()
     load_image_file();
     region_of_interest(-1, -1, 0);
     write_t_data();
-    for (q = 0; q < h - m; q++)
+    for (q = 0; q < h_minus_m; q++)
     {
         idx = 0;
-        for (p = 0; p < w - n; p += 4)
+        for (p = 0; p < w_minus_n; p += 4)
         {
             // image parts
             clear_signal();
