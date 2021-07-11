@@ -46,7 +46,7 @@ function read_ann(category, video) {
     fs.readFile(file, 'utf8', (err, data) => {
         var frames = data.split('\n');
         var first_frame_data = frames[0].split(/\s/g);
-        var last_frame_data = frames[frames.length - 1].split(/\s/g);
+        var last_frame_data = frames[frames.length - 2].split(/\s/g);
         first_frame_index = +first_frame_data[0];
         last_frame_index = +last_frame_data[0];
         console.log(category + ' ' + video + ' ' + first_frame_index + '-' + last_frame_data);
@@ -95,9 +95,9 @@ function read_ann(category, video) {
             bottom_r_y = +first_frame_data[8];
         }
 
-        if (video + 1 < videos[category].length) {
+        if (video < videos[category].length) {
             read_ann(category, video + 1);
-        } else if (category + 1 < categories.length) {
+        } else if (category < categories.length) {
             read_ann(category + 1, 0);
         }
     });
