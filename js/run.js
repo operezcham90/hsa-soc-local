@@ -44,7 +44,7 @@ function read_ann(category, video) {
         var t_file = '/mnt/alov/frames/' + categories[category] + '/' + categories[category] + '_video';
         t_file += ('00000' + (video + 1)).slice(-5) + '/' + ('00000000' + frame_index).slice(-8) + '.jpg';
         var i_file = '/mnt/alov/frames/' + categories[category] + '/' + categories[category] + '_video';
-        i_file += ('00000' + (video + 1)).slice(-5) + '/' + ('00000000' + frame_index + 1).slice(-8) + '.jpg';
+        i_file += ('00000' + (video + 1)).slice(-5) + '/' + ('00000000' + (frame_index + 1)).slice(-8) + '.jpg';
         var top_l_x = +first_frame_data[1];
         if (+first_frame_data[3] < top_l_x) {
             top_l_x = +first_frame_data[3];
@@ -92,7 +92,11 @@ function read_ann(category, video) {
         const_code += '#define BOTTOM_R_X ' + bottom_r_x + '\n';
         const_code += '#define BOTTOM_R_Y ' + bottom_r_y + '\n';
         fs.writeFile('/root/hsa-soc-local/cpp/frame.cpp', const_code + code_temp, (err) => {
-            console.log(err);
+            exec('g++ /root/hsa-soc-local/cpp/frame.cpp -o /root/hsa-soc-local/cpp/frame `pkg-config --cflags --libs opencv`', (error, stdout, stderr) => {
+                exec('./root/hsa-soc-local/cpp/frame', (error, stdout, stderr) => {
+                    console.log('running frame ' + frame_index);
+                });
+            });
         });
     });
 }
