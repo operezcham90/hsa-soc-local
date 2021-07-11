@@ -22,7 +22,6 @@ function check_folder(category) {
         folder_videos.pop();
         videos.push(folder_videos);
         video_count += folder_videos.length;
-        console.log(video_count);
         category++;
         if (category < categories.length) {
             check_folder(category);
@@ -33,7 +32,7 @@ function check_folder(category) {
 }
 function read_ann(category, video) {
     var file = '/mnt/alov/ann/' + categories[category] + '/' + videos[category][video];
-    fs.readFile(file, 'utf8', function (err, data) {
+    fs.readFile(file, 'utf8', (err, data) => {
         console.log(file);
         var frames = data.split('\n');
         var first_frame_data = frames[0].split(/\s/g);

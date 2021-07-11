@@ -1,4 +1,5 @@
-// g++ test.cpp -o test `pkg-config --cflags --libs opencv`
+#define I_FILE "/root/hsa-soc-local/img/dices.jpg"
+#define T_FILE "/root/hsa-soc-local/img/dices.jpg"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -380,8 +381,8 @@ void set_names()
 int load_image_file()
 {
     auto start = high_resolution_clock::now();
-    i_img = cv::imread("/root/hsa-soc-local/img/dices.jpg", cv::IMREAD_GRAYSCALE);
-    t_img = cv::imread("/root/hsa-soc-local/img/dices.jpg", cv::IMREAD_GRAYSCALE);
+    i_img = cv::imread(I_FILE, cv::IMREAD_GRAYSCALE);
+    t_img = cv::imread(T_FILE, cv::IMREAD_GRAYSCALE);
     // draw the target for inspection
     Mat img0 = t_img.clone();
     Point pt1(a, b);
