@@ -36,7 +36,9 @@ function read_ann(category, video) {
         console.log(file);
         var frames = data.split('\n');
         var first_frame_data = frames[0].split(/\s/g);
-        console.log(JSON.stringify(first_frame_data));
+        var i_file = '/mnt/alov/frames/' + categories[category] + '/' + categories[category] + '_video';
+        i_file += ('00000' + video).slice(-5) + '/' + ('00000000' + first_frame_data[0]).slice(-8) + '.jpg';
+        console.log(i_file);
     });
 }
 mount_drive();
