@@ -1,19 +1,19 @@
 const { spawn } = require("child_process");
 
-const ls = spawn("ls", ["-la"]);
+const mount = spawn("mount", ["/dev/sda1", "/mnt"]);
 
-ls.stdout.on("data", data => {
+mount.stdout.on("data", data => {
     console.log(`stdout: ${data}`);
 });
 
-ls.stderr.on("data", data => {
+mount.stderr.on("data", data => {
     console.log(`stderr: ${data}`);
 });
 
-ls.on('error', (error) => {
+mount.on('error', (error) => {
     console.log(`error: ${error.message}`);
 });
 
-ls.on("close", code => {
+mount.on("close", code => {
     console.log(`child process exited with code ${code}`);
 });
