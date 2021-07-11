@@ -22,8 +22,9 @@ function check_folder(category) {
         videos.push(folder_videos);
         video_count += folder_videos.length;
         console.log(video_count);
+        category++;
         if (category < categories.length) {
-            check_folder(category + 1);
+            check_folder(category);
         }
     });
 }
