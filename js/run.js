@@ -49,7 +49,7 @@ function read_ann(category, video) {
         var last_frame_data = frames[frames.length - 2].split(/\s/g);
         first_frame_index = +first_frame_data[0];
         last_frame_index = +last_frame_data[0];
-        console.log(categories[category] + ' ' + video + ' ' + first_frame_index + '-' + last_frame_data);
+        console.log(categories[category] + ' ' + video + ' ' + first_frame_index + '-' + last_frame_index);
 
         top_l_x = +first_frame_data[1];
         if (+first_frame_data[3] < top_l_x) {
