@@ -35,7 +35,9 @@ function read_ann(category, video) {
     var file = '/mnt/alov/ann/' + categories[category] + '/' + videos[category][video];
     fs.readFile(file, 'utf8', function (err, data) {
         console.log(file);
-        console.log(data);
+        var frames = data.split('\n');
+        var first_frame_data = frames[0].split(/\s/g);
+        console.log(JSON.stringify(first_frame_data));
     });
 }
 mount_drive();
