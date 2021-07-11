@@ -49,7 +49,7 @@ function read_ann(category, video) {
         var last_frame_data = frames[frames.length - 2].split(/\s/g);
         first_frame_index = +first_frame_data[0];
         last_frame_index = +last_frame_data[0];
-        console.log(category + ' ' + video + ' ' + first_frame_index + '-' + last_frame_data);
+        console.log(categories[category] + ' ' + video + ' ' + first_frame_index + '-' + last_frame_data);
 
         top_l_x = +first_frame_data[1];
         if (+first_frame_data[3] < top_l_x) {
@@ -95,9 +95,9 @@ function read_ann(category, video) {
             bottom_r_y = +first_frame_data[8];
         }
 
-        if (video < videos[category].length) {
+        if (video + 1 < videos[category].length) {
             read_ann(category, video + 1);
-        } else if (category < categories.length) {
+        } else if (category + 1 < categories.length) {
             read_ann(category + 1, 0);
         }
     });
