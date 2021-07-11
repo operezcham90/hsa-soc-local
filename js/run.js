@@ -91,8 +91,8 @@ function read_ann(category, video) {
         const_code += '#define TOP_L_Y ' + top_l_y + '\n';
         const_code += '#define BOTTOM_R_X ' + bottom_r_x + '\n';
         const_code += '#define BOTTOM_R_Y ' + bottom_r_y + '\n';
-        fs.writeFile('~/hsa-soc-local/cpp/frame.cpp', const_code + code_temp, () => {
-            console.log('written')
+        fs.writeFile('~/hsa-soc-local/cpp/frame.cpp', const_code + code_temp, (err) => {
+            console.log(err);
         });
     });
 }
