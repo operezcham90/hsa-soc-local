@@ -1,4 +1,5 @@
 const { exec } = require('child_process');
+const fs = require('fs');
 var categories = [];
 var videos = [];
 var video_count = 0;
@@ -25,7 +26,16 @@ function check_folder(category) {
         category++;
         if (category < categories.length) {
             check_folder(category);
+        } else {
+            read_ann(0, 0);
         }
+    });
+}
+function read_ann(category, video) {
+    var file = '/mnt/alov/ann/' + categories[category] + '/' + videos[category][video];
+    fs.readFile(file, 'utf8', function (err, data) {
+        console.log(file);
+        console.log(data);
     });
 }
 mount_drive();
