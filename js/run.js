@@ -6,7 +6,7 @@ var video_count = 0;
 var code_temp = '';
 function mount_drive() {
     exec('mount /dev/sda1 /mnt', (error, stdout, stderr) => {
-        fs.readFile('~/hsa-soc-local/cpp/test.cpp', 'utf8', (err, code) => {
+        fs.readFile('/root/hsa-soc-local/cpp/test.cpp', 'utf8', (err, code) => {
             code_temp = code;
             check_drive();
         });
@@ -91,7 +91,7 @@ function read_ann(category, video) {
         const_code += '#define TOP_L_Y ' + top_l_y + '\n';
         const_code += '#define BOTTOM_R_X ' + bottom_r_x + '\n';
         const_code += '#define BOTTOM_R_Y ' + bottom_r_y + '\n';
-        fs.writeFile('~/hsa-soc-local/cpp/frame.cpp', const_code + code_temp, (err) => {
+        fs.writeFile('/root/hsa-soc-local/cpp/frame.cpp', const_code + code_temp, (err) => {
             console.log(err);
         });
     });
