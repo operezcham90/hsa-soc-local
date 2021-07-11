@@ -1,9 +1,3 @@
-//#define I_FILE "/root/hsa-soc-local/img/dices.jpg"
-//#define T_FILE "/root/hsa-soc-local/img/dices.jpg"
-//#define TOP_L_X 1669 / 4
-//#define TOP_L_Y 514 / 4
-//#define BOTTOM_R_X 1888 / 4
-//#define BOTTOM_R_Y 664 / 4
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -18,6 +12,12 @@
 #include <chrono>
 #include <vector>
 #include <math.h>
+#define I_FILE "/root/hsa-soc-local/img/temp_i.jpg"
+#define T_FILE "/root/hsa-soc-local/img/temp_t.jpg"
+//#define TOP_L_X 1669 / 4
+//#define TOP_L_Y 514 / 4
+//#define BOTTOM_R_X 1888 / 4
+//#define BOTTOM_R_Y 664 / 4
 #define GPIO_BYTES 4
 #define CDMA_BYTES 40
 #define BRAM_BYTES 8192
