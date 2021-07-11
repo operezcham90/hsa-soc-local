@@ -1,9 +1,9 @@
-#define I_FILE "/root/hsa-soc-local/img/dices.jpg"
-#define T_FILE "/root/hsa-soc-local/img/dices.jpg"
-#define TOP_L_X 1669 / 4
-#define TOP_L_Y 514 / 4
-#define BOTTOM_R_X 1888 / 4
-#define BOTTOM_R_Y 664 / 4
+//#define I_FILE "/root/hsa-soc-local/img/dices.jpg"
+//#define T_FILE "/root/hsa-soc-local/img/dices.jpg"
+//#define TOP_L_X 1669 / 4
+//#define TOP_L_Y 514 / 4
+//#define BOTTOM_R_X 1888 / 4
+//#define BOTTOM_R_Y 664 / 4
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
