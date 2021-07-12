@@ -349,7 +349,8 @@ void print_results()
     int pix_idx = 0;
     int row = w_minus_n * q;
     float *data = (float *)res.data;
-    int pix = 0 for (pix = 0; pix <= w_minus_n; pix += parallel_units)
+    int pix = 0;
+    for (pix = 0; pix <= w_minus_n; pix += parallel_units)
     {
         data[row + pix] = ((float)results_0[pix_idx]) * 0.00389099121;     //results_0[pix_idx] >> 9;
         data[row + pix + 1] = ((float)results_1[pix_idx]) * 0.00389099121; //results_1[pix_idx] >> 9;
