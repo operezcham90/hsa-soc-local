@@ -533,5 +533,7 @@ int main()
     cout << "Max: " << max << "\n";
     cout << "u: " << max_loc.x << "\n";
     cout << "v: " << max_loc.y << "\n";
+    cout << "u0: " << u << "\n";
+    cout << "v0: " << v << "\n";
     return 0;
 }
