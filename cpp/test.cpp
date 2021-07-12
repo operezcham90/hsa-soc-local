@@ -493,7 +493,7 @@ int main()
     for (q = 0; q < h_minus_m; q++)
     {
         idx = 0;
-        for (p = 0; p < w_minus_n; p += 8)
+        for (p = 0; p < off_limit; p += 8)
         {
             // image parts
             clear_signal();
