@@ -350,14 +350,14 @@ void print_results()
     int row = w_minus_n * q;
     for (int pix = 0; pix < w_minus_n; pix += parallel_units)
     {
-        res.data[row + pix] = results_0[pix_idx] >> 9;
-        res.data[row + pix + 1] = results_1[pix_idx] >> 9;
-        res.data[row + pix + 2] = results_2[pix_idx] >> 9;
-        res.data[row + pix + 3] = results_3[pix_idx] >> 9;
-        res.data[row + pix + 4] = results_4[pix_idx] >> 9;
-        res.data[row + pix + 5] = results_5[pix_idx] >> 9;
-        res.data[row + pix + 6] = results_6[pix_idx] >> 9;
-        res.data[row + pix + 7] = results_7[pix_idx] >> 9;
+        res.data[row + pix] = (results_0[pix_idx] * 1.0) / 65536.0;
+        res.data[row + pix + 1] = (results_1[pix_idx] * 1.0) / 65536.0;
+        res.data[row + pix + 2] = (results_2[pix_idx] * 1.0) / 65536.0;
+        res.data[row + pix + 3] = (results_3[pix_idx] * 1.0) / 65536.0;
+        res.data[row + pix + 4] = (results_4[pix_idx] * 1.0) / 65536.0;
+        res.data[row + pix + 5] = (results_5[pix_idx] * 1.0) / 65536.0;
+        res.data[row + pix + 6] = (results_6[pix_idx] * 1.0) / 65536.0;
+        res.data[row + pix + 7] = (results_7[pix_idx] * 1.0) / 65536.0;
         pix_idx++;
     }
     imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
@@ -399,7 +399,7 @@ int load_image_file()
     h_minus_m = h - m;
     w_minus_n = w - n;
     res_bytes_per_unit = w_minus_n * 4 / parallel_units;
-    res = Mat(h_minus_m, w_minus_n, CV_8U, cv::Scalar(0, 0, 0));
+    res = Mat(h_minus_m, w_minus_n, CV_32F, cv::Scalar(0, 0, 0));
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
     time_read_file += duration.count();
@@ -507,8 +507,13 @@ int main()
         // present results
         read_data();
         print_results();
-        cout << "row: " << q << "\n";
+        //cout << "row: " << q << "\n";
     }
+    Point min_loc;
+    Point max_loc;
+    double min;
+    double max;
+    minMaxLoc(res, &min, &max, &min_loc, &max_loc);
     close_mem();
     cout << "Write t: " << time_write_t << " us\n";
     cout << "Write i: " << time_write_i << " us\n";
@@ -517,5 +522,8 @@ int main()
     cout << "Slice data: " << time_slice_data << " us\n";
     cout << "Work: " << time_work << " us\n";
     cout << "Tests: " << tests << "\n";
+    cout << "Max: " << max << "\n";
+    cout << "u: " << max_loc.x << "\n";
+    cout << "v: " << max_loc.y << "\n";
     return 0;
 }
