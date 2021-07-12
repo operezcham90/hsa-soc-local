@@ -416,7 +416,7 @@ int load_image_file()
     h_minus_m = h - m;
     w_minus_n = w - n;
     res_bytes_per_unit = w_minus_n * 4 / parallel_units;
-    res = Mat(h_minus_m, w_minus_n, CV_32UC1, cv::Scalar(0, 0, 0));
+    res = Mat(h_minus_m, w_minus_n, CV_32SC1, cv::Scalar(0, 0, 0));
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
     time_read_file += duration.count();
