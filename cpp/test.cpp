@@ -14,10 +14,10 @@
 #include <math.h>
 #define I_FILE "/root/hsa-soc-local/img/temp_i.jpg"
 #define T_FILE "/root/hsa-soc-local/img/temp_t.jpg"
-#define TOP_L_X_FILE "/root/hsa-soc-local/img/temp_tlx.jpg"
-#define TOP_L_Y_FILE "/root/hsa-soc-local/img/temp_tly.jpg"
-#define BOTTOM_R_X_FILE "/root/hsa-soc-local/img/temp_brx.jpg"
-#define BOTTOM_R_Y_FILE "/root/hsa-soc-local/img/temp_bry.jpg"
+#define TOP_L_X_FILE "/root/hsa-soc-local/img/temp_tlx.txt"
+#define TOP_L_Y_FILE "/root/hsa-soc-local/img/temp_tly.txt"
+#define BOTTOM_R_X_FILE "/root/hsa-soc-local/img/temp_brx.txt"
+#define BOTTOM_R_Y_FILE "/root/hsa-soc-local/img/temp_bry.txt"
 #define GPIO_BYTES 4
 #define CDMA_BYTES 40
 #define BRAM_BYTES 8192
