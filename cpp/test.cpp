@@ -354,7 +354,7 @@ void print_results()
 {
     int pix_idx = 0;
     int row = w_minus_n * q;
-    unsigned long int *data = (unsigned long int *)res.data;
+    unsigned char *data = (unsigned char *)res.data;
     int pix = 0;
     int limit = w_minus_n - parallel_units;
     for (pix = 0; pix < limit; pix += parallel_units)
@@ -367,14 +367,22 @@ void print_results()
         data[row + pix + 5] = ((float)results_5[pix_idx]) * 0.00389099121; //results_5[pix_idx] >> 9;
         data[row + pix + 6] = ((float)results_6[pix_idx]) * 0.00389099121; //results_6[pix_idx] >> 9;
         data[row + pix + 7] = ((float)results_7[pix_idx]) * 0.00389099121; //results_7[pix_idx] >> 9;*/
-        data[row + pix] = results_0[pix_idx];
+        /*data[row + pix] = results_0[pix_idx];
         data[row + pix + 1] = results_1[pix_idx];
         data[row + pix + 2] = results_2[pix_idx];
         data[row + pix + 3] = results_3[pix_idx];
         data[row + pix + 4] = results_4[pix_idx];
         data[row + pix + 5] = results_5[pix_idx];
         data[row + pix + 6] = results_6[pix_idx];
-        data[row + pix + 7] = results_7[pix_idx];
+        data[row + pix + 7] = results_7[pix_idx];*/
+        data[row + pix] = results_0[pix_idx] >> 9;
+        data[row + pix + 1] = results_1[pix_idx] >> 9;
+        data[row + pix + 2] = results_2[pix_idx] >> 9;
+        data[row + pix + 3] = results_3[pix_idx] >> 9;
+        data[row + pix + 4] = results_4[pix_idx] >> 9;
+        data[row + pix + 5] = results_5[pix_idx] >> 9;
+        data[row + pix + 6] = results_6[pix_idx] >> 9;
+        data[row + pix + 7] = results_7[pix_idx] >> 9;
         pix_idx++;
     }
     imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
@@ -416,7 +424,7 @@ int load_image_file()
     h_minus_m = h - m;
     w_minus_n = w - n;
     res_bytes_per_unit = w_minus_n * 4 / parallel_units;
-    res = Mat(h_minus_m, w_minus_n, CV_32SC1, cv::Scalar(0, 0, 0));
+    res = Mat(h_minus_m, w_minus_n, CV_8U, cv::Scalar(0, 0, 0));
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
     time_read_file += duration.count();
@@ -533,8 +541,8 @@ int main()
     close_mem();
     Point min_loc;
     Point max_loc;
-    double min;
-    double max;
+    unsigned char min;
+    unsigned char max;
     minMaxLoc(res, &min, &max, &min_loc, &max_loc);
     close_mem();
     cout << "Write t: " << time_write_t << " us\n";
