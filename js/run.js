@@ -116,7 +116,12 @@ function do_frame_run(category, video, current_frame) {
         fs.writeFile('/root/hsa-soc-local/img/temp_tly.txt', top_l_y.toString(), (err) => {
             fs.writeFile('/root/hsa-soc-local/img/temp_brx.txt', bottom_r_x.toString(), (err) => {
                 fs.writeFile('/root/hsa-soc-local/img/temp_bry.txt', bottom_r_y.toString(), (err) => {
-                    console.log(category + ' ' + video + ' ' + current_frame);
+                    console.log("run " + category + ' ' + video + ' ' + current_frame);
+                    exec('/root/hsa-soc-local/cpp/test' + folder, (error, stdout, stderr) => {
+                        if (current_frame + 1 <= last_frame_index) {
+                            set_frame_run(category, video, current_frame + 1);
+                        }
+                    });
                 });
             });
         });
