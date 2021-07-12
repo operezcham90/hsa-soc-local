@@ -14,10 +14,10 @@
 #include <math.h>
 #define I_FILE "/root/hsa-soc-local/img/temp_i.jpg"
 #define T_FILE "/root/hsa-soc-local/img/temp_t.jpg"
-//#define TOP_L_X 1669 / 4
-//#define TOP_L_Y 514 / 4
-//#define BOTTOM_R_X 1888 / 4
-//#define BOTTOM_R_Y 664 / 4
+#define TOP_L_X_FILE "/root/hsa-soc-local/img/temp_tlx.jpg"
+#define TOP_L_Y_FILE "/root/hsa-soc-local/img/temp_tly.jpg"
+#define BOTTOM_R_X_FILE "/root/hsa-soc-local/img/temp_brx.jpg"
+#define BOTTOM_R_Y_FILE "/root/hsa-soc-local/img/temp_bry.jpg"
 #define GPIO_BYTES 4
 #define CDMA_BYTES 40
 #define BRAM_BYTES 8192
@@ -458,10 +458,14 @@ void region_of_interest(int x, int y, int unit)
 }
 int load_init_file()
 {
-    a = TOP_L_X;
-    b = TOP_L_Y;
-    c = BOTTOM_R_X;
-    d = BOTTOM_R_Y;
+    fstream file_a(TOP_L_X_FILE, std::ios_base::in);
+    fstream file_b(TOP_L_Y_FILE, std::ios_base::in);
+    fstream file_c(BOTTOM_R_X_FILE, std::ios_base::in);
+    fstream file_d(BOTTOM_R_Y_FILE, std::ios_base::in);
+    file_a >> a;
+    file_b >> b;
+    file_c >> c;
+    file_d >> d;
     u = a;
     v = b;
     n = c - a;
