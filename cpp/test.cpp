@@ -348,7 +348,7 @@ void print_results()
 {
     int pix_idx = 0;
     int row = w_minus_n * q;
-    unsigned float *data = (unsigned float *)res.data;
+    float *data = (float *)res.data;
     for (int pix = 0; pix < w_minus_n; pix += parallel_units)
     {
         data[row + pix] = (results_0[pix_idx] * 1.0) / 65536.0;     //results_0[pix_idx] >> 9;
