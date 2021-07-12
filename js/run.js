@@ -121,8 +121,8 @@ function do_frame_run(category, video, current_frame) {
                         var summary = stdout.split('\n');
                         var n = bottom_r_x - top_l_x;
                         var m = bottom_r_y - top_l_y;
-                        top_l_x = +(summary[9].split[':'][1]);
-                        top_l_y = +(summary[10].split[':'][1]);
+                        top_l_x = +(summary[9].split(':')[1]);
+                        top_l_y = +(summary[10].split(':')[1]);
                         bottom_r_x = top_l_x + n;
                         bottom_r_y = top_l_y + m;
                         console.log('u,v: ' + top_l_x + ',' + top_l_y);
