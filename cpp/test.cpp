@@ -350,7 +350,8 @@ void print_results()
     int row = w_minus_n * q;
     float *data = (float *)res.data;
     int pix = 0;
-    for (pix = 0; pix < w_minus_n; pix += parallel_units)
+    int limit = w_minus_n - parallel_units;
+    for (pix = 0; pix < limit; pix += parallel_units)
     {
         data[row + pix] = ((float)results_0[pix_idx]) * 0.00389099121;     //results_0[pix_idx] >> 9;
         data[row + pix + 1] = ((float)results_1[pix_idx]) * 0.00389099121; //results_1[pix_idx] >> 9;
@@ -361,10 +362,6 @@ void print_results()
         data[row + pix + 6] = ((float)results_6[pix_idx]) * 0.00389099121; //results_6[pix_idx] >> 9;
         data[row + pix + 7] = ((float)results_7[pix_idx]) * 0.00389099121; //results_7[pix_idx] >> 9;
         pix_idx++;
-    }
-    for (pix -= 8; pix < w_minus_n; pix++)
-    {
-        data[row + pix] = 0.0;
     }
     imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
 }
