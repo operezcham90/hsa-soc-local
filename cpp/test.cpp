@@ -349,7 +349,7 @@ void print_results()
     int pix_idx = 0;
     int row = w_minus_n * q;
     float *data = (float *)res.data;
-    for (int pix = 0; pix < w_minus_n; pix += parallel_units)
+    for (int pix = 0; pix <= w_minus_n; pix += parallel_units)
     {
         data[row + pix] = ((float)results_0[pix_idx]) * 0.00389099121;     //results_0[pix_idx] >> 9;
         data[row + pix + 1] = ((float)results_1[pix_idx]) * 0.00389099121; //results_1[pix_idx] >> 9;
@@ -489,11 +489,10 @@ int main()
     load_image_file();
     region_of_interest(-1, -1, -1);
     write_t_data();
-    int off_limit = w_minus_n + 8;
     for (q = 0; q < h_minus_m; q++)
     {
         idx = 0;
-        for (p = 0; p < off_limit; p += 8)
+        for (p = 0; p < w_minus_n; p += 8)
         {
             // image parts
             clear_signal();
