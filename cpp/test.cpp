@@ -541,8 +541,8 @@ int main()
     close_mem();
     Point min_loc;
     Point max_loc;
-    unsigned char min;
-    unsigned char max;
+    double min;
+    double max;
     minMaxLoc(res, &min, &max, &min_loc, &max_loc);
     close_mem();
     cout << "Write t: " << time_write_t << " us\n";
