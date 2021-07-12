@@ -354,7 +354,7 @@ void print_results()
 {
     int pix_idx = 0;
     int row = w_minus_n * q;
-    float *data = (float *)res.data;
+    unsigned long int *data = (unsigned long int *)res.data;
     int pix = 0;
     int limit = w_minus_n - parallel_units;
     for (pix = 0; pix < limit; pix += parallel_units)
@@ -367,14 +367,14 @@ void print_results()
         data[row + pix + 5] = ((float)results_5[pix_idx]) * 0.00389099121; //results_5[pix_idx] >> 9;
         data[row + pix + 6] = ((float)results_6[pix_idx]) * 0.00389099121; //results_6[pix_idx] >> 9;
         data[row + pix + 7] = ((float)results_7[pix_idx]) * 0.00389099121; //results_7[pix_idx] >> 9;*/
-        res.data[row + pix] = results_0[pix_idx];
-        res.data[row + pix + 1] = results_1[pix_idx];
-        res.data[row + pix + 2] = results_2[pix_idx];
-        res.data[row + pix + 3] = results_3[pix_idx];
-        res.data[row + pix + 4] = results_4[pix_idx];
-        res.data[row + pix + 5] = results_5[pix_idx];
-        res.data[row + pix + 6] = results_6[pix_idx];
-        res.data[row + pix + 7] = results_7[pix_idx];
+        data[row + pix] = results_0[pix_idx];
+        data[row + pix + 1] = results_1[pix_idx];
+        data[row + pix + 2] = results_2[pix_idx];
+        data[row + pix + 3] = results_3[pix_idx];
+        data[row + pix + 4] = results_4[pix_idx];
+        data[row + pix + 5] = results_5[pix_idx];
+        data[row + pix + 6] = results_6[pix_idx];
+        data[row + pix + 7] = results_7[pix_idx];
         pix_idx++;
     }
     imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
