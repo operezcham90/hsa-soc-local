@@ -351,14 +351,14 @@ void print_results()
     float *data = (float *)res.data;
     for (int pix = 0; pix < w_minus_n; pix += parallel_units)
     {
-        data[row + pix] = (results_0[pix_idx] * 1.0) / 65536.0;     //results_0[pix_idx] >> 9;
-        data[row + pix + 1] = (results_1[pix_idx] * 1.0) / 65536.0; //results_1[pix_idx] >> 9;
-        data[row + pix + 2] = (results_2[pix_idx] * 1.0) / 65536.0; //results_2[pix_idx] >> 9;
-        data[row + pix + 3] = (results_3[pix_idx] * 1.0) / 65536.0; //results_3[pix_idx] >> 9;
-        data[row + pix + 4] = (results_4[pix_idx] * 1.0) / 65536.0; //results_4[pix_idx] >> 9;
-        data[row + pix + 5] = (results_5[pix_idx] * 1.0) / 65536.0; //results_5[pix_idx] >> 9;
-        data[row + pix + 6] = (results_6[pix_idx] * 1.0) / 65536.0; //results_6[pix_idx] >> 9;
-        data[row + pix + 7] = (results_7[pix_idx] * 1.0) / 65536.0; //results_7[pix_idx] >> 9;
+        data[row + pix] = ((float)results_0[pix_idx]) / 65536.0;     //results_0[pix_idx] >> 9;
+        data[row + pix + 1] = ((float)results_1[pix_idx]) / 65536.0; //results_1[pix_idx] >> 9;
+        data[row + pix + 2] = ((float)results_2[pix_idx]) / 65536.0; //results_2[pix_idx] >> 9;
+        data[row + pix + 3] = ((float)results_3[pix_idx]) / 65536.0; //results_3[pix_idx] >> 9;
+        data[row + pix + 4] = ((float)results_4[pix_idx]) / 65536.0; //results_4[pix_idx] >> 9;
+        data[row + pix + 5] = ((float)results_5[pix_idx]) / 65536.0; //results_5[pix_idx] >> 9;
+        data[row + pix + 6] = ((float)results_6[pix_idx]) / 65536.0; //results_6[pix_idx] >> 9;
+        data[row + pix + 7] = ((float)results_7[pix_idx]) / 65536.0; //results_7[pix_idx] >> 9;
         pix_idx++;
     }
     imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
