@@ -118,9 +118,19 @@ function do_frame_run(category, video, current_frame) {
                 fs.writeFile('/root/hsa-soc-local/img/temp_bry.txt', bottom_r_y.toString(), (err) => {
                     console.log("run " + category + ' ' + video + ' ' + current_frame);
                     exec('/root/hsa-soc-local/cpp/test', (error, stdout, stderr) => {
-                        if (current_frame + 1 <= last_frame_index) {
-                            set_frame_run(category, video, current_frame + 1);
-                        }
+                        var summary = stdout.split('\n');
+                        var n = bottom_r_x - top_l_x;
+                        var m = bottom_r_y - top_l_y;
+                        top_l_x = +(summary[9].split[':']);
+                        top_l_y = +(summary[10].split[':']);
+                        bottom_r_x = top_l_x + n;
+                        bottom_r_y = top_l_y + m;
+                        var res = '/mnt/alov/res' + categories[category] + '_' + ('00000' + (video + 1)).slice(-5) + '_' + ('00000000' + (current_frame - 1)).slice(-8);
+                        fs.writeFile(res, stdout, (err) => {
+                            if (current_frame + 1 <= last_frame_index) {
+                                set_frame_run(category, video, current_frame + 1);
+                            }
+                        });
                     });
                 });
             });
