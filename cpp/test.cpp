@@ -348,16 +348,17 @@ void print_results()
 {
     int pix_idx = 0;
     int row = w_minus_n * q;
+    unsigned float *data = (unsigned float *)res.data;
     for (int pix = 0; pix < w_minus_n; pix += parallel_units)
     {
-        res.data[row + pix] = (results_0[pix_idx] * 1.0) / 65536.0;     //results_0[pix_idx] >> 9;
-        res.data[row + pix + 1] = (results_1[pix_idx] * 1.0) / 65536.0; //results_1[pix_idx] >> 9;
-        res.data[row + pix + 2] = (results_2[pix_idx] * 1.0) / 65536.0; //results_2[pix_idx] >> 9;
-        res.data[row + pix + 3] = (results_3[pix_idx] * 1.0) / 65536.0; //results_3[pix_idx] >> 9;
-        res.data[row + pix + 4] = (results_4[pix_idx] * 1.0) / 65536.0; //results_4[pix_idx] >> 9;
-        res.data[row + pix + 5] = (results_5[pix_idx] * 1.0) / 65536.0; //results_5[pix_idx] >> 9;
-        res.data[row + pix + 6] = (results_6[pix_idx] * 1.0) / 65536.0; //results_6[pix_idx] >> 9;
-        res.data[row + pix + 7] = (results_7[pix_idx] * 1.0) / 65536.0; //results_7[pix_idx] >> 9;
+        data[row + pix] = (results_0[pix_idx] * 1.0) / 65536.0;     //results_0[pix_idx] >> 9;
+        data[row + pix + 1] = (results_1[pix_idx] * 1.0) / 65536.0; //results_1[pix_idx] >> 9;
+        data[row + pix + 2] = (results_2[pix_idx] * 1.0) / 65536.0; //results_2[pix_idx] >> 9;
+        data[row + pix + 3] = (results_3[pix_idx] * 1.0) / 65536.0; //results_3[pix_idx] >> 9;
+        data[row + pix + 4] = (results_4[pix_idx] * 1.0) / 65536.0; //results_4[pix_idx] >> 9;
+        data[row + pix + 5] = (results_5[pix_idx] * 1.0) / 65536.0; //results_5[pix_idx] >> 9;
+        data[row + pix + 6] = (results_6[pix_idx] * 1.0) / 65536.0; //results_6[pix_idx] >> 9;
+        data[row + pix + 7] = (results_7[pix_idx] * 1.0) / 65536.0; //results_7[pix_idx] >> 9;
         pix_idx++;
     }
     imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
@@ -399,7 +400,7 @@ int load_image_file()
     h_minus_m = h - m;
     w_minus_n = w - n;
     res_bytes_per_unit = w_minus_n * 4 / parallel_units;
-    res = Mat(h_minus_m, w_minus_n, CV_32F, cv::Scalar(0, 0, 0));
+    res = Mat(h_minus_m, w_minus_n, CV_32FC1, cv::Scalar(0, 0, 0));
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
     time_read_file += duration.count();
