@@ -351,14 +351,14 @@ void print_results()
     float *data = (float *)res.data;
     for (int pix = 0; pix < w_minus_n; pix += parallel_units)
     {
-        data[row + pix] = ((float)results_0[pix_idx]) / 257.0;     //results_0[pix_idx] >> 9;
-        data[row + pix + 1] = ((float)results_1[pix_idx]) / 257.0; //results_1[pix_idx] >> 9;
-        data[row + pix + 2] = ((float)results_2[pix_idx]) / 257.0; //results_2[pix_idx] >> 9;
-        data[row + pix + 3] = ((float)results_3[pix_idx]) / 257.0; //results_3[pix_idx] >> 9;
-        data[row + pix + 4] = ((float)results_4[pix_idx]) / 257.0; //results_4[pix_idx] >> 9;
-        data[row + pix + 5] = ((float)results_5[pix_idx]) / 257.0; //results_5[pix_idx] >> 9;
-        data[row + pix + 6] = ((float)results_6[pix_idx]) / 257.0; //results_6[pix_idx] >> 9;
-        data[row + pix + 7] = ((float)results_7[pix_idx]) / 257.0; //results_7[pix_idx] >> 9;
+        data[row + pix] = ((float)results_0[pix_idx]) * 0.00389099121;     //results_0[pix_idx] >> 9;
+        data[row + pix + 1] = ((float)results_1[pix_idx]) * 0.00389099121; //results_1[pix_idx] >> 9;
+        data[row + pix + 2] = ((float)results_2[pix_idx]) * 0.00389099121; //results_2[pix_idx] >> 9;
+        data[row + pix + 3] = ((float)results_3[pix_idx]) * 0.00389099121; //results_3[pix_idx] >> 9;
+        data[row + pix + 4] = ((float)results_4[pix_idx]) * 0.00389099121; //results_4[pix_idx] >> 9;
+        data[row + pix + 5] = ((float)results_5[pix_idx]) * 0.00389099121; //results_5[pix_idx] >> 9;
+        data[row + pix + 6] = ((float)results_6[pix_idx]) * 0.00389099121; //results_6[pix_idx] >> 9;
+        data[row + pix + 7] = ((float)results_7[pix_idx]) * 0.00389099121; //results_7[pix_idx] >> 9;
         pix_idx++;
     }
     imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
@@ -408,50 +408,54 @@ int load_image_file()
 void region_of_interest(int x, int y, int unit)
 {
     auto start = high_resolution_clock::now();
-    if (x < 0 || y < 0 || x >= w_minus_n || y >= h_minus_m)
+    if (x < 0 || y < 0)
     {
         rect = cv::Rect(u, v, n, m);
         t_img_roi = t_img(rect);
         t_img_roi.convertTo(t_img_roi, CV_8U);
         memcpy(data_t, t_img_roi.data, n_times_m);
     }
+    else if (x >= w_minus_n || y >= h_minus_m)
+    {
+        i_img_roi = Mat(h, w, CV_8U, cv::Scalar(0, 0, 0));
+    }
     else
     {
         rect = cv::Rect(x, y, n, m);
         i_img_roi = i_img(rect);
         i_img_roi.convertTo(i_img_roi, CV_8U);
-        if (unit == 0)
-        {
-            memcpy(data_i_0, i_img_roi.data, n_times_m);
-        }
-        else if (unit == 1)
-        {
-            memcpy(data_i_1, i_img_roi.data, n_times_m);
-        }
-        else if (unit == 2)
-        {
-            memcpy(data_i_2, i_img_roi.data, n_times_m);
-        }
-        else if (unit == 3)
-        {
-            memcpy(data_i_3, i_img_roi.data, n_times_m);
-        }
-        else if (unit == 4)
-        {
-            memcpy(data_i_4, i_img_roi.data, n_times_m);
-        }
-        else if (unit == 5)
-        {
-            memcpy(data_i_5, i_img_roi.data, n_times_m);
-        }
-        else if (unit == 6)
-        {
-            memcpy(data_i_6, i_img_roi.data, n_times_m);
-        }
-        else if (unit == 7)
-        {
-            memcpy(data_i_7, i_img_roi.data, n_times_m);
-        }
+    }
+    if (unit == 0)
+    {
+        memcpy(data_i_0, i_img_roi.data, n_times_m);
+    }
+    else if (unit == 1)
+    {
+        memcpy(data_i_1, i_img_roi.data, n_times_m);
+    }
+    else if (unit == 2)
+    {
+        memcpy(data_i_2, i_img_roi.data, n_times_m);
+    }
+    else if (unit == 3)
+    {
+        memcpy(data_i_3, i_img_roi.data, n_times_m);
+    }
+    else if (unit == 4)
+    {
+        memcpy(data_i_4, i_img_roi.data, n_times_m);
+    }
+    else if (unit == 5)
+    {
+        memcpy(data_i_5, i_img_roi.data, n_times_m);
+    }
+    else if (unit == 6)
+    {
+        memcpy(data_i_6, i_img_roi.data, n_times_m);
+    }
+    else if (unit == 7)
+    {
+        memcpy(data_i_7, i_img_roi.data, n_times_m);
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
@@ -483,8 +487,9 @@ int main()
     // template
     load_init_file();
     load_image_file();
-    region_of_interest(-1, -1, 0);
+    region_of_interest(-1, -1, -1);
     write_t_data();
+    int off_limit = w_minus_n + 8;
     for (q = 0; q < h_minus_m; q++)
     {
         idx = 0;
