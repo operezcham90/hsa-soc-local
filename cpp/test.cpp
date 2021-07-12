@@ -12,18 +12,18 @@
 #include <chrono>
 #include <vector>
 #include <math.h>
-//#define I_FILE "/root/hsa-soc-local/img/temp_i.jpg"
-//#define T_FILE "/root/hsa-soc-local/img/temp_t.jpg"
-//#define TOP_L_X_FILE "/root/hsa-soc-local/img/temp_tlx.txt"
-//#define TOP_L_Y_FILE "/root/hsa-soc-local/img/temp_tly.txt"
-//#define BOTTOM_R_X_FILE "/root/hsa-soc-local/img/temp_brx.txt"
-//#define BOTTOM_R_Y_FILE "/root/hsa-soc-local/img/temp_bry.txt"
-#define I_FILE "/root/hsa-soc-local/img/dices.jpg"
-#define T_FILE "/root/hsa-soc-local/img/dices.jpg"
-#define TOP_L_X_FILE "/root/hsa-soc-local/img/dices_tlx.txt"
-#define TOP_L_Y_FILE "/root/hsa-soc-local/img/dices_tly.txt"
-#define BOTTOM_R_X_FILE "/root/hsa-soc-local/img/dices_brx.txt"
-#define BOTTOM_R_Y_FILE "/root/hsa-soc-local/img/dices_bry.txt"
+#define I_FILE "/root/hsa-soc-local/img/temp_i.jpg"
+#define T_FILE "/root/hsa-soc-local/img/temp_t.jpg"
+#define TOP_L_X_FILE "/root/hsa-soc-local/img/temp_tlx.txt"
+#define TOP_L_Y_FILE "/root/hsa-soc-local/img/temp_tly.txt"
+#define BOTTOM_R_X_FILE "/root/hsa-soc-local/img/temp_brx.txt"
+#define BOTTOM_R_Y_FILE "/root/hsa-soc-local/img/temp_bry.txt"
+//#define I_FILE "/root/hsa-soc-local/img/dices.jpg"
+//#define T_FILE "/root/hsa-soc-local/img/dices.jpg"
+//#define TOP_L_X_FILE "/root/hsa-soc-local/img/dices_tlx.txt"
+//#define TOP_L_Y_FILE "/root/hsa-soc-local/img/dices_tly.txt"
+//#define BOTTOM_R_X_FILE "/root/hsa-soc-local/img/dices_brx.txt"
+//#define BOTTOM_R_Y_FILE "/root/hsa-soc-local/img/dices_bry.txt"
 #define GPIO_BYTES 4
 #define CDMA_BYTES 40
 #define BRAM_BYTES 8192
@@ -541,5 +541,7 @@ int main()
     cout << "v: " << max_loc.y << "\n";
     cout << "u0: " << u << "\n";
     cout << "v0: " << v << "\n";
+    cout << "n: " << n << "\n";
+    cout << "m: " << m << "\n";
     return 0;
 }

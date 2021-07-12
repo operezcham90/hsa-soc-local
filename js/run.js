@@ -95,6 +95,11 @@ function read_ann(category, video) {
             bottom_r_y = +first_frame_data[8];
         }
 
+        top_l_x = Math.round(top_l_x);
+        top_l_y = Math.round(top_l_y);
+        bottom_r_x = Math.round(bottom_r_x);
+        bottom_r_y = Math.round(bottom_r_y);
+
         set_frame_run(category, video, first_frame_index + 1);
     });
 }
