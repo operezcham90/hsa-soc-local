@@ -95,24 +95,29 @@ function read_ann(category, video) {
             bottom_r_y = +first_frame_data[8];
         }
 
-        if (video + 1 < videos[category].length) {
-            read_ann(category, video + 1);
-        } else if (category + 1 < categories.length) {
-            read_ann(category + 1, 0);
-        }
+        set_frame_run(category, video, first_frame_index + 1);
     });
 }
 
-function set_frame_run() {
+function set_frame_run(category, video, current_frame) {
     var t_file = '/mnt/alov/frames/' + categories[category] + '/' + categories[category] + '_video';
-    t_file += ('00000' + (video + 1)).slice(-5) + '/' + ('00000000' + frame_index).slice(-8) + '.jpg';
+    t_file += ('00000' + (video + 1)).slice(-5) + '/' + ('00000000' + (current_frame - 1)).slice(-8) + '.jpg';
     var i_file = '/mnt/alov/frames/' + categories[category] + '/' + categories[category] + '_video';
-    i_file += ('00000' + (video + 1)).slice(-5) + '/' + ('00000000' + (frame_index + 1)).slice(-8) + '.jpg';
+    i_file += ('00000' + (video + 1)).slice(-5) + '/' + ('00000000' + current_frame).slice(-8) + '.jpg';
+    fs.copyFile(t_file, '/root/hsa-soc-local/img/temp_t.jpg', (err) => {
+        fs.copyFile(i_file, '/root/hsa-soc-local/img/temp_i.jpg', (err) => {
+            do_frame_run(category, video, current_frame);
+        });
+    });
+}
 
-    fs.writeFile('/root/hsa-soc-local/cpp/frame.cpp', const_code + code_temp, (err) => {
-        exec('g++ /root/hsa-soc-local/cpp/frame.cpp -o /root/hsa-soc-local/cpp/frame `pkg-config --cflags --libs opencv`', (error, stdout, stderr) => {
-            exec('./root/hsa-soc-local/cpp/frame', (error, stdout, stderr) => {
-                console.log('running frame ' + frame_index);
+function do_frame_run(category, video, current_frame) {
+    fs.writeFile('/root/hsa-soc-local/img/temp_tlx.txt', top_l_x.toString(), (err) => {
+        fs.writeFile('/root/hsa-soc-local/img/temp_tly.txt', top_l_y.toString(), (err) => {
+            fs.writeFile('/root/hsa-soc-local/img/temp_brx.txt', bottom_r_x.toString(), (err) => {
+                fs.writeFile('/root/hsa-soc-local/img/temp_bry.txt', bottom_r_y.toString(), (err) => {
+                    console.log(category + ' ' + video + ' ' + current_frame);
+                });
             });
         });
     });
