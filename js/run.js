@@ -54,7 +54,7 @@ function read_ann(category, video) {
         var last_frame_data = frames[frames.length - 2].split(/\s/g);
         first_frame_index = +first_frame_data[0];
         last_frame_index = +last_frame_data[0];
-        console.log(categories[category] + ' ' + video + ' ' + first_frame_index + '-' + last_frame_index);
+        console.log(categories[category] + ' ' + videos[category][video] + ' ' + first_frame_index + '-' + last_frame_index);
 
         top_l_x = Math.min(+first_frame_data[1], +first_frame_data[3], +first_frame_data[5], +first_frame_data[7]);
         top_l_y = Math.min(+first_frame_data[2], +first_frame_data[4], +first_frame_data[6], +first_frame_data[8]);
@@ -100,8 +100,14 @@ function set_frame_run(category, video, current_frame) {
     t_file += ('00000' + (video + 1)).slice(-5) + '/' + ('00000000' + (current_frame - 1)).slice(-8) + '.jpg';
     var i_file = '/mnt/alov/frames/' + categories[category] + '/' + categories[category] + '_video';
     i_file += ('00000' + (video + 1)).slice(-5) + '/' + ('00000000' + current_frame).slice(-8) + '.jpg';
-    fs.copyFile(t_file, '/root/hsa-soc-local/img/temp_t.jpg', (err) => {
-        fs.copyFile(i_file, '/root/hsa-soc-local/img/temp_i.jpg', (err) => {
+    fs.copyFile(t_file, '/root/hsa-soc-local/img/temp_t.jpg', (errt) => {
+        if (errt) {
+            console.log('t file err');
+        }
+        fs.copyFile(i_file, '/root/hsa-soc-local/img/temp_i.jpg', (erri) => {
+            if (erri) {
+                console.log('i file err');
+            }
             do_frame_run(category, video, current_frame);
         });
     });
