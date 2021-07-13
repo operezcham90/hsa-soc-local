@@ -68,7 +68,7 @@ function read_ann(category, video) {
 
         ann = [];
         for (var i = 0; i <= frames.length - 2; i++) {
-            var line = frames[0].split(/\s/g);
+            var line = frames[i].split(/\s/g);
             var gt = {
                 frame: +line[0],
                 ax: +line[1],
@@ -125,7 +125,7 @@ function do_frame_run(category, video, current_frame) {
 
                         // f-score
                         for (var i = 0; i < ann.length; i++) {
-                            console.log(ann[i].frame + '===' + current_frame);
+                            //console.log(ann[i].frame + '===' + current_frame);
                             if (ann[i].frame === current_frame) {
                                 var gt = ann[i];
                                 var t = {
