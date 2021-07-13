@@ -125,6 +125,7 @@ function do_frame_run(category, video, current_frame) {
 
                         // f-score
                         for (var i = 0; i < ann.length; i++) {
+                            console.log(ann[i].frame + '===' + current_frame);
                             if (ann[i].frame === current_frame) {
                                 var gt = ann[i];
                                 var t = {
