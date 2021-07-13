@@ -146,7 +146,7 @@ Mat t_img_roi;
 Mat res;
 Rect rect;
 ofstream result;
-unsigned long int *gamma;
+unsigned long int *gamma_arr;
 unsigned long int time_write_t = 0;
 unsigned long int time_write_i = 0;
 unsigned long int time_read_res = 0;
@@ -446,7 +446,7 @@ void print_results()
         data[row + pix + 6] = results_6[pix_idx] >> 9;
         data[row + pix + 7] = results_7[pix_idx] >> 9;*/
         data[row + pix] = results_0[pix_idx] >> 9;
-        gamma[row + pix] = results_0[pix_idx];
+        gamma_arr[row + pix] = results_0[pix_idx];
         pix_idx++;
     }
     imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
@@ -490,12 +490,12 @@ int load_image_file()
     res_bytes_per_unit = w_minus_n * 4 / parallel_units;
     res = Mat(h_minus_m, w_minus_n, CV_8U, cv::Scalar(0, 0, 0));
 
-    gamma = (unsigned long int *)std::malloc((h_minus_m * w_minus_n) * sizeof(unsigned long int));
+    gamma_arr = (unsigned long int *)std::malloc((h_minus_m * w_minus_n) * sizeof(unsigned long int));
     for (int x = 0; x < w_minus_n; x++)
     {
         for (int y = 0; y < h_minus_m; y++)
         {
-            gamma[x + y * w_minus_n] = 0x0;
+            gamma_arr[x + y * w_minus_n] = 0x0;
         }
     }
 
@@ -621,13 +621,13 @@ int main()
     double max;
     minMaxLoc(res, &min, &max, &min_loc, &max_loc);
 
-    unsigned long int maxGamma = gamma[0];
+    unsigned long int maxGamma = gamma_arr[0];
     int maxI = 0;
     for (int i = 1; i < w_minus_n * h_minus_m; i++)
     {
-        if (gamma[i] > maxGamma)
+        if (gamma_arr[i] > maxGamma)
         {
-            maxGamma = gamma[i];
+            maxGamma = gamma_arr[i];
             maxI = i;
         }
     }
