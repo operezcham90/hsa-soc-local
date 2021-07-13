@@ -101,13 +101,9 @@ function set_frame_run(category, video, current_frame) {
     var i_file = '/mnt/alov/frames/' + categories[category] + '/' + categories[category] + '_video';
     i_file += ('00000' + (video + 1)).slice(-5) + '/' + ('00000000' + current_frame).slice(-8) + '.jpg';
     fs.copyFile(t_file, '/root/hsa-soc-local/img/temp_t.jpg', (errt) => {
-        if (errt) {
-            console.log('t file err');
-        }
+        console.log(t_file);
         fs.copyFile(i_file, '/root/hsa-soc-local/img/temp_i.jpg', (erri) => {
-            if (erri) {
-                console.log('i file err');
-            }
+            console.log(i_file);
             do_frame_run(category, video, current_frame);
         });
     });
