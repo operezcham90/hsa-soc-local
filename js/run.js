@@ -66,6 +66,7 @@ function read_ann(category, video) {
         bottom_r_x = Math.round(bottom_r_x);
         bottom_r_y = Math.round(bottom_r_y);
 
+        ann = [];
         for (var i = 0; i <= frames.length - 2; i++) {
             var line = frames[0].split(/\s/g);
             var gt = {
@@ -124,7 +125,7 @@ function do_frame_run(category, video, current_frame) {
 
                         // f-score
                         for (var i = 0; i < ann.length; i++) {
-                            if (ann[i].frame == current_frame) {
+                            if (ann[i].frame === current_frame) {
                                 var gt = ann[i];
                                 var t = {
                                     u: top_l_x,
@@ -147,6 +148,7 @@ function do_frame_run(category, video, current_frame) {
                                 var recall = ntp / (ntp + nfn);
                                 var f = (2 * precision * recall) / (precision + recall);
                                 console.log('F: ' + f);
+                                break;
                             }
                         }
 
