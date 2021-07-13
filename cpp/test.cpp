@@ -146,6 +146,8 @@ Mat t_img_roi;
 Mat res;
 Rect rect;
 ofstream result;
+std::string i_path;
+std::string t_path;
 unsigned long int *gamma_arr;
 unsigned long int time_write_t = 0;
 unsigned long int time_write_i = 0;
@@ -474,8 +476,6 @@ void set_names()
 int load_image_file()
 {
     auto start = high_resolution_clock::now();
-    std::string i_path;
-    std::string t_path;
 
     fstream file_i(I_FILE, std::ios_base::in);
     fstream file_t(T_FILE, std::ios_base::in);
@@ -551,7 +551,7 @@ void region_of_interest(int x, int y, int unit)
     auto start = high_resolution_clock::now();
     if (x < 0 || y < 0)
     {
-        rect = cv::Rect(u, v, n, m);
+        rect = cv::Rect(u + 1, v + 1, n, m);
         t_img_roi = t_img(rect);
         t_img_roi.convertTo(t_img_roi, CV_8U);
         memcpy(data_t, t_img_roi.data, n_times_m);
@@ -562,7 +562,7 @@ void region_of_interest(int x, int y, int unit)
     }
     else
     {
-        rect = cv::Rect(x, y, n, m);
+        rect = cv::Rect(x + 1, y + 1, n, m);
         i_img_roi = i_img(rect);
         i_img_roi.convertTo(i_img_roi, CV_8U);
     }
@@ -659,6 +659,7 @@ int main()
             region_of_interest(p + 5, q, 5);
             region_of_interest(p + 6, q, 6);
             region_of_interest(p + 7, q, 7);*/
+            write_t_data();
             write_i_data();
             work(idx);
             idx += 4;
@@ -682,8 +683,8 @@ int main()
         }
     }
 
-    int x = (maxI % w_minus_n) + 1;
-    int y = (maxI / w_minus_n) + 1;
+    int x = (maxI % w_minus_n);
+    int y = (maxI / w_minus_n);
 
     cout << "Write t: " << time_write_t << " us\n";
     cout << "Write i: " << time_write_i << " us\n";
@@ -699,5 +700,7 @@ int main()
     cout << "v0: " << v << "\n";
     cout << "n: " << n << "\n";
     cout << "m: " << m << "\n";
+    cout << "i_path: " << i_path << "\n";
+    cout << "t_path: " << t_path << "\n";
     return 0;
 }
