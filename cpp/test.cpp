@@ -483,11 +483,45 @@ int load_image_file()
     file_i >> i_path;
     file_t >> t_path;
 
-    i_img = cv::imread(i_path, cv::IMREAD_GRAYSCALE);
-    t_img = cv::imread(t_path, cv::IMREAD_GRAYSCALE);
+    // 0.299 R + 0.587 G + 0.114 B
+    //i_img = cv::imread(i_path, cv::IMREAD_GRAYSCALE);
+    //t_img = cv::imread(t_path, cv::IMREAD_GRAYSCALE);
+    Mat i_img_color = cv::imread(i_path, CV_LOAD_IMAGE_COLOR);
+    Mat t_img_color = cv::imread(t_path, CV_LOAD_IMAGE_COLOR);
 
     file_i.close();
     file_t.close();
+
+    // global
+    w = t_img.cols;
+    h = t_img.rows;
+    h_minus_m = h - m;
+    w_minus_n = w - n;
+    res_bytes_per_unit = w_minus_n * 4 / parallel_units;
+    if (res_bytes_per_unit > BRAM_BYTES)
+    {
+        cout << "img too big\n";
+        exit(1);
+    }
+
+    // gray
+    i_img = Mat(h, w, CV_8U, cv::Scalar(0, 0, 0));
+    t_img = Mat(h, w, CV_8U, cv::Scalar(0, 0, 0));
+
+    for (int x = 0; x < w; x++)
+    {
+        int y = 0;
+        int row = y * w;
+        for (y = 0; y < h; y++)
+        {
+            cv::Vec3b ci = i_img.at<cv::Vec3b>(cv::Point(x, y));
+            cv::Vec3b ct = t_img.at<cv::Vec3b>(cv::Point(x, y));
+            long int subi = ci.val[0] + ci.val[1] + ci.val[2];
+            long int subt = ct.val[0] + ct.val[1] + ct.val[2];
+            i_img.data[x + row] = subi / 3;
+            t_img.data[x + row] = subt / 3;
+        }
+    }
 
     // draw the target for inspection
     Mat img0 = t_img.clone();
@@ -496,11 +530,8 @@ int load_image_file()
     rectangle(img0, pt1, pt2, cv::Scalar(0, 0, 0));
     cv::imwrite("/root/hsa-soc-local/img/dices0.jpg", img0);
     img0.release();
-    w = t_img.cols;
-    h = t_img.rows;
-    h_minus_m = h - m;
-    w_minus_n = w - n;
-    res_bytes_per_unit = w_minus_n * 4 / parallel_units;
+
+    // result
     res = Mat(h_minus_m, w_minus_n, CV_8U, cv::Scalar(0, 0, 0));
 
     gamma_arr = (unsigned long int *)std::malloc((h_minus_m * w_minus_n) * sizeof(unsigned long int));
@@ -595,6 +626,12 @@ int load_init_file()
     m = d - b;
     n_times_m = n * m;
     num_elem = n_times_m;
+
+    if (n_times_m > BRAM_BYTES)
+    {
+        cout << "img temp too big\n";
+        exit(1);
+    }
 }
 int main()
 {
