@@ -122,7 +122,7 @@ unsigned long int *ddr_15;
 unsigned long int *ddr_16;
 unsigned long int idx;
 unsigned long int num_elem;
-unsigned int parallel_units = 8;
+unsigned int parallel_units = 1;
 int a;
 int b;
 int c;
@@ -225,10 +225,12 @@ void write_i_data()
     axi_cdma_1[0] = CLEAR_CDMA;
     axi_cdma_2[0] = CLEAR_CDMA;
     axi_cdma_3[0] = CLEAR_CDMA;
+
     axi_cdma_0[0] = STANDBY_CDMA;
     axi_cdma_1[0] = STANDBY_CDMA;
     axi_cdma_2[0] = STANDBY_CDMA;
     axi_cdma_3[0] = STANDBY_CDMA;
+
     axi_cdma_0[6] = DDR_1_ADDR;
     axi_cdma_0[8] = BRAM_1_ADDR;
     axi_cdma_1[6] = DDR_3_ADDR;
@@ -237,10 +239,12 @@ void write_i_data()
     axi_cdma_2[8] = BRAM_5_ADDR;
     axi_cdma_3[6] = DDR_7_ADDR;
     axi_cdma_3[8] = BRAM_7_ADDR;
+
     axi_cdma_0[10] = num_elem;
     axi_cdma_1[10] = num_elem;
     axi_cdma_2[10] = num_elem;
     axi_cdma_3[10] = num_elem;
+
     while (
         !(axi_cdma_0[1] & DONE_CDMA) &&
         !(axi_cdma_1[1] & DONE_CDMA) &&
@@ -252,6 +256,7 @@ void write_i_data()
         axi_cdma_2[0] = STANDBY_CDMA;
         axi_cdma_3[0] = STANDBY_CDMA;
     }
+
     axi_cdma_0[0] = STANDBY_CDMA;
     axi_cdma_1[0] = STANDBY_CDMA;
     axi_cdma_2[0] = STANDBY_CDMA;
@@ -261,10 +266,12 @@ void write_i_data()
     axi_cdma_1[0] = CLEAR_CDMA;
     axi_cdma_2[0] = CLEAR_CDMA;
     axi_cdma_3[0] = CLEAR_CDMA;
+
     axi_cdma_0[0] = STANDBY_CDMA;
     axi_cdma_1[0] = STANDBY_CDMA;
     axi_cdma_2[0] = STANDBY_CDMA;
     axi_cdma_3[0] = STANDBY_CDMA;
+
     axi_cdma_0[6] = DDR_9_ADDR;
     axi_cdma_0[8] = BRAM_9_ADDR;
     axi_cdma_1[6] = DDR_11_ADDR;
@@ -273,10 +280,12 @@ void write_i_data()
     axi_cdma_2[8] = BRAM_13_ADDR;
     axi_cdma_3[6] = DDR_15_ADDR;
     axi_cdma_3[8] = BRAM_15_ADDR;
+
     axi_cdma_0[10] = num_elem;
     axi_cdma_1[10] = num_elem;
     axi_cdma_2[10] = num_elem;
     axi_cdma_3[10] = num_elem;
+
     while (
         !(axi_cdma_0[1] & DONE_CDMA) &&
         !(axi_cdma_1[1] & DONE_CDMA) &&
@@ -288,10 +297,12 @@ void write_i_data()
         axi_cdma_2[0] = STANDBY_CDMA;
         axi_cdma_3[0] = STANDBY_CDMA;
     }
+
     axi_cdma_0[0] = STANDBY_CDMA;
     axi_cdma_1[0] = STANDBY_CDMA;
     axi_cdma_2[0] = STANDBY_CDMA;
     axi_cdma_3[0] = STANDBY_CDMA;
+
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
     time_write_i += duration.count();
@@ -303,7 +314,10 @@ void work(int idx)
     axi_gpio_1[0] = num_elem;
     while (axi_gpio_3[0] != ZNCC_DONE)
     {
+        axi_gpio_1[0] = num_elem;
     }
+    axi_gpio_1[0] = num_elem;
+
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
     time_work += duration.count();
@@ -315,10 +329,12 @@ void read_data()
     axi_cdma_1[0] = CLEAR_CDMA;
     axi_cdma_2[0] = CLEAR_CDMA;
     axi_cdma_3[0] = CLEAR_CDMA;
+
     axi_cdma_0[0] = STANDBY_CDMA;
     axi_cdma_1[0] = STANDBY_CDMA;
     axi_cdma_2[0] = STANDBY_CDMA;
     axi_cdma_3[0] = STANDBY_CDMA;
+
     axi_cdma_0[6] = BRAM_2_ADDR;
     axi_cdma_0[8] = DDR_2_ADDR;
     axi_cdma_1[6] = BRAM_4_ADDR;
@@ -327,25 +343,39 @@ void read_data()
     axi_cdma_2[8] = DDR_6_ADDR;
     axi_cdma_3[6] = BRAM_8_ADDR;
     axi_cdma_3[8] = DDR_8_ADDR;
+
     axi_cdma_0[10] = res_bytes_per_unit;
     axi_cdma_1[10] = res_bytes_per_unit;
     axi_cdma_2[10] = res_bytes_per_unit;
     axi_cdma_3[10] = res_bytes_per_unit;
+
     while (
         !(axi_cdma_0[1] & DONE_CDMA) &&
         !(axi_cdma_1[1] & DONE_CDMA) &&
         !(axi_cdma_2[1] & DONE_CDMA) &&
         !(axi_cdma_3[1] & DONE_CDMA))
     {
+        axi_cdma_0[0] = STANDBY_CDMA;
+        axi_cdma_1[0] = STANDBY_CDMA;
+        axi_cdma_2[0] = STANDBY_CDMA;
+        axi_cdma_3[0] = STANDBY_CDMA;
     }
-    axi_cdma_0[0] = CLEAR_CDMA;
-    axi_cdma_1[0] = CLEAR_CDMA;
-    axi_cdma_2[0] = CLEAR_CDMA;
-    axi_cdma_3[0] = CLEAR_CDMA;
+
     axi_cdma_0[0] = STANDBY_CDMA;
     axi_cdma_1[0] = STANDBY_CDMA;
     axi_cdma_2[0] = STANDBY_CDMA;
     axi_cdma_3[0] = STANDBY_CDMA;
+
+    axi_cdma_0[0] = CLEAR_CDMA;
+    axi_cdma_1[0] = CLEAR_CDMA;
+    axi_cdma_2[0] = CLEAR_CDMA;
+    axi_cdma_3[0] = CLEAR_CDMA;
+
+    axi_cdma_0[0] = STANDBY_CDMA;
+    axi_cdma_1[0] = STANDBY_CDMA;
+    axi_cdma_2[0] = STANDBY_CDMA;
+    axi_cdma_3[0] = STANDBY_CDMA;
+
     axi_cdma_0[6] = BRAM_10_ADDR;
     axi_cdma_0[8] = DDR_10_ADDR;
     axi_cdma_1[6] = BRAM_12_ADDR;
@@ -354,17 +384,29 @@ void read_data()
     axi_cdma_2[8] = DDR_14_ADDR;
     axi_cdma_3[6] = BRAM_16_ADDR;
     axi_cdma_3[8] = DDR_16_ADDR;
+
     axi_cdma_0[10] = res_bytes_per_unit;
     axi_cdma_1[10] = res_bytes_per_unit;
     axi_cdma_2[10] = res_bytes_per_unit;
     axi_cdma_3[10] = res_bytes_per_unit;
+
     while (
         !(axi_cdma_0[1] & DONE_CDMA) &&
         !(axi_cdma_1[1] & DONE_CDMA) &&
         !(axi_cdma_2[1] & DONE_CDMA) &&
         !(axi_cdma_3[1] & DONE_CDMA))
     {
+        axi_cdma_0[0] = STANDBY_CDMA;
+        axi_cdma_1[0] = STANDBY_CDMA;
+        axi_cdma_2[0] = STANDBY_CDMA;
+        axi_cdma_3[0] = STANDBY_CDMA;
     }
+
+    axi_cdma_0[0] = STANDBY_CDMA;
+    axi_cdma_1[0] = STANDBY_CDMA;
+    axi_cdma_2[0] = STANDBY_CDMA;
+    axi_cdma_3[0] = STANDBY_CDMA;
+
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
     time_read_res += duration.count();
@@ -375,7 +417,7 @@ void print_results()
     int row = w_minus_n * q;
     unsigned char *data = (unsigned char *)res.data;
     int pix = 0;
-    int limit = w_minus_n - parallel_units;
+    int limit = w_minus_n - (parallel_units - 1);
     for (pix = 0; pix < limit; pix += parallel_units)
     {
         /*data[row + pix] = ((float)results_0[pix_idx]) * 0.00389099121;     //results_0[pix_idx] >> 9;
@@ -394,14 +436,15 @@ void print_results()
         data[row + pix + 5] = results_5[pix_idx];
         data[row + pix + 6] = results_6[pix_idx];
         data[row + pix + 7] = results_7[pix_idx];*/
-        data[row + pix] = results_0[pix_idx] >> 9;
+        /*data[row + pix] = results_0[pix_idx] >> 9;
         data[row + pix + 1] = results_1[pix_idx] >> 9;
         data[row + pix + 2] = results_2[pix_idx] >> 9;
         data[row + pix + 3] = results_3[pix_idx] >> 9;
         data[row + pix + 4] = results_4[pix_idx] >> 9;
         data[row + pix + 5] = results_5[pix_idx] >> 9;
         data[row + pix + 6] = results_6[pix_idx] >> 9;
-        data[row + pix + 7] = results_7[pix_idx] >> 9;
+        data[row + pix + 7] = results_7[pix_idx] >> 9;*/
+        data[row + pix] = results_0[pix_idx] >> 9;
         pix_idx++;
     }
     imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
@@ -460,7 +503,7 @@ void region_of_interest(int x, int y, int unit)
     }
     else if (x >= w_minus_n || y >= h_minus_m)
     {
-        i_img_roi = Mat(h, w, CV_8U, cv::Scalar(0, 0, 0));
+        i_img_roi = Mat(n, m, CV_8U, cv::Scalar(0, 0, 0));
     }
     else
     {
@@ -535,23 +578,23 @@ int main()
     for (q = 0; q < h_minus_m; q++)
     {
         idx = 0;
-        int limit = w_minus_n - 8;
-        for (p = 0; p < limit; p += 8)
+        int limit = w_minus_n - (parallel_units - 1);
+        for (p = 0; p < limit; p += parallel_units)
         {
             // image parts
             clear_signal();
             region_of_interest(p, q, 0);
-            region_of_interest(p + 1, q, 1);
+            /*region_of_interest(p + 1, q, 1);
             region_of_interest(p + 2, q, 2);
             region_of_interest(p + 3, q, 3);
             region_of_interest(p + 4, q, 4);
             region_of_interest(p + 5, q, 5);
             region_of_interest(p + 6, q, 6);
-            region_of_interest(p + 7, q, 7);
+            region_of_interest(p + 7, q, 7);*/
             write_i_data();
             work(idx);
             idx += 4;
-            tests += 8;
+            tests += parallel_units;
         }
         // present results
         read_data();
@@ -564,7 +607,6 @@ int main()
     double min;
     double max;
     minMaxLoc(res, &min, &max, &min_loc, &max_loc);
-    close_mem();
     cout << "Write t: " << time_write_t << " us\n";
     cout << "Write i: " << time_write_i << " us\n";
     cout << "Read res: " << time_read_res << " us\n";
