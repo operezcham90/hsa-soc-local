@@ -511,7 +511,7 @@ int load_image_file()
     for (int y = 0; y < h; y++)
     {
         int row = y * w;
-        for (x = 0; x < w; x++)
+        for (int x = 0; x < w; x++)
         {
             cv::Vec3b ci = i_img_color.at<cv::Vec3b>(cv::Point(x, y));
             cv::Vec3b ct = t_img_color.at<cv::Vec3b>(cv::Point(x, y));
