@@ -119,8 +119,10 @@ function do_frame_run(category, video, current_frame) {
                         var summary = stdout.split('\n');
                         var n = bottom_r_x - top_l_x;
                         var m = bottom_r_y - top_l_y;
-                        top_l_x = +(summary[11].split(':')[1]);
-                        top_l_y = +(summary[12].split(':')[1]);
+                        top_l_x = +(summary[9].split(':')[1]);
+                        top_l_y = +(summary[10].split(':')[1]);
+                        var u0 = +(summary[11].split(':')[1]);
+                        var v0 = +(summary[12].split(':')[1]);
                         bottom_r_x = top_l_x + n;
                         bottom_r_y = top_l_y + m;
                         console.log('u,v: ' + top_l_x + ',' + top_l_y);
@@ -132,8 +134,8 @@ function do_frame_run(category, video, current_frame) {
                                 var gt = ann[i];
                                 console.log(JSON.stringify(gt));
                                 var t = {
-                                    u: top_l_x,
-                                    v: top_l_y,
+                                    u: u0,
+                                    v: v0,
                                     w: n,
                                     h: m
                                 };
