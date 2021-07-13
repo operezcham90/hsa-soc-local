@@ -139,8 +139,8 @@ function do_frame_run(category, video, current_frame) {
                                     h: m
                                 };
                                 console.log(JSON.stringify(t));
-                                var x_overlap = Math.max(0, Math.min(t.u + t.w, gt.u + gt.w) - Math.max(t.u, gt.u));
-                                var y_overlap = Math.max(0, Math.min(t.v + t.h, gt.v + gt.h) - Math.max(t.v, gt.v));
+                                var x_overlap = Math.max(0, Math.min(t.u + t.w - 1, gt.u + gt.w) - Math.max(t.u + 1, gt.u));
+                                var y_overlap = Math.max(0, Math.min(t.v + t.h - 1, gt.v + gt.h) - Math.max(t.v + 1, gt.v));
                                 var intersection = x_overlap * y_overlap;
                                 var union = (t.w * t.h) + (gt.w * gt.h) - intersection;
                                 var iou = (intersection * 100) / union;
