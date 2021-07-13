@@ -517,7 +517,7 @@ int main()
     for (q = 0; q < h_minus_m; q++)
     {
         idx = 0;
-        for (p = 0; p < w_minus_n; p += 8)
+        for (p = 0; p < w_minus_n; p += parallel_units)
         {
             // image parts
             clear_signal();
