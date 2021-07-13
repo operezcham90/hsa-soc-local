@@ -493,8 +493,8 @@ int load_image_file()
     file_t.close();
 
     // global
-    w = t_img.cols;
-    h = t_img.rows;
+    w = t_img_color.cols;
+    h = t_img_color.rows;
     h_minus_m = h - m;
     w_minus_n = w - n;
     res_bytes_per_unit = w_minus_n * 4 / parallel_units;
