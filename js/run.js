@@ -70,15 +70,15 @@ function read_ann(category, video) {
         for (var i = 0; i <= frames.length - 2; i++) {
             var line = frames[i].split(/\s/g);
             var gt = {
-                frame: +line[0],
-                ax: +line[1],
-                ay: +line[2],
-                bx: +line[3],
-                by: +line[4],
-                cx: +line[5],
-                cy: +line[6],
-                dx: +line[7],
-                dy: +line[8]
+                frame: JSON.parse(line[0]),
+                ax: JSON.parse(line[1]),
+                ay: JSON.parse(line[2]),
+                bx: JSON.parse(line[3]),
+                by: JSON.parse(line[4]),
+                cx: JSON.parse(line[5]),
+                cy: JSON.parse(line[6]),
+                dx: JSON.parse(line[7]),
+                dy: JSON.parse(line[8])
             };
             gt.u = Math.min(gt.ax, gt.bx, gt.cx, gt.dx);
             gt.v = Math.min(gt.ay, gt.by, gt.cy, gt.dy);
@@ -86,6 +86,8 @@ function read_ann(category, video) {
             gt.h = Math.max(gt.ay, gt.by, gt.cy, gt.dy) - gt.v;
             ann.push(gt);
         }
+
+        console.log(JSON.stringify(ann));
 
         ntp = 1;
         nfp = 0;
@@ -100,13 +102,6 @@ function set_frame_run(category, video, current_frame) {
     t_file += ('00000' + (video + 1)).slice(-5) + '/' + ('00000000' + (current_frame - 1)).slice(-8) + '.jpg';
     var i_file = '/mnt/alov/frames/' + categories[category] + '/' + categories[category] + '_video';
     i_file += ('00000' + (video + 1)).slice(-5) + '/' + ('00000000' + current_frame).slice(-8) + '.jpg';
-    /*fs.copyFile(t_file, '/root/hsa-soc-local/img/temp_t.jpg', (errt) => {
-        console.log(t_file);
-        fs.copyFile(i_file, '/root/hsa-soc-local/img/temp_i.jpg', (erri) => {
-            console.log(i_file);
-            do_frame_run(category, video, current_frame);
-        });
-    });*/
     fs.writeFile('/root/hsa-soc-local/img/temp_t.txt', t_file, (err) => {
         fs.writeFile('/root/hsa-soc-local/img/temp_i.txt', i_file, (err) => {
             do_frame_run(category, video, current_frame);
@@ -124,8 +119,8 @@ function do_frame_run(category, video, current_frame) {
                         var summary = stdout.split('\n');
                         var n = bottom_r_x - top_l_x;
                         var m = bottom_r_y - top_l_y;
-                        top_l_x = +(summary[9].split(':')[1]);
-                        top_l_y = +(summary[10].split(':')[1]);
+                        top_l_x = JSON.parse(summary[9].split(':')[1]);
+                        top_l_y = JSON.parse(summary[10].split(':')[1]);
                         var u0 = top_l_x;
                         var v0 = top_l_y;
                         bottom_r_x = top_l_x + n;
@@ -134,7 +129,6 @@ function do_frame_run(category, video, current_frame) {
 
                         // f-score
                         for (var i = 0; i < ann.length; i++) {
-                            //console.log(ann[i].frame + '===' + current_frame);
                             if (ann[i].frame === current_frame) {
                                 var gt = ann[i];
                                 console.log(JSON.stringify(gt));
@@ -149,9 +143,9 @@ function do_frame_run(category, video, current_frame) {
                                 var y_overlap = Math.max(0, Math.min(t.v + t.h, gt.v + gt.h) - Math.max(t.v, gt.v));
                                 var intersection = x_overlap * y_overlap;
                                 var union = (t.w * t.h) + (gt.w * gt.h) - intersection;
-                                var iou = intersection / union;
+                                var iou = (intersection * 100) / union;
                                 console.log(iou);
-                                var pascal = iou >= 0.5;
+                                var pascal = iou >= 50;
                                 console.log(pascal);
                                 if (pascal) {
                                     ntp++;

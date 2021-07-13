@@ -671,12 +671,6 @@ int main()
     }
     close_mem();
 
-    Point min_loc;
-    Point max_loc;
-    double min;
-    double max;
-    minMaxLoc(res, &min, &max, &min_loc, &max_loc);
-
     unsigned long int maxGamma = gamma_arr[0];
     int maxI = 0;
     for (int i = 1; i < w_minus_n * h_minus_m; i++)
@@ -698,14 +692,12 @@ int main()
     cout << "Slice data: " << time_slice_data << " us\n";
     cout << "Work: " << time_work << " us\n";
     cout << "Tests: " << tests << "\n";
-    cout << "Max: " << max << "\n";
+    cout << "Max: " << maxGamma << "\n";
     cout << "u: " << x << "\n";
     cout << "v: " << y << "\n";
     cout << "u0: " << u << "\n";
     cout << "v0: " << v << "\n";
     cout << "n: " << n << "\n";
     cout << "m: " << m << "\n";
-    cout << "u cv: " << max_loc.x << "\n";
-    cout << "v cv: " << max_loc.y << "\n";
     return 0;
 }
