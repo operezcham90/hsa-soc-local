@@ -508,14 +508,13 @@ int load_image_file()
     i_img = Mat(h, w, CV_8U, cv::Scalar(0, 0, 0));
     t_img = Mat(h, w, CV_8U, cv::Scalar(0, 0, 0));
 
-    for (int x = 0; x < w; x++)
+    for (int y = 0; y < h; y++)
     {
-        int y = 0;
         int row = y * w;
-        for (y = 0; y < h; y++)
+        for (x = 0; x < w; x++)
         {
-            cv::Vec3b ci = i_img.at<cv::Vec3b>(cv::Point(x, y));
-            cv::Vec3b ct = t_img.at<cv::Vec3b>(cv::Point(x, y));
+            cv::Vec3b ci = i_img_color.at<cv::Vec3b>(cv::Point(x, y));
+            cv::Vec3b ct = t_img_color.at<cv::Vec3b>(cv::Point(x, y));
             long int subi = ci.val[0] + ci.val[1] + ci.val[2];
             long int subt = ct.val[0] + ct.val[1] + ct.val[2];
             i_img.data[x + row] = subi / 3;
