@@ -211,7 +211,9 @@ void write_t_data()
     axi_cdma_0[10] = num_elem;
     while (!(axi_cdma_0[1] & DONE_CDMA))
     {
+        axi_cdma_0[0] = STANDBY_CDMA;
     }
+    axi_cdma_0[0] = STANDBY_CDMA;
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
     time_write_t += duration.count();
@@ -245,7 +247,16 @@ void write_i_data()
         !(axi_cdma_2[1] & DONE_CDMA) &&
         !(axi_cdma_3[1] & DONE_CDMA))
     {
+        axi_cdma_0[0] = STANDBY_CDMA;
+        axi_cdma_1[0] = STANDBY_CDMA;
+        axi_cdma_2[0] = STANDBY_CDMA;
+        axi_cdma_3[0] = STANDBY_CDMA;
     }
+    axi_cdma_0[0] = STANDBY_CDMA;
+    axi_cdma_1[0] = STANDBY_CDMA;
+    axi_cdma_2[0] = STANDBY_CDMA;
+    axi_cdma_3[0] = STANDBY_CDMA;
+
     axi_cdma_0[0] = CLEAR_CDMA;
     axi_cdma_1[0] = CLEAR_CDMA;
     axi_cdma_2[0] = CLEAR_CDMA;
@@ -272,7 +283,15 @@ void write_i_data()
         !(axi_cdma_2[1] & DONE_CDMA) &&
         !(axi_cdma_3[1] & DONE_CDMA))
     {
+        axi_cdma_0[0] = STANDBY_CDMA;
+        axi_cdma_1[0] = STANDBY_CDMA;
+        axi_cdma_2[0] = STANDBY_CDMA;
+        axi_cdma_3[0] = STANDBY_CDMA;
     }
+    axi_cdma_0[0] = STANDBY_CDMA;
+    axi_cdma_1[0] = STANDBY_CDMA;
+    axi_cdma_2[0] = STANDBY_CDMA;
+    axi_cdma_3[0] = STANDBY_CDMA;
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
     time_write_i += duration.count();
@@ -516,7 +535,8 @@ int main()
     for (q = 0; q < h_minus_m; q++)
     {
         idx = 0;
-        for (p = 0; p < w_minus_n; p += 8)
+        int limit = w_minus_n - 8;
+        for (p = 0; p < limit; p += 8)
         {
             // image parts
             clear_signal();
