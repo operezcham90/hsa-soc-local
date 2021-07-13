@@ -621,8 +621,8 @@ int load_init_file()
 
     u = a;
     v = b;
-    n = c - a;
-    m = d - b;
+    n = c - a + 1;
+    m = d - b + 1;
     n_times_m = n * m;
     num_elem = n_times_m;
 
@@ -643,7 +643,7 @@ int main()
     load_image_file();
     region_of_interest(-1, -1, -1);
     write_t_data();
-    for (q = 0; q < h_minus_m; q++)
+    for (q = v - 20; q < v + 20; q++)
     {
         idx = 0;
         int limit = w_minus_n - (parallel_units - 1);

@@ -61,10 +61,10 @@ function read_ann(category, video) {
         bottom_r_x = Math.max(+first_frame_data[1], +first_frame_data[3], +first_frame_data[5], +first_frame_data[7]);
         bottom_r_y = Math.max(+first_frame_data[2], +first_frame_data[4], +first_frame_data[6], +first_frame_data[8]);
 
-        top_l_x = Math.round(top_l_x);
-        top_l_y = Math.round(top_l_y);
-        bottom_r_x = Math.round(bottom_r_x);
-        bottom_r_y = Math.round(bottom_r_y);
+        top_l_x = Math.floor(top_l_x);
+        top_l_y = Math.floor(top_l_y);
+        bottom_r_x = Math.ceil(bottom_r_x);
+        bottom_r_y = Math.ceil(bottom_r_y);
 
         ann = [];
         for (var i = 0; i <= frames.length - 2; i++) {
@@ -117,8 +117,8 @@ function do_frame_run(category, video, current_frame) {
                     console.log("run " + category + ' ' + video + ' ' + current_frame);
                     exec('/root/hsa-soc-local/cpp/test', (error, stdout, stderr) => {
                         var summary = stdout.split('\n');
-                        var n = bottom_r_x - top_l_x;
-                        var m = bottom_r_y - top_l_y;
+                        var n = bottom_r_x - top_l_x + 1;
+                        var m = bottom_r_y - top_l_y + 1;
                         top_l_x = JSON.parse(summary[9].split(':')[1]);
                         top_l_y = JSON.parse(summary[10].split(':')[1]);
                         var u0 = top_l_x;
@@ -143,9 +143,7 @@ function do_frame_run(category, video, current_frame) {
                                 var y_overlap = Math.max(0, Math.min(t.v + t.h - 1, gt.v + gt.h) - Math.max(t.v + 1, gt.v));
                                 var intersection = x_overlap * y_overlap;
                                 var union = (t.w * t.h) + (gt.w * gt.h) - intersection;
-                                var iou = (intersection * 100) / union;
-                                console.log(iou);
-                                var pascal = iou >= 50;
+                                var pascal = (intersection / union) >= 0.5;
                                 console.log(pascal);
                                 if (pascal) {
                                     ntp++;
