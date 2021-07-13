@@ -141,7 +141,9 @@ function do_frame_run(category, video, current_frame) {
                                 var intersection = x_overlap * y_overlap;
                                 var union = (t.w * t.h) + (gt.w * gt.h) - intersection;
                                 var iou = intersection / union;
+                                console.log(iou);
                                 var pascal = iou >= 0.5;
+                                console.log(pascal);
                                 if (pascal) {
                                     ntp++;
                                 } else {
