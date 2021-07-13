@@ -551,7 +551,7 @@ void region_of_interest(int x, int y, int unit)
     auto start = high_resolution_clock::now();
     if (x < 0 || y < 0)
     {
-        rect = cv::Rect(u + 1, v + 1, n, m);
+        rect = cv::Rect(u, v, n + 1, m + 1);
         t_img_roi = t_img(rect);
         t_img_roi.convertTo(t_img_roi, CV_8U);
         memcpy(data_t, t_img_roi.data, n_times_m);
@@ -562,7 +562,7 @@ void region_of_interest(int x, int y, int unit)
     }
     else
     {
-        rect = cv::Rect(x + 1, y + 1, n, m);
+        rect = cv::Rect(x, y, n + 1, m + 1);
         i_img_roi = i_img(rect);
         i_img_roi.convertTo(i_img_roi, CV_8U);
     }
