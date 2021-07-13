@@ -383,7 +383,7 @@ void print_results()
         data[row + pix + 5] = results_5[pix_idx] >> 9;
         data[row + pix + 6] = results_6[pix_idx] >> 9;
         data[row + pix + 7] = results_7[pix_idx] >> 9;*/
-        data[row + pix] = results_1[pix_idx] >> 9;
+        data[row + pix] = results_2[pix_idx] >> 9;
         pix_idx++;
     }
     imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
@@ -521,7 +521,7 @@ int main()
         {
             // image parts
             clear_signal();
-            region_of_interest(p, q, 1);
+            region_of_interest(p, q, 2);
             write_i_data();
             work(idx);
             idx += 4;
