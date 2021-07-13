@@ -474,8 +474,8 @@ void set_names()
 int load_image_file()
 {
     auto start = high_resolution_clock::now();
-    const std::string &i_path;
-    const std::string &t_path;
+    std::string &i_path;
+    std::string &t_path;
 
     fstream file_i(I_FILE, std::ios_base::in);
     fstream file_t(T_FILE, std::ios_base::in);
