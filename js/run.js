@@ -100,10 +100,15 @@ function set_frame_run(category, video, current_frame) {
     t_file += ('00000' + (video + 1)).slice(-5) + '/' + ('00000000' + (current_frame - 1)).slice(-8) + '.jpg';
     var i_file = '/mnt/alov/frames/' + categories[category] + '/' + categories[category] + '_video';
     i_file += ('00000' + (video + 1)).slice(-5) + '/' + ('00000000' + current_frame).slice(-8) + '.jpg';
-    fs.copyFile(t_file, '/root/hsa-soc-local/img/temp_t.jpg', (errt) => {
+    /*fs.copyFile(t_file, '/root/hsa-soc-local/img/temp_t.jpg', (errt) => {
         console.log(t_file);
         fs.copyFile(i_file, '/root/hsa-soc-local/img/temp_i.jpg', (erri) => {
             console.log(i_file);
+            do_frame_run(category, video, current_frame);
+        });
+    });*/
+    fs.writeFile('/root/hsa-soc-local/img/temp_t.txt', t_file, (err) => {
+        fs.writeFile('/root/hsa-soc-local/img/temp_i.txt', i_file, (err) => {
             do_frame_run(category, video, current_frame);
         });
     });

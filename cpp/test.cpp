@@ -12,8 +12,8 @@
 #include <chrono>
 #include <vector>
 #include <math.h>
-#define I_FILE "/root/hsa-soc-local/img/temp_i.jpg"
-#define T_FILE "/root/hsa-soc-local/img/temp_t.jpg"
+#define I_FILE "/root/hsa-soc-local/img/temp_i.txt"
+#define T_FILE "/root/hsa-soc-local/img/temp_t.txt"
 #define TOP_L_X_FILE "/root/hsa-soc-local/img/temp_tlx.txt"
 #define TOP_L_Y_FILE "/root/hsa-soc-local/img/temp_tly.txt"
 #define BOTTOM_R_X_FILE "/root/hsa-soc-local/img/temp_brx.txt"
@@ -474,8 +474,21 @@ void set_names()
 int load_image_file()
 {
     auto start = high_resolution_clock::now();
-    i_img = cv::imread(I_FILE, cv::IMREAD_GRAYSCALE);
-    t_img = cv::imread(T_FILE, cv::IMREAD_GRAYSCALE);
+    const std::string &i_path;
+    const std::string &t_path;
+
+    fstream file_i(I_FILE, std::ios_base::in);
+    fstream file_t(T_FILE, std::ios_base::in);
+
+    file_i >> i_path;
+    file_t >> t_path;
+
+    i_img = cv::imread(i_path, cv::IMREAD_GRAYSCALE);
+    t_img = cv::imread(t_path, cv::IMREAD_GRAYSCALE);
+
+    file_i.close();
+    file_t.close();
+
     // draw the target for inspection
     Mat img0 = t_img.clone();
     Point pt1(a, b);
@@ -565,10 +578,17 @@ int load_init_file()
     fstream file_b(TOP_L_Y_FILE, std::ios_base::in);
     fstream file_c(BOTTOM_R_X_FILE, std::ios_base::in);
     fstream file_d(BOTTOM_R_Y_FILE, std::ios_base::in);
+
     file_a >> a;
     file_b >> b;
     file_c >> c;
     file_d >> d;
+
+    file_a.close();
+    file_b.close();
+    file_c.close();
+    file_d.close();
+
     u = a;
     v = b;
     n = c - a;
