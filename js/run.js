@@ -130,12 +130,14 @@ function do_frame_run(category, video, current_frame) {
                             //console.log(ann[i].frame + '===' + current_frame);
                             if (ann[i].frame === current_frame) {
                                 var gt = ann[i];
+                                console.log(JSON.stringify(gt));
                                 var t = {
                                     u: top_l_x,
                                     v: top_l_y,
                                     w: n,
                                     h: m
                                 };
+                                console.log(JSON.stringify(t));
                                 var x_overlap = Math.max(0, Math.min(t.u + t.w, gt.u + gt.w) - Math.max(t.u, gt.u));
                                 var y_overlap = Math.max(0, Math.min(t.v + t.h, gt.v + gt.h) - Math.max(t.v, gt.v));
                                 var intersection = x_overlap * y_overlap;
