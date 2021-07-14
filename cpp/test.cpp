@@ -447,7 +447,7 @@ void print_results()
         data[row + pix + 5] = results_5[pix_idx] >> 9;
         data[row + pix + 6] = results_6[pix_idx] >> 9;
         data[row + pix + 7] = results_7[pix_idx] >> 9;*/
-        data[row + pix] = results_0[pix_idx] >> 9;
+        data[row + pix] = results_0[pix_idx] >> 24;
         gamma_arr[row + pix] = results_0[pix_idx];
         pix_idx++;
     }
@@ -551,7 +551,7 @@ void region_of_interest(int x, int y, int unit)
     auto start = high_resolution_clock::now();
     if (x < 0 || y < 0)
     {
-        rect = cv::Rect(u, v, n + 1, m + 1);
+        rect = cv::Rect(u, v, n, m);
         t_img_roi = t_img(rect);
         t_img_roi.convertTo(t_img_roi, CV_8U);
         memcpy(data_t, t_img_roi.data, n_times_m);
@@ -562,7 +562,7 @@ void region_of_interest(int x, int y, int unit)
     }
     else
     {
-        rect = cv::Rect(x, y, n + 1, m + 1);
+        rect = cv::Rect(x, y, n, m);
         i_img_roi = i_img(rect);
         i_img_roi.convertTo(i_img_roi, CV_8U);
     }
@@ -683,7 +683,7 @@ int main()
         }
     }
 
-    int x = (maxI % w_minus_n);
+    int x = (maxI % w_minus_n) + 1;
     int y = (maxI / w_minus_n);
 
     cout << "Write t: " << time_write_t << " us\n";
