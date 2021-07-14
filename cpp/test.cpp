@@ -143,6 +143,8 @@ Mat i_img;
 Mat t_img;
 Mat i_img_roi;
 Mat t_img_roi;
+Mat t_img_roi_resize;
+Mat i_img_roi_resize;
 Mat res;
 Rect rect;
 ofstream result;
@@ -423,22 +425,6 @@ void print_results()
     int limit = w_minus_n - (parallel_units - 1);
     for (pix = 0; pix < limit; pix += parallel_units)
     {
-        /*data[row + pix] = ((float)results_0[pix_idx]) * 0.00389099121;     //results_0[pix_idx] >> 9;
-        data[row + pix + 1] = ((float)results_1[pix_idx]) * 0.00389099121; //results_1[pix_idx] >> 9;
-        data[row + pix + 2] = ((float)results_2[pix_idx]) * 0.00389099121; //results_2[pix_idx] >> 9;
-        data[row + pix + 3] = ((float)results_3[pix_idx]) * 0.00389099121; //results_3[pix_idx] >> 9;
-        data[row + pix + 4] = ((float)results_4[pix_idx]) * 0.00389099121; //results_4[pix_idx] >> 9;
-        data[row + pix + 5] = ((float)results_5[pix_idx]) * 0.00389099121; //results_5[pix_idx] >> 9;
-        data[row + pix + 6] = ((float)results_6[pix_idx]) * 0.00389099121; //results_6[pix_idx] >> 9;
-        data[row + pix + 7] = ((float)results_7[pix_idx]) * 0.00389099121; //results_7[pix_idx] >> 9;*/
-        /*data[row + pix] = results_0[pix_idx];
-        data[row + pix + 1] = results_1[pix_idx];
-        data[row + pix + 2] = results_2[pix_idx];
-        data[row + pix + 3] = results_3[pix_idx];
-        data[row + pix + 4] = results_4[pix_idx];
-        data[row + pix + 5] = results_5[pix_idx];
-        data[row + pix + 6] = results_6[pix_idx];
-        data[row + pix + 7] = results_7[pix_idx];*/
         /*data[row + pix] = results_0[pix_idx] >> 9;
         data[row + pix + 1] = results_1[pix_idx] >> 9;
         data[row + pix + 2] = results_2[pix_idx] >> 9;
@@ -484,10 +470,10 @@ int load_image_file()
     file_t >> t_path;
 
     // 0.299 R + 0.587 G + 0.114 B
-    //i_img = cv::imread(i_path, cv::IMREAD_GRAYSCALE);
-    //t_img = cv::imread(t_path, cv::IMREAD_GRAYSCALE);
-    Mat i_img_color = cv::imread(i_path, CV_LOAD_IMAGE_COLOR);
-    Mat t_img_color = cv::imread(t_path, CV_LOAD_IMAGE_COLOR);
+    i_img = cv::imread(i_path, cv::IMREAD_GRAYSCALE);
+    t_img = cv::imread(t_path, cv::IMREAD_GRAYSCALE);
+    //Mat i_img_color = cv::imread(i_path, CV_LOAD_IMAGE_COLOR);
+    //Mat t_img_color = cv::imread(t_path, CV_LOAD_IMAGE_COLOR);
 
     file_i.close();
     file_t.close();
@@ -498,14 +484,14 @@ int load_image_file()
     h_minus_m = h - m;
     w_minus_n = w - n;
     res_bytes_per_unit = w_minus_n * 4 / parallel_units;
-    if (res_bytes_per_unit > BRAM_BYTES)
+    /*if (res_bytes_per_unit > BRAM_BYTES)
     {
         cout << "img too big\n";
         exit(1);
-    }
+    }*/
 
     // gray
-    i_img = Mat(h, w, CV_8U, cv::Scalar(0, 0, 0));
+    /*i_img = Mat(h, w, CV_8U, cv::Scalar(0, 0, 0));
     t_img = Mat(h, w, CV_8U, cv::Scalar(0, 0, 0));
 
     for (int y = 0; y < h; y++)
@@ -520,7 +506,7 @@ int load_image_file()
             i_img.data[x + row] = subi / 3;
             t_img.data[x + row] = subt / 3;
         }
-    }
+    }*/
 
     // draw the target for inspection
     Mat img0 = t_img.clone();
@@ -549,54 +535,52 @@ int load_image_file()
 void region_of_interest(int x, int y, int unit)
 {
     auto start = high_resolution_clock::now();
-    if (x < 0 || y < 0)
+    if (x < 0 || y < 0 || x >= w_minus_n || y >= h_minus_m)
     {
         rect = cv::Rect(u, v, n, m);
         t_img_roi = t_img(rect);
-        t_img_roi.convertTo(t_img_roi, CV_8U);
-        memcpy(data_t, t_img_roi.data, n_times_m);
-    }
-    else if (x >= w_minus_n || y >= h_minus_m)
-    {
-        i_img_roi = Mat(n, m, CV_8U, cv::Scalar(0, 0, 0));
+        resize(t_img_roi, t_img_roi_resize, Size(128, 64), 0, 0, INTER_CUBIC);
+        t_img_roi_resize.convertTo(t_img_roi_resize, CV_8U);
+        memcpy(data_t, t_img_roi_resize.data, n_times_m);
     }
     else
     {
         rect = cv::Rect(x, y, n, m);
         i_img_roi = i_img(rect);
-        i_img_roi.convertTo(i_img_roi, CV_8U);
+        resize(i_img_roi, i_img_roi_resize, Size(128, 64), 0, 0, INTER_CUBIC);
+        i_img_roi_resize.convertTo(i_img_roi_resize, CV_8U);
     }
     if (unit == 0)
     {
-        memcpy(data_i_0, i_img_roi.data, n_times_m);
+        memcpy(data_i_0, i_img_roi_resize.data, n_times_m);
     }
     else if (unit == 1)
     {
-        memcpy(data_i_1, i_img_roi.data, n_times_m);
+        memcpy(data_i_1, i_img_roi_resize.data, n_times_m);
     }
     else if (unit == 2)
     {
-        memcpy(data_i_2, i_img_roi.data, n_times_m);
+        memcpy(data_i_2, i_img_roi_resize.data, n_times_m);
     }
     else if (unit == 3)
     {
-        memcpy(data_i_3, i_img_roi.data, n_times_m);
+        memcpy(data_i_3, i_img_roi_resize.data, n_times_m);
     }
     else if (unit == 4)
     {
-        memcpy(data_i_4, i_img_roi.data, n_times_m);
+        memcpy(data_i_4, i_img_roi_resize.data, n_times_m);
     }
     else if (unit == 5)
     {
-        memcpy(data_i_5, i_img_roi.data, n_times_m);
+        memcpy(data_i_5, i_img_roi_resize.data, n_times_m);
     }
     else if (unit == 6)
     {
-        memcpy(data_i_6, i_img_roi.data, n_times_m);
+        memcpy(data_i_6, i_img_roi_resize.data, n_times_m);
     }
     else if (unit == 7)
     {
-        memcpy(data_i_7, i_img_roi.data, n_times_m);
+        memcpy(data_i_7, i_img_roi_resize.data, n_times_m);
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
@@ -626,11 +610,11 @@ int load_init_file()
     n_times_m = n * m;
     num_elem = n_times_m;
 
-    if (n_times_m > BRAM_BYTES)
+    /*if (n_times_m > BRAM_BYTES)
     {
         cout << "img temp too big\n";
         exit(1);
-    }
+    }*/
 }
 int main()
 {
