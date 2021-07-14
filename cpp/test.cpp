@@ -621,8 +621,8 @@ int load_init_file()
 
     u = a;
     v = b;
-    n = c - a + 1;
-    m = d - b + 1;
+    n = c - a;
+    m = d - b;
     n_times_m = n * m;
     num_elem = n_times_m;
 

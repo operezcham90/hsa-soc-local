@@ -80,10 +80,10 @@ function read_ann(category, video) {
                 dx: JSON.parse(line[7]),
                 dy: JSON.parse(line[8])
             };
-            gt.u = Math.min(gt.ax, gt.bx, gt.cx, gt.dx);
-            gt.v = Math.min(gt.ay, gt.by, gt.cy, gt.dy);
-            gt.w = Math.max(gt.ax, gt.bx, gt.cx, gt.dx) - gt.u;
-            gt.h = Math.max(gt.ay, gt.by, gt.cy, gt.dy) - gt.v;
+            gt.u = Math.floor(Math.min(gt.ax, gt.bx, gt.cx, gt.dx));
+            gt.v = Math.floor(Math.min(gt.ay, gt.by, gt.cy, gt.dy));
+            gt.w = Math.ceil(Math.max(gt.ax, gt.bx, gt.cx, gt.dx) - gt.u);
+            gt.h = Math.ceil(Math.max(gt.ay, gt.by, gt.cy, gt.dy) - gt.v);
             ann.push(gt);
         }
 
@@ -117,8 +117,8 @@ function do_frame_run(category, video, current_frame) {
                     console.log("run " + category + ' ' + video + ' ' + current_frame);
                     exec('/root/hsa-soc-local/cpp/test', (error, stdout, stderr) => {
                         var summary = stdout.split('\n');
-                        var n = bottom_r_x - top_l_x + 1;
-                        var m = bottom_r_y - top_l_y + 1;
+                        var n = bottom_r_x - top_l_x;
+                        var m = bottom_r_y - top_l_y;
                         top_l_x = JSON.parse(summary[9].split(':')[1]);
                         top_l_y = JSON.parse(summary[10].split(':')[1]);
                         var u0 = top_l_x;
