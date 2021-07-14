@@ -479,8 +479,10 @@ int load_image_file()
     file_t.close();
 
     // global
-    w = t_img_color.cols;
-    h = t_img_color.rows;
+    //w = t_img_color.cols;
+    //h = t_img_color.rows;
+    w = t_img.cols;
+    h = t_img.rows;
     h_minus_m = h - m;
     w_minus_n = w - n;
     res_bytes_per_unit = w_minus_n * 4 / parallel_units;
@@ -539,7 +541,7 @@ void region_of_interest(int x, int y, int unit)
     {
         rect = cv::Rect(u, v, n, m);
         t_img_roi = t_img(rect);
-        resize(t_img_roi, t_img_roi_resize, Size(128, 64), 0, 0, INTER_CUBIC);
+        cv::resize(t_img_roi, t_img_roi_resize, Size(128, 64), 0, 0, cv::INTER_CUBIC);
         t_img_roi_resize.convertTo(t_img_roi_resize, CV_8U);
         memcpy(data_t, t_img_roi_resize.data, n_times_m);
     }
@@ -547,7 +549,7 @@ void region_of_interest(int x, int y, int unit)
     {
         rect = cv::Rect(x, y, n, m);
         i_img_roi = i_img(rect);
-        resize(i_img_roi, i_img_roi_resize, Size(128, 64), 0, 0, INTER_CUBIC);
+        cv::resize(i_img_roi, i_img_roi_resize, Size(128, 64), 0, 0, cv::INTER_CUBIC);
         i_img_roi_resize.convertTo(i_img_roi_resize, CV_8U);
     }
     if (unit == 0)
