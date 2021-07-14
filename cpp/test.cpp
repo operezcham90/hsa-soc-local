@@ -643,7 +643,7 @@ int main()
     load_image_file();
     region_of_interest(-1, -1, -1);
     write_t_data();
-    for (q = v - 20; q < v + 20; q++)
+    for (q = 0; q < h_minus_m; q++)
     {
         idx = 0;
         int limit = w_minus_n - (parallel_units - 1);
