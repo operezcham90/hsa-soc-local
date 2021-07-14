@@ -683,7 +683,7 @@ int main()
         }
     }
 
-    int x = (maxI % w_minus_n) + 1;
+    int x = (maxI % w_minus_n);
     int y = (maxI / w_minus_n);
 
     cout << "Write t: " << time_write_t << " us\n";
