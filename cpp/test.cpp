@@ -541,7 +541,7 @@ void region_of_interest(int x, int y, int unit)
     {
         rect = cv::Rect(u, v, n, m);
         t_img_roi = t_img(rect);
-        cv::resize(t_img_roi, t_img_roi_resize, Size(128, 64), 0, 0, cv::INTER_CUBIC);
+        cv::resize(t_img_roi, t_img_roi_resize, cv::Size(128, 64), 0, 0, CV_INTER_LINEAR);
         t_img_roi_resize.convertTo(t_img_roi_resize, CV_8U);
         memcpy(data_t, t_img_roi_resize.data, n_times_m);
     }
@@ -549,7 +549,7 @@ void region_of_interest(int x, int y, int unit)
     {
         rect = cv::Rect(x, y, n, m);
         i_img_roi = i_img(rect);
-        cv::resize(i_img_roi, i_img_roi_resize, Size(128, 64), 0, 0, cv::INTER_CUBIC);
+        cv::resize(i_img_roi, i_img_roi_resize, cv::Size(128, 64), 0, 0, CV_INTER_LINEAR);
         i_img_roi_resize.convertTo(i_img_roi_resize, CV_8U);
     }
     if (unit == 0)
