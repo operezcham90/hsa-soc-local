@@ -19,12 +19,6 @@
 #define TOP_L_Y_FILE "/root/hsa-soc-local/img/temp_tly.txt"
 #define BOTTOM_R_X_FILE "/root/hsa-soc-local/img/temp_brx.txt"
 #define BOTTOM_R_Y_FILE "/root/hsa-soc-local/img/temp_bry.txt"
-//#define I_FILE "/root/hsa-soc-local/img/dices.jpg"
-//#define T_FILE "/root/hsa-soc-local/img/dices.jpg"
-//#define TOP_L_X_FILE "/root/hsa-soc-local/img/dices_tlx.txt"
-//#define TOP_L_Y_FILE "/root/hsa-soc-local/img/dices_tly.txt"
-//#define BOTTOM_R_X_FILE "/root/hsa-soc-local/img/dices_brx.txt"
-//#define BOTTOM_R_Y_FILE "/root/hsa-soc-local/img/dices_bry.txt"
 #define GPIO_BYTES 4
 #define CDMA_BYTES 40
 #define BRAM_BYTES 8192
@@ -323,7 +317,6 @@ void work(int idx)
         axi_gpio_1[0] = num_elem;
     }
     axi_gpio_1[0] = num_elem;
-
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
     time_work += duration.count();
@@ -421,7 +414,7 @@ void print_results()
 {
     int pix_idx = 0;
     int row = w_minus_n * q;
-    unsigned char *data = (unsigned char *)res.data;
+    float *data = (float *)res.data;
     int pix = 0;
     int limit = w_minus_n - (parallel_units - 1);
     for (pix = 0; pix < limit; pix += parallel_units)
@@ -434,7 +427,7 @@ void print_results()
         data[row + pix + 5] = results_5[pix_idx] >> 9;
         data[row + pix + 6] = results_6[pix_idx] >> 9;
         data[row + pix + 7] = results_7[pix_idx] >> 9;*/
-        data[row + pix] = results_0[pix_idx] >> 24;
+        data[row + pix] = ((float)results_0[pix_idx] * 255.0) / 2147483648.0;
         gamma_arr[row + pix] = results_0[pix_idx];
         pix_idx++;
     }
@@ -473,43 +466,16 @@ int load_image_file()
     // 0.299 R + 0.587 G + 0.114 B
     i_img = cv::imread(i_path, cv::IMREAD_GRAYSCALE);
     t_img = cv::imread(t_path, cv::IMREAD_GRAYSCALE);
-    //Mat i_img_color = cv::imread(i_path, CV_LOAD_IMAGE_COLOR);
-    //Mat t_img_color = cv::imread(t_path, CV_LOAD_IMAGE_COLOR);
 
     file_i.close();
     file_t.close();
 
     // global
-    //w = t_img_color.cols;
-    //h = t_img_color.rows;
     w = t_img.cols;
     h = t_img.rows;
     h_minus_m = h - m;
     w_minus_n = w - n;
     res_bytes_per_unit = w_minus_n * 4 / parallel_units;
-    /*if (res_bytes_per_unit > BRAM_BYTES)
-    {
-        cout << "img too big\n";
-        exit(1);
-    }*/
-
-    // gray
-    /*i_img = Mat(h, w, CV_8U, cv::Scalar(0, 0, 0));
-    t_img = Mat(h, w, CV_8U, cv::Scalar(0, 0, 0));
-
-    for (int y = 0; y < h; y++)
-    {
-        int row = y * w;
-        for (int x = 0; x < w; x++)
-        {
-            cv::Vec3b ci = i_img_color.at<cv::Vec3b>(cv::Point(x, y));
-            cv::Vec3b ct = t_img_color.at<cv::Vec3b>(cv::Point(x, y));
-            long int subi = ci.val[0] + ci.val[1] + ci.val[2];
-            long int subt = ct.val[0] + ct.val[1] + ct.val[2];
-            i_img.data[x + row] = subi / 3;
-            t_img.data[x + row] = subt / 3;
-        }
-    }*/
 
     // draw the target for inspection
     Mat img0 = t_img.clone();
@@ -520,7 +486,7 @@ int load_image_file()
     img0.release();
 
     // result
-    res = Mat(h_minus_m, w_minus_n, CV_8U, cv::Scalar(0, 0, 0));
+    res = Mat(h_minus_m, w_minus_n, CV_F32, cv::Scalar(0, 0, 0));
 
     gamma_arr = (unsigned long int *)std::malloc((h_minus_m * w_minus_n) * sizeof(unsigned long int));
     for (int x = 0; x < w_minus_n; x++)
@@ -542,7 +508,14 @@ void region_of_interest(int x, int y, int unit)
     {
         rect = cv::Rect(u, v, n, m);
         t_img_roi = t_img(rect);
-        cv::resize(t_img_roi, t_img_roi_resize, cv::Size(128, 64), 0, 0, CV_INTER_LINEAR);
+        if (num_elem > BRAM_BYTES)
+        {
+            cv::resize(t_img_roi, t_img_roi_resize, cv::Size(128, 64), 0, 0, CV_INTER_LINEAR);
+        }
+        else
+        {
+            t_img_roi_resize = t_img_roi.clone();
+        }
         t_img_roi_resize.convertTo(t_img_roi_resize, CV_8U);
         memcpy(data_t, t_img_roi_resize.data, n_times_m);
     }
@@ -550,7 +523,14 @@ void region_of_interest(int x, int y, int unit)
     {
         rect = cv::Rect(x, y, n, m);
         i_img_roi = i_img(rect);
-        cv::resize(i_img_roi, i_img_roi_resize, cv::Size(128, 64), 0, 0, CV_INTER_LINEAR);
+        if (num_elem > BRAM_BYTES)
+        {
+            cv::resize(i_img_roi, i_img_roi_resize, cv::Size(128, 64), 0, 0, CV_INTER_LINEAR);
+        }
+        else
+        {
+            i_img_roi_resize = i_img_roi.clone();
+        }
         i_img_roi_resize.convertTo(i_img_roi_resize, CV_8U);
     }
     if (unit == 0)
@@ -612,12 +592,6 @@ int load_init_file()
     m = d - b;
     n_times_m = n * m;
     num_elem = n_times_m;
-
-    /*if (n_times_m > BRAM_BYTES)
-    {
-        cout << "img temp too big\n";
-        exit(1);
-    }*/
 }
 int main()
 {
@@ -646,7 +620,6 @@ int main()
             region_of_interest(p + 5, q, 5);
             region_of_interest(p + 6, q, 6);
             region_of_interest(p + 7, q, 7);*/
-            write_t_data();
             write_i_data();
             work(idx);
             idx += 4;
@@ -655,7 +628,6 @@ int main()
         // present results
         read_data();
         print_results();
-        //cout << "row: " << q << "\n";
     }
     close_mem();
 
@@ -683,11 +655,7 @@ int main()
     cout << "Max: " << maxGamma << "\n";
     cout << "u: " << x << "\n";
     cout << "v: " << y << "\n";
-    cout << "u0: " << u << "\n";
-    cout << "v0: " << v << "\n";
     cout << "n: " << n << "\n";
     cout << "m: " << m << "\n";
-    cout << "i_path: " << i_path << "\n";
-    cout << "t_path: " << t_path << "\n";
     return 0;
 }
