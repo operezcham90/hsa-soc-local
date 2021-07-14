@@ -41,7 +41,7 @@ function check_folder(category) {
         if (category < categories.length) {
             check_folder(category);
         } else {
-            read_ann(0, 22);
+            read_ann(0, 23);
         }
     });
 }
