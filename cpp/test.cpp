@@ -604,6 +604,7 @@ int main()
     load_image_file();
     region_of_interest(-1, -1, -1);
     write_t_data();
+    cout << "t write\n";
     for (q = 0; q < h_minus_m; q++)
     {
         idx = 0;
@@ -613,6 +614,7 @@ int main()
             // image parts
             clear_signal();
             region_of_interest(p, q, 0);
+            cout << "roi\n";
             /*region_of_interest(p + 1, q, 1);
             region_of_interest(p + 2, q, 2);
             region_of_interest(p + 3, q, 3);
@@ -621,13 +623,17 @@ int main()
             region_of_interest(p + 6, q, 6);
             region_of_interest(p + 7, q, 7);*/
             write_i_data();
+            cout << "i write\n";
             work(idx);
+            cout << "work\n";
             idx += 4;
             tests += parallel_units;
         }
         // present results
         read_data();
+        cout << "read\n";
         print_results();
+        cout << "print\n";
     }
     close_mem();
 
