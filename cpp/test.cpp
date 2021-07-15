@@ -315,7 +315,6 @@ void work(int idx)
     while (axi_gpio_3[0] != ZNCC_DONE)
     {
         axi_gpio_1[0] = num_elem;
-        //cout << "state: " << axi_gpio_3[0] << "\n";
     }
     axi_gpio_1[0] = num_elem;
     auto stop = high_resolution_clock::now();
@@ -487,7 +486,7 @@ int load_image_file()
     img0.release();
 
     // result
-    res = Mat(h_minus_m, w_minus_n, CV_32F, cv::Scalar(0, 0, 0));
+    res = Mat(h_minus_m, w_minus_n, CV_32F1C, cv::Scalar(0, 0, 0));
 
     gamma_arr = (unsigned long int *)std::malloc((h_minus_m * w_minus_n) * sizeof(unsigned long int));
     for (int x = 0; x < w_minus_n; x++)
