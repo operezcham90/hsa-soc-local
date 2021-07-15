@@ -486,7 +486,7 @@ int load_image_file()
     img0.release();
 
     // result
-    res = Mat(h_minus_m, w_minus_n, CV_32FC1, cv::Scalar(0, 0, 0));
+    res = Mat(h_minus_m, w_minus_n, CV_32FC1, cv::Scalar(128, 128, 128));
 
     gamma_arr = (unsigned long int *)std::malloc((h_minus_m * w_minus_n) * sizeof(unsigned long int));
     for (int x = 0; x < w_minus_n; x++)
