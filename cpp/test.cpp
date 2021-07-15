@@ -117,7 +117,7 @@ unsigned long int *ddr_15;
 unsigned long int *ddr_16;
 unsigned long int idx;
 unsigned long int num_elem;
-unsigned int parallel_units = 1;
+unsigned int parallel_units = 4;
 int a;
 int b;
 int c;
@@ -262,7 +262,7 @@ void write_i_data()
     axi_cdma_2[0] = STANDBY_CDMA;
     axi_cdma_3[0] = STANDBY_CDMA;
 
-    axi_cdma_0[0] = CLEAR_CDMA;
+    /*axi_cdma_0[0] = CLEAR_CDMA;
     axi_cdma_1[0] = CLEAR_CDMA;
     axi_cdma_2[0] = CLEAR_CDMA;
     axi_cdma_3[0] = CLEAR_CDMA;
@@ -301,7 +301,7 @@ void write_i_data()
     axi_cdma_0[0] = STANDBY_CDMA;
     axi_cdma_1[0] = STANDBY_CDMA;
     axi_cdma_2[0] = STANDBY_CDMA;
-    axi_cdma_3[0] = STANDBY_CDMA;
+    axi_cdma_3[0] = STANDBY_CDMA;*/
 
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
@@ -365,7 +365,7 @@ void read_data()
     axi_cdma_2[0] = STANDBY_CDMA;
     axi_cdma_3[0] = STANDBY_CDMA;
 
-    axi_cdma_0[0] = CLEAR_CDMA;
+    /*axi_cdma_0[0] = CLEAR_CDMA;
     axi_cdma_1[0] = CLEAR_CDMA;
     axi_cdma_2[0] = CLEAR_CDMA;
     axi_cdma_3[0] = CLEAR_CDMA;
@@ -404,7 +404,7 @@ void read_data()
     axi_cdma_0[0] = STANDBY_CDMA;
     axi_cdma_1[0] = STANDBY_CDMA;
     axi_cdma_2[0] = STANDBY_CDMA;
-    axi_cdma_3[0] = STANDBY_CDMA;
+    axi_cdma_3[0] = STANDBY_CDMA;*/
 
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
@@ -429,6 +429,16 @@ void print_results()
         data[row + pix + 7] = results_7[pix_idx] >> 9;*/
         data[row + pix] = ((float)results_0[pix_idx] * 255.0) / 65536.0;
         gamma_arr[row + pix] = results_0[pix_idx];
+
+        data[row + pix + 1] = ((float)results_1[pix_idx] * 255.0) / 65536.0;
+        gamma_arr[row + pix + 1] = results_1[pix_idx];
+
+        data[row + pix + 2] = ((float)results_2[pix_idx] * 255.0) / 65536.0;
+        gamma_arr[row + pix + 2] = results_2[pix_idx];
+
+        data[row + pix + 3] = ((float)results_3[pix_idx] * 255.0) / 65536.0;
+        gamma_arr[row + pix + 3] = results_3[pix_idx];
+
         pix_idx++;
     }
     imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
@@ -613,10 +623,10 @@ int main()
             // image parts
             clear_signal();
             region_of_interest(p, q, 0);
-            /*region_of_interest(p + 1, q, 1);
+            region_of_interest(p + 1, q, 1);
             region_of_interest(p + 2, q, 2);
             region_of_interest(p + 3, q, 3);
-            region_of_interest(p + 4, q, 4);
+            /*region_of_interest(p + 4, q, 4);
             region_of_interest(p + 5, q, 5);
             region_of_interest(p + 6, q, 6);
             region_of_interest(p + 7, q, 7);*/
