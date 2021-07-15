@@ -703,6 +703,24 @@ int main()
     load_image_file();
     region_of_interest(-1, -1, -1);
     write_t_data();
+
+    double limits[8];
+    // First component
+    limits[0] = u + n / 8;
+    limits[1] = u - n / 8;
+    limits[2] = w - n;
+    limits[3] = 0;
+
+    // Second component
+    limits[4] = v + m / 8;
+    limits[5] = v - m / 8;
+    limits[6] = h - m;
+    limits[7] = 0;
+
+    // EXPLORATION PHASE
+    // Generate random initial exploration individuals
+    initial_random_pop(mu_e_bees, limits, 0, num_bees - 1);
+
     for (q = 0; q < h_minus_m; q++)
     {
         idx = 0;
