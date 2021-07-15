@@ -1,3 +1,5 @@
+// https://github.com/operezcham90/VideoAbejasGPU/blob/master/ncc/gpu_clean/fitness.c
+// https://github.com/operezcham90/VideoAbejasGPU/blob/master/ncc/gpu_clean/fitness_kernel_bee.c
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -153,6 +155,80 @@ unsigned long int time_read_file = 0;
 unsigned long int time_slice_data = 0;
 unsigned long int time_work = 0;
 unsigned long int tests = 0;
+// bees
+CvRNG rng = cvRNG(0xffffffff);
+double *mu_e_bees;
+signed long int *mu_e_obj;
+double *lambda_e_bees;
+signed long int *lambda_e_obj;
+double *mu_f_bees;
+signed long int *mu_f_obj;
+double *lambda_f_bees;
+signed long int *lambda_f_obj;
+double *mu_lambda_bees;
+signed long int *mu_lambda_obj;
+int *mu_lambda_order;
+int num_bees = 64;
+int num_bees_comp = 64 * 2;
+int *recruiter;
+double eta_m = 25;
+double eta_c = 2;
+int max_gen = 2;
+int rate_rand = 0;
+int rate_mut = 0;
+int rate_cross = 0;
+double get_beta(double u)
+{
+    double beta;
+    u = 1 - u;
+    double p = 1.0 / (eta_c + 1.0);
+
+    if (u <= 0.5)
+    {
+        beta = pow(2.0 * u, p);
+    }
+    else
+    {
+        beta = pow((1.0 / (2.0 * (1.0 - u))), p);
+    }
+    return beta;
+}
+double get_delta(double u)
+{
+    double delta;
+    if (u <= 0.5)
+    {
+        delta = pow(2.0 * u, (1.0 / (eta_m + 1.0))) - 1.0;
+    }
+    else
+    {
+        delta = 1.0 - pow(2.0 * (1.0 - u), (1.0 / (eta_m + 1.0)));
+    }
+    return delta;
+}
+void initial_random_pop(double *mu_bees, double *limits, int first, int last)
+{
+    for (int bee = first; bee <= last; bee++)
+    {
+        double a = cvRandReal(&rng);
+        double up = limits[0];
+        double low = limits[1];
+        if (up > limits[2])
+            up = limits[2];
+        if (low < limits[3])
+            low = limits[3];
+        mu_bees[bee * 2] = (a * (up - low)) + low;
+
+        double b = cvRandReal(&rng);
+        up = limits[4];
+        low = limits[5];
+        if (up > limits[6])
+            up = limits[6];
+        if (low < limits[7])
+            low = limits[7];
+        mu_bees[bee * 2 + 1] = (b * (up - low)) + low;
+    }
+}
 unsigned long int *map_mem(unsigned int bytes, off_t addr)
 {
     return (unsigned long int *)mmap(NULL, bytes, PROT_READ | PROT_WRITE, MAP_SHARED, fd, addr);
@@ -609,6 +685,19 @@ int main()
     open_mem();
     set_names();
     print_version();
+
+    // initial pop
+    mu_e_bees = (double *)malloc(num_bees_comp * sizeof(double));
+    mu_e_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
+    lambda_e_bees = (double *)malloc(num_bees_comp * sizeof(double));
+    lambda_e_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
+    mu_f_bees = (double *)malloc(num_bees_comp * sizeof(double));
+    mu_f_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
+    lambda_f_bees = (double *)malloc(num_bees_comp * sizeof(double));
+    lambda_f_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
+    mu_lambda_bees = (double *)malloc(num_bees_comp * 2 * sizeof(double));
+    mu_lambda_obj = (signed long int *)malloc(num_bees * 2 * sizeof(signed long int));
+
     // template
     load_init_file();
     load_image_file();
