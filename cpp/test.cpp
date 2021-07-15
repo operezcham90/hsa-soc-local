@@ -315,7 +315,7 @@ void work(int idx)
     while (axi_gpio_3[0] != ZNCC_DONE)
     {
         axi_gpio_1[0] = num_elem;
-        cout << "state: " << axi_gpio_3[0] << "\n";
+        //cout << "state: " << axi_gpio_3[0] << "\n";
     }
     axi_gpio_1[0] = num_elem;
     auto stop = high_resolution_clock::now();
@@ -605,7 +605,7 @@ int main()
     load_image_file();
     region_of_interest(-1, -1, -1);
     write_t_data();
-    cout << "t write\n";
+    //cout << "t write\n";
     for (q = 0; q < h_minus_m; q++)
     {
         idx = 0;
@@ -615,7 +615,7 @@ int main()
             // image parts
             clear_signal();
             region_of_interest(p, q, 0);
-            cout << "roi\n";
+            //cout << "roi\n";
             /*region_of_interest(p + 1, q, 1);
             region_of_interest(p + 2, q, 2);
             region_of_interest(p + 3, q, 3);
@@ -624,17 +624,17 @@ int main()
             region_of_interest(p + 6, q, 6);
             region_of_interest(p + 7, q, 7);*/
             write_i_data();
-            cout << "i write\n";
+            //cout << "i write\n";
             work(idx);
-            cout << "work\n";
+            //cout << "work\n";
             idx += 4;
             tests += parallel_units;
         }
         // present results
         read_data();
-        cout << "read\n";
+        //cout << "read\n";
         print_results();
-        cout << "print\n";
+        //cout << "print\n";
     }
     close_mem();
 
