@@ -172,6 +172,7 @@ function do_frame_run(category, video, current_frame) {
                 var precision = ntp / (ntp + nfp);
                 var recall = ntp / (ntp + nfn);
                 f = (2 * precision * recall) / (precision + recall);
+                console.log('F: ' + f);
                 break;
             }
         }
@@ -180,7 +181,7 @@ function do_frame_run(category, video, current_frame) {
         if (current_frame <= last_frame_index) {
             set_frame_run(category, video, current_frame);
         } else {
-            console.log('F: ' + f);
+            // next video?
         }
     });
 }
