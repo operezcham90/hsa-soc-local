@@ -315,6 +315,7 @@ void work(int idx)
     while (axi_gpio_3[0] != ZNCC_DONE)
     {
         axi_gpio_1[0] = num_elem;
+        cout << "state: " << axi_gpio_3[0] << "\n";
     }
     axi_gpio_1[0] = num_elem;
     auto stop = high_resolution_clock::now();
