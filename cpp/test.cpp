@@ -428,7 +428,7 @@ void print_results()
         data[row + pix + 5] = results_5[pix_idx] >> 9;
         data[row + pix + 6] = results_6[pix_idx] >> 9;
         data[row + pix + 7] = results_7[pix_idx] >> 9;*/
-        data[row + pix] = ((float)results_0[pix_idx] * 255.0) / 2147483648.0;
+        data[row + pix] = ((float)results_0[pix_idx] * 255.0) / 65536.0;
         gamma_arr[row + pix] = results_0[pix_idx];
         pix_idx++;
     }
