@@ -773,22 +773,22 @@ void eval_pop(double *bees, signed long int *obj, double *limits)
         int bram_index = bee / parallel_units;
         if (unit_index == 0)
         {
-            //data[a + b * w_minus_n] = ((float)results_0[bram_index] * 255.0) / 65536.0;
+            data[a + b * w_minus_n] = ((float)results_0[bram_index] * 255.0) / 65536.0;
             obj[bee] = results_0[bram_index];
         }
         if (unit_index == 1)
         {
-            //data[a + b * w_minus_n] = ((float)results_1[bram_index] * 255.0) / 65536.0;
+            data[a + b * w_minus_n] = ((float)results_1[bram_index] * 255.0) / 65536.0;
             obj[bee] = results_1[bram_index];
         }
         if (unit_index == 2)
         {
-            //data[a + b * w_minus_n] = ((float)results_2[bram_index] * 255.0) / 65536.0;
+            data[a + b * w_minus_n] = ((float)results_2[bram_index] * 255.0) / 65536.0;
             obj[bee] = results_2[bram_index];
         }
         if (unit_index == 3)
         {
-            //data[a + b * w_minus_n] = ((float)results_3[bram_index] * 255.0) / 65536.0;
+            data[a + b * w_minus_n] = ((float)results_3[bram_index] * 255.0) / 65536.0;
             obj[bee] = results_3[bram_index];
         }
     }
