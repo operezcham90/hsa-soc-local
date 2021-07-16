@@ -724,7 +724,7 @@ void eval_pop(double *bees, signed long int *obj, double *limits)
     {
         // Point in frame 2
         int a = bees[bee * 2];
-        g int b = bees[bee * 2 + 1];
+        int b = bees[bee * 2 + 1];
 
         // Check limits, just in case
         if (a > limits[2])
