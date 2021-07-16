@@ -642,7 +642,7 @@ void region_of_interest(int x, int y, int unit)
             t_img_roi_resize = t_img_roi.clone();
         }
         t_img_roi_resize.convertTo(t_img_roi_resize, CV_8U);
-        memcpy(data_t, t_img_roi_resize.data, n_times_m);
+        memcpy(data_t, t_img_roi_resize.data, num_elem);
     }
     else
     {
@@ -660,35 +660,35 @@ void region_of_interest(int x, int y, int unit)
     }
     if (unit == 0)
     {
-        memcpy(data_i_0, i_img_roi_resize.data, n_times_m);
+        memcpy(data_i_0, i_img_roi_resize.data, num_elem);
     }
     else if (unit == 1)
     {
-        memcpy(data_i_1, i_img_roi_resize.data, n_times_m);
+        memcpy(data_i_1, i_img_roi_resize.data, num_elem);
     }
     else if (unit == 2)
     {
-        memcpy(data_i_2, i_img_roi_resize.data, n_times_m);
+        memcpy(data_i_2, i_img_roi_resize.data, num_elem);
     }
     else if (unit == 3)
     {
-        memcpy(data_i_3, i_img_roi_resize.data, n_times_m);
+        memcpy(data_i_3, i_img_roi_resize.data, num_elem);
     }
     else if (unit == 4)
     {
-        memcpy(data_i_4, i_img_roi_resize.data, n_times_m);
+        memcpy(data_i_4, i_img_roi_resize.data, num_elem);
     }
     else if (unit == 5)
     {
-        memcpy(data_i_5, i_img_roi_resize.data, n_times_m);
+        memcpy(data_i_5, i_img_roi_resize.data, num_elem);
     }
     else if (unit == 6)
     {
-        memcpy(data_i_6, i_img_roi_resize.data, n_times_m);
+        memcpy(data_i_6, i_img_roi_resize.data, num_elem);
     }
     else if (unit == 7)
     {
-        memcpy(data_i_7, i_img_roi_resize.data, n_times_m);
+        memcpy(data_i_7, i_img_roi_resize.data, num_elem);
     }
     /*auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
@@ -719,7 +719,6 @@ int load_init_file()
     num_elem_real = n_times_m;
     if (num_elem_real > BRAM_BYTES)
     {
-        exit(1);
         num_elem = BRAM_BYTES;
     }
     else
