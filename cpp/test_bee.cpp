@@ -638,12 +638,12 @@ int load_image_file()
     res_bytes_per_unit = num_bees * 4 / parallel_units;
 
     // draw the target for inspection
-    /*Mat img0 = t_img.clone();
+    Mat img0 = t_img.clone();
     Point pt1(a, b);
     Point pt2(c, d);
     rectangle(img0, pt1, pt2, cv::Scalar(0, 0, 0));
     cv::imwrite("/root/hsa-soc-local/img/dices0.jpg", img0);
-    img0.release();*/
+    img0.release();
 
     // result
     //res = Mat(h_minus_m, w_minus_n, CV_32FC1, cv::Scalar(128, 128, 128));
