@@ -759,28 +759,28 @@ void eval_pop(double *bees, signed long int *obj, double *limits)
     for (int bee = 0; bee < num_bees; bee++)
     {
         // Point in frame 2
-        int a = bees[bee * 2];
-        int b = bees[bee * 2 + 1];
+        int a_temp = bees[bee * 2];
+        int b_temp = bees[bee * 2 + 1];
 
         // Check limits, just in case
-        if (a > limits[2])
+        if (a_temp > limits[2])
         {
-            a = limits[2];
+            a_temp = limits[2];
             bees[bee * 2] = (double)limits[2];
         }
-        if (a < limits[3])
+        if (a_temp < limits[3])
         {
-            a = limits[3];
+            a_temp = limits[3];
             bees[bee * 2] = (double)limits[3];
         }
-        if (b > limits[6])
+        if (b_temp > limits[6])
         {
-            b = limits[6];
+            b_temp = limits[6];
             bees[bee * 2 + 1] = (double)limits[6];
         }
-        if (b < limits[7])
+        if (b_temp < limits[7])
         {
-            b = limits[7];
+            b_temp = limits[7];
             bees[bee * 2 + 1] = (double)limits[7];
         }
 
@@ -790,7 +790,7 @@ void eval_pop(double *bees, signed long int *obj, double *limits)
         {
             clear_signal();
         }
-        region_of_interest(a, b, unit_index);
+        region_of_interest(a_temp, b_temp, unit_index);
         if (unit_index == 3)
         {
             write_i_data();
@@ -803,20 +803,6 @@ void eval_pop(double *bees, signed long int *obj, double *limits)
     read_data();
     for (int bee = 0; bee < num_bees; bee++)
     {
-        // Point in frame 2
-        int a = bees[bee * 2];
-        int b = bees[bee * 2 + 1];
-
-        // Check limits, just in case
-        if (a > limits[2])
-            a = limits[2];
-        if (a < limits[3])
-            a = limits[3];
-        if (b > limits[6])
-            b = limits[6];
-        if (b < limits[7])
-            b = limits[7];
-
         int unit_index = bee % parallel_units;
         int bram_index = bee / parallel_units;
         if (unit_index == 0)
@@ -855,12 +841,12 @@ void generate_new_pop(double *mu_bees, signed long int *mu_obj,
         if (bee >= 0 + first && bee <= rate_mut - 1 + first)
         {
             // Tournament
-            int a = (cvRandInt(&rng) % (last - first + 1)) + first;
-            int b = (cvRandInt(&rng) % (last - first + 1)) + first;
-            if (mu_obj[a] > mu_obj[b])
-                mate1 = a;
+            int a_temp = (cvRandInt(&rng) % (last - first + 1)) + first;
+            int b_temp = (cvRandInt(&rng) % (last - first + 1)) + first;
+            if (mu_obj[a_temp] > mu_obj[b_temp])
+                mate1 = a_temp;
             else
-                mate1 = b;
+                mate1 = b_temp;
 
             // Copy the individual
             lambda_bees[bee * 2] = mu_bees[mate1 * 2];
@@ -878,18 +864,18 @@ void generate_new_pop(double *mu_bees, signed long int *mu_obj,
             bee % 2 == 0)
         {
             //Tournament
-            int a = (cvRandInt(&rng) % (last - first + 1)) + first;
-            int b = (cvRandInt(&rng) % (last - first + 1)) + first;
-            int c = (cvRandInt(&rng) % (last - first + 1)) + first;
-            int d = (cvRandInt(&rng) % (last - first + 1)) + first;
-            if (mu_obj[a] > mu_obj[b])
-                mate1 = a;
+            int a_temp = (cvRandInt(&rng) % (last - first + 1)) + first;
+            int b_temp = (cvRandInt(&rng) % (last - first + 1)) + first;
+            int c_temp = (cvRandInt(&rng) % (last - first + 1)) + first;
+            int d_temp = (cvRandInt(&rng) % (last - first + 1)) + first;
+            if (mu_obj[a_temp] > mu_obj[b_temp])
+                mate1 = a_temp;
             else
-                mate1 = b;
-            if (mu_obj[c] > mu_obj[d])
-                mate2 = c;
+                mate1 = b_temp;
+            if (mu_obj[c_temp] > mu_obj[d_temp])
+                mate2 = c_temp;
             else
-                mate2 = d;
+                mate2 = d_temp;
 
             // crossover SBX
             cross_over(mu_bees, lambda_bees, mate1, mate2, bee, bee + 1, limits);
@@ -1169,6 +1155,26 @@ int main()
 
     //imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
 
+    // Point in frame 2
+    int a_temp = mu_f_bees[0];
+    int b_temp = mu_f_bees[1];
+    if (a_temp > limits[2])
+    {
+        a_temp = limits[2];
+    }
+    if (a_temp < limits[3])
+    {
+        a_temp = limits[3];
+    }
+    if (b_temp > limits[6])
+    {
+        b_temp = limits[6];
+    }
+    if (b_temp < limits[7])
+    {
+        b_temp = limits[7];
+    }
+
     cout << "Write t: " << time_write_t << " us\n";
     cout << "Write i: " << time_write_i << " us\n";
     cout << "Read res: " << time_read_res << " us\n";
@@ -1177,8 +1183,8 @@ int main()
     cout << "Work: " << time_work << " us\n";
     cout << "Tests: " << tests << "\n";
     cout << "Max: " << mu_f_obj[0] << "\n";
-    cout << "u: " << mu_f_bees[0] << "\n";
-    cout << "v: " << mu_f_bees[1] << "\n";
+    cout << "u: " << a_temp << "\n";
+    cout << "v: " << b_temp << "\n";
     cout << "n: " << n << "\n";
     cout << "m: " << m << "\n";
     cout << "full time: " << full_time << " us\n";
