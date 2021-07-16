@@ -1,6 +1,10 @@
 const exec = require('child_process').exec;
 const fs = require('fs');
 
+const result_file = '/root/hsa-soc-local/cpp/result1.csv';
+const start_cat = 1;
+const start_vid = 14;
+
 var categories = [];
 var videos = [];
 var video_count = 0;
@@ -35,8 +39,7 @@ function mount_drive() {
 }
 
 function check_drive() {
-    const file = '/root/hsa-soc-local/cpp/result.csv';
-    fs.writeFile(file, 'c,v,f,tau\n', (err) => {
+    fs.writeFile(result_file, 'c,v,f,tau\n', (err) => {
         const command = 'ls /mnt/alov/ann';
         exec(command, (error, stdout, stderr) => {
             categories = stdout.split('\n');
@@ -58,7 +61,7 @@ function check_folder(category) {
         if (category < categories.length) {
             check_folder(category);
         } else {
-            read_ann(1 - 1, 1 - 1);
+            read_ann(start_cat - 1, start_vid - 1);
         }
     });
 }
@@ -205,9 +208,8 @@ function do_frame_run(category, video, current_frame) {
             if (current_frame <= last_frame_index) {
                 set_frame_run(category, video, current_frame);
             } else {
-                const file = '/root/hsa-soc-local/cpp/result.csv';
                 const new_line = categories[category] + ',' + videos[category][video] + ',' + f + ',' + tau_bar + '\n';
-                fs.appendFile(file, new_line, function (err) {
+                fs.appendFile(result_file, new_line, function (err) {
                     video++;
                     if (video < videos[category].length) {
                         read_ann(category, video);
