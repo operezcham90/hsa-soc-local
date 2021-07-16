@@ -764,13 +764,25 @@ void eval_pop(double *bees, signed long int *obj, double *limits)
 
         // Check limits, just in case
         if (a > limits[2])
+        {
             a = limits[2];
+            bees[bee * 2] = (double)limits[2];
+        }
         if (a < limits[3])
+        {
             a = limits[3];
+            bees[bee * 2] = (double)limits[3];
+        }
         if (b > limits[6])
+        {
             b = limits[6];
+            bees[bee * 2 + 1] = (double)limits[6];
+        }
         if (b < limits[7])
+        {
             b = limits[7];
+            bees[bee * 2 + 1] = (double)limits[7];
+        }
 
         // Get fitness value of point
         int unit_index = bee % parallel_units;
