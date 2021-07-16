@@ -28,7 +28,7 @@ function mount_drive() {
 }
 
 function check_drive() {
-    const file = '/mnt/alov/summary_soc.csv';
+    const file = '/root/hsa-soc-local/cpp/result.csv';
     fs.writeFile(file, 'c,v,f,tau\n', (err) => {
         const command = 'ls /mnt/alov/ann';
         exec(command, (error, stdout, stderr) => {
@@ -144,9 +144,9 @@ function do_frame_run(category, video, current_frame) {
     console.log("run " + c + '-' + v + ' ' + current_frame + '/' + last_frame_index);
     const command = '/root/hsa-soc-local/cpp/test_bee';
     exec(command, (error, stdout, stderr) => {
-        const dump = '/mnt/alov/dump' + c + '_' + v + '_' + current_frame;
+        /*const dump = '/mnt/alov/dump' + c + '_' + v + '_' + current_frame;
         fs.writeFile(dump, stdout, (err) => {
-        });
+        });*/
 
         const summary = stdout.split('\n');
         const u0 = +summary[9].split(':')[1];
@@ -195,7 +195,7 @@ function do_frame_run(category, video, current_frame) {
         if (current_frame <= last_frame_index) {
             set_frame_run(category, video, current_frame);
         } else {
-            const file = '/mnt/alov/summary_soc.csv';
+            const file = '/root/hsa-soc-local/cpp/result.csv';
             const new_line = categories[category] + ',' + videos[category][video] + ',' + f + ',' + tau_bar + '\n';
             fs.appendFile(file, new_line, function (err) {
             });
