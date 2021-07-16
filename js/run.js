@@ -133,7 +133,7 @@ function do_frame_run(category, video, current_frame) {
     const c = categories[category];
     const v = video + 1;
     console.log("run " + c + '-' + v + ' ' + current_frame + '/' + last_frame_index);
-    const command = '/root/hsa-soc-local/cpp/test';
+    const command = '/root/hsa-soc-local/cpp/test_bee';
     exec(command, (error, stdout, stderr) => {
         const dump = '/mnt/alov/dump' + c + '_' + v + '_' + current_frame;
         fs.writeFile(dump, stdout, (err) => {

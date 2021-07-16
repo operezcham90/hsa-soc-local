@@ -147,7 +147,7 @@ Rect rect;
 ofstream result;
 std::string i_path;
 std::string t_path;
-unsigned long int *gamma_arr;
+//unsigned long int *gamma_arr;
 unsigned long int time_write_t = 0;
 unsigned long int time_write_i = 0;
 unsigned long int time_read_res = 0;
@@ -486,39 +486,6 @@ void read_data()
     auto duration = duration_cast<microseconds>(stop - start);
     time_read_res += duration.count();
 }
-void print_results()
-{
-    int pix_idx = 0;
-    int row = w_minus_n * q;
-    float *data = (float *)res.data;
-    int pix = 0;
-    int limit = w_minus_n - (parallel_units - 1);
-    for (pix = 0; pix < limit; pix += parallel_units)
-    {
-        /*data[row + pix] = results_0[pix_idx] >> 9;
-        data[row + pix + 1] = results_1[pix_idx] >> 9;
-        data[row + pix + 2] = results_2[pix_idx] >> 9;
-        data[row + pix + 3] = results_3[pix_idx] >> 9;
-        data[row + pix + 4] = results_4[pix_idx] >> 9;
-        data[row + pix + 5] = results_5[pix_idx] >> 9;
-        data[row + pix + 6] = results_6[pix_idx] >> 9;
-        data[row + pix + 7] = results_7[pix_idx] >> 9;*/
-        data[row + pix] = ((float)results_0[pix_idx] * 255.0) / 65536.0;
-        gamma_arr[row + pix] = results_0[pix_idx];
-
-        data[row + pix + 1] = ((float)results_1[pix_idx] * 255.0) / 65536.0;
-        gamma_arr[row + pix + 1] = results_1[pix_idx];
-
-        data[row + pix + 2] = ((float)results_2[pix_idx] * 255.0) / 65536.0;
-        gamma_arr[row + pix + 2] = results_2[pix_idx];
-
-        data[row + pix + 3] = ((float)results_3[pix_idx] * 255.0) / 65536.0;
-        gamma_arr[row + pix + 3] = results_3[pix_idx];
-
-        pix_idx++;
-    }
-    imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
-}
 void set_names()
 {
     data_t = (unsigned char *)ddr_0;
@@ -573,15 +540,6 @@ int load_image_file()
 
     // result
     res = Mat(h_minus_m, w_minus_n, CV_32FC1, cv::Scalar(128, 128, 128));
-
-    gamma_arr = (unsigned long int *)std::malloc((h_minus_m * w_minus_n) * sizeof(unsigned long int));
-    for (int x = 0; x < w_minus_n; x++)
-    {
-        for (int y = 0; y < h_minus_m; y++)
-        {
-            gamma_arr[x + y * w_minus_n] = 0x0;
-        }
-    }
 
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
@@ -679,6 +637,199 @@ int load_init_file()
     n_times_m = n * m;
     num_elem = n_times_m;
 }
+void eval_pop(double *bees, signed long int *obj, double *limits)
+{
+    clear_signal();
+    idx = 0;
+    for (int bee = 0; bee < num_bees; bee++)
+    {
+        // Point in frame 2
+        int a = bees[bee * 2];
+        int b = bees[bee * 2 + 1];
+
+        // Check limits, just in case
+        if (a > limits[2])
+            a = limits[2];
+        if (a < limits[3])
+            a = limits[3];
+        if (b > limits[6])
+            b = limits[6];
+        if (b < limits[7])
+            b = limits[7];
+
+        // Get fitness value of point
+        int unit_index = bee % parallel_units;
+        if (unit_index == 0)
+        {
+            clear_signal();
+        }
+        region_of_interest(a, b, unit_index);
+        if (unit_index == parallel_units - 1)
+        {
+            write_i_data();
+            work(idx);
+            idx += 4;
+            tests += parallel_units;
+        }
+    }
+    // read results
+    read_data();
+    for (int bee = 0; bee < num_bees; bee++)
+    {
+        // Point in frame 2
+        int a = bees[bee * 2];
+        int b = bees[bee * 2 + 1];
+
+        // Check limits, just in case
+        if (a > limits[2])
+            a = limits[2];
+        if (a < limits[3])
+            a = limits[3];
+        if (b > limits[6])
+            b = limits[6];
+        if (b < limits[7])
+            b = limits[7];
+
+        int unit_index = bee % parallel_units;
+        int bram_index = bee / parallel_units;
+        if (unit_index == 0)
+        {
+            data[a + b * w_minus_n] = ((float)results_0[bram_index] * 255.0) / 65536.0;
+            obj[bee] = results_0[bram_index];
+        }
+        if (unit_index == 1)
+        {
+            data[a + b * w_minus_n] = ((float)results_1[bram_index] * 255.0) / 65536.0;
+            obj[bee] = results_0[bram_index];
+        }
+        if (unit_index == 2)
+        {
+            data[a + b * w_minus_n] = ((float)results_2[bram_index] * 255.0) / 65536.0;
+            obj[bee] = results_0[bram_index];
+        }
+        if (unit_index == 3)
+        {
+            data[a + b * w_minus_n] = ((float)results_3[bram_index] * 255.0) / 65536.0;
+            obj[bee] = results_0[bram_index];
+        }
+    }
+}
+void generate_new_pop(double *mu_bees, signed long int *mu_obj,
+                      double *lambda_bees, signed long int *lambda_obj, double *limits,
+                      int first, int last)
+{
+    int mate1, mate2, num_cross, num_mut, num_rand;
+
+    for (int bee = first; bee <= last; bee++)
+    {
+        // Mutation
+        // bees from 0 to rate_mut - 1
+        // Only core 0 of each bee
+        if (bee >= 0 + first && bee <= rate_mut - 1 + first)
+        {
+            // Tournament
+            int a = (cvRandInt(&rng) % (last - first + 1)) + first;
+            int b = (cvRandInt(&rng) % (last - first + 1)) + first;
+            if (mu_obj[a] > mu_obj[b])
+                mate1 = a;
+            else
+                mate1 = b;
+
+            // Copy the individual
+            lambda_bees[bee * 2] = mu_bees[mate1 * 2];
+            lambda_bees[bee * 2 + 1] = mu_bees[mate1 * 2 + 1];
+
+            // Polinomial Mutation
+            mutation(lambda_bees, bee, limits);
+        }
+
+        // Crossover
+        // bees from first_bee + rate_mut to first_bee + rate_mut + rate_cross - 1
+        // rate_mut must be even if crossover happens since two sons are generated
+        if (bee >= rate_mut + first &&
+            bee <= rate_mut + rate_cross - 1 + first &&
+            bee % 2 == 0)
+        {
+            //Tournament
+            int a = (cvRandInt(&rng) % (last - first + 1)) + first;
+            int b = (cvRandInt(&rng) % (last - first + 1)) + first;
+            int c = (cvRandInt(&rng) % (last - first + 1)) + first;
+            int d = (cvRandInt(&rng) % (last - first + 1)) + first;
+            if (mu_obj[a] > mu_obj[b])
+                mate1 = a;
+            else
+                mate1 = b;
+            if (mu_obj[c] > mu_obj[d])
+                mate2 = c;
+            else
+                mate2 = d;
+
+            // crossover SBX
+            cross_over(mu_bees, lambda_bees, mate1, mate2, bee, bee + 1, limits);
+        }
+
+        // Random
+        // bees from first_bee + rate_mut + rate_cross to
+        // first_bee + rate_mut + rate_cross + rate_rand - 1
+        if (bee >= rate_mut + rate_cross + first &&
+            bee <= rate_mut + rate_cross + rate_rand - 1 + first)
+        {
+            int nvar_real = 2;
+            float lower;
+            float upper;
+            for (int j = 0; j < nvar_real; j++)
+            {
+                upper = limits[j * 4 + 2];
+                lower = limits[j * 4 + 3];
+
+                lambda_bees[bee * nvar_real + j] =
+                    cvRandReal(&rng) * (upper - lower) + lower;
+            }
+        }
+    }
+}
+void merge_pop(double *mu_bees, signed long int *mu_obj,
+               double *lambda_bees, signed long int *lambda_obj)
+{
+    for (int bee = 0; bee < num_bees; bee++)
+    {
+        // Copy mu bee
+        int mu_lambda_bee = bee * 2;
+        mu_lambda_obj[mu_lambda_bee] = mu_obj[bee];
+        mu_lambda_bees[mu_lambda_bee * 2] = mu_bees[bee * 2];
+        mu_lambda_bees[mu_lambda_bee * 2 + 1] = mu_bees[bee * 2 + 1];
+
+        // Copy lambda bee
+        mu_lambda_bee++;
+        mu_lambda_obj[mu_lambda_bee] = lambda_obj[bee];
+        mu_lambda_bees[mu_lambda_bee * 2] = lambda_bees[bee * 2];
+        mu_lambda_bees[mu_lambda_bee * 2 + 1] = lambda_bees[bee * 2 + 1];
+    }
+}
+void best_mu(double *mu_bees, signed long int *mu_obj)
+{
+    for (int bee = 0; bee < num_bees; bee++)
+    {
+        // The actual index of the ith best bee
+        // a very rudimentary insertion sort
+        int best = 0;
+        signed long int best_val = -1000;
+        for (int i = 0; i < num_bees * 2; i++)
+        {
+            if (best_val < mu_lambda_obj[i])
+            {
+                best = i;
+                best_val = mu_lambda_obj[i];
+            }
+        }
+        mu_lambda_obj[best] = -1000;
+
+        // Copy the ith best bee to the mu population
+        mu_obj[bee] = best_val;
+        mu_bees[bee * 2] = mu_lambda_bees[best * 2];
+        mu_bees[bee * 2 + 1] = mu_lambda_bees[best * 2 + 1];
+    }
+}
 int main()
 {
     // general
@@ -721,46 +872,180 @@ int main()
     // Generate random initial exploration individuals
     initial_random_pop(mu_e_bees, limits, 0, num_bees - 1);
 
-    for (q = 0; q < h_minus_m; q++)
+    for (int generation = 0; generation < max_gen; generation++)
     {
-        idx = 0;
-        int limit = w_minus_n - (parallel_units - 1);
-        for (p = 0; p < limit; p += parallel_units)
-        {
-            // image parts
-            clear_signal();
-            region_of_interest(p, q, 0);
-            region_of_interest(p + 1, q, 1);
-            region_of_interest(p + 2, q, 2);
-            region_of_interest(p + 3, q, 3);
-            /*region_of_interest(p + 4, q, 4);
-            region_of_interest(p + 5, q, 5);
-            region_of_interest(p + 6, q, 6);
-            region_of_interest(p + 7, q, 7);*/
-            write_i_data();
-            work(idx);
-            idx += 4;
-            tests += parallel_units;
-        }
-        // present results
-        read_data();
-        print_results();
-    }
-    close_mem();
+        // Evaluate parent population
+        eval_pop(mu_e_bees, mu_e_obj, limits);
 
-    unsigned long int maxGamma = gamma_arr[0];
-    int maxI = 0;
-    for (int i = 1; i < w_minus_n * h_minus_m; i++)
-    {
-        if (gamma_arr[i] > maxGamma)
-        {
-            maxGamma = gamma_arr[i];
-            maxI = i;
-        }
+        // Generate lamdba population
+        rate_mut = 39;
+        rate_cross = 6;
+        rate_rand = 19;
+        generate_new_pop(mu_e_bees, mu_e_obj, lambda_e_bees, lambda_e_obj, limits, 0, num_bees - 1);
+
+        // Evaluate new population
+        eval_pop(lambda_e_bees, lambda_e_obj, limits);
+
+        // Mu + Lambda
+        merge_pop(mu_e_bees, mu_e_obj, lambda_e_bees, lambda_e_obj);
+
+        // Select best mu
+        best_mu(mu_e_bees, mu_e_obj);
     }
 
-    int x = (maxI % w_minus_n);
-    int y = (maxI / w_minus_n);
+    // RECRUITMENT PHASE
+    int *recruits = (int *)malloc(num_bees * sizeof(int));
+    recruiter = (int *)malloc(num_bees * sizeof(int));
+    int last_recruiter;
+    int min_u;
+    int max_u;
+    int min_v;
+    int max_v;
+
+    double sum = 0.0;
+    int recruited_bees = 0;
+
+    // Get accumulated fitness value
+    for (int i = 0; i < num_bees; i++)
+    {
+        // 0 or negative values don't contribute
+        if (mu_e_obj[i] > 0.0f)
+            sum += mu_e_obj[i];
+    }
+
+    // Decide resources for each recruiter
+    if (sum > 0.0)
+    {
+        for (int i = 0; i < num_bees; i++)
+        {
+            // 0 or negative bees have no recruits
+            if (mu_e_obj[i] >= 0.0f)
+            {
+                recruits[i] = (mu_e_obj[i] / sum) * num_bees;
+                recruited_bees += recruits[i];
+            }
+            else
+            {
+                recruits[i] = 0;
+            }
+        }
+    }
+    else
+    {
+        // Since the last search gave no results
+        // make a second normal search
+        // using all cores
+        recruits[0] = num_bees;
+        mu_e_bees[0] = u;
+        mu_e_bees[1] = v;
+        for (int i = 1; i < num_bees; i++)
+        {
+            recruits[i] = 0;
+        }
+        recruited_bees = num_bees;
+    }
+
+    // All cores should have some work
+    // Give the difference to the best explorer bee
+    if (recruited_bees < num_bees)
+    {
+        recruits[0] = recruits[0] + (num_bees - recruited_bees);
+    }
+
+    // Assign bees
+    int current_recruiter = 0;
+    for (int i = 0; i < num_bees; i++)
+    {
+        recruiter[i] = current_recruiter;
+        recruits[current_recruiter]--;
+        if (recruits[current_recruiter] <= 0)
+            current_recruiter++;
+    }
+
+    // Count the real recruited bees
+    for (int i = 0; i < num_bees; i++)
+    {
+        recruits[i] = 0;
+    }
+    for (int i = 0; i < num_bees; i++)
+    {
+        recruits[recruiter[i]]++;
+    }
+
+    // Get new boundaries
+    min_u = mu_e_bees[0];
+    max_u = mu_e_bees[0];
+    min_v = mu_e_bees[1];
+    max_v = mu_e_bees[1];
+    for (int i = 1; i < num_bees; i++)
+    {
+        if (mu_e_bees[recruiter[i] * 2] < min_u)
+            min_u = mu_e_bees[recruiter[i] * 2];
+        if (mu_e_bees[recruiter[i] * 2] > max_u)
+            max_u = mu_e_bees[recruiter[i] * 2];
+        if (mu_e_bees[recruiter[i] * 2 + 1] < min_v)
+            min_v = mu_e_bees[recruiter[i] * 2 + 1];
+        if (mu_e_bees[recruiter[i] * 2 + 1] > max_v)
+            max_v = mu_e_bees[recruiter[i] * 2 + 1];
+    }
+
+    // FORAGING PHASE
+    int first = 0;
+    int last = 0;
+    for (int r = 0; r < num_bees; r++)
+    {
+        if (recruits[r] < 1)
+        {
+            break;
+        }
+        last += recruits[r] - 1;
+        // New limits based on the recruiter
+        // First component
+        int bee = 0;
+        limits[0] = mu_e_bees[r * 2] + 1;
+        limits[1] = mu_e_bees[r * 2] - 1;
+        limits[2] = max_u + n / 8;
+        limits[3] = min_u - n / 8;
+        if (limits[2] > w - n)
+            limits[2] = w - n;
+        if (limits[3] < 0)
+            limits[3] = 0;
+
+        // Second component
+        limits[4] = mu_e_bees[r * 2 + 1] + 1;
+        limits[5] = mu_e_bees[r * 2 + 1] - 1;
+        limits[6] = max_v + m / 8;
+        limits[7] = min_v - m / 8;
+        if (limits[6] > h - m)
+            limits[6] = h - m;
+        if (limits[7] < 0)
+            limits[7] = 0;
+
+        // Generate random initial individuals
+        initial_random_pop(mu_f_bees, limits, first, last);
+        first += recruits[r];
+    }
+
+    for (int generation = 0; generation < max_gen / 2; generation++)
+    {
+        // Evaluate parent population
+        eval_pop(mu_f_bees, mu_f_obj, limits);
+
+        // Generate lamdba population
+        rate_mut = 39;
+        rate_cross = 20;
+        rate_rand = 5;
+        generate_new_pop(mu_f_bees, mu_f_obj, lambda_f_bees, lambda_f_obj, limits);
+
+        // Evaluate new population
+        eval_pop(lambda_f_bees, lambda_f_obj, limits);
+
+        // Mu + Lambda
+        merge_pop(mu_f_bees, mu_f_obj, lambda_f_bees, lambda_f_obj);
+
+        // Select best mu
+        best_mu(mu_f_bees, mu_f_obj);
+    }
 
     cout << "Write t: " << time_write_t << " us\n";
     cout << "Write i: " << time_write_i << " us\n";
@@ -769,9 +1054,9 @@ int main()
     cout << "Slice data: " << time_slice_data << " us\n";
     cout << "Work: " << time_work << " us\n";
     cout << "Tests: " << tests << "\n";
-    cout << "Max: " << maxGamma << "\n";
-    cout << "u: " << x << "\n";
-    cout << "v: " << y << "\n";
+    cout << "Max: " << mu_f_obj[0] << "\n";
+    cout << "u: " << mu_f_bees[0] << "\n";
+    cout << "v: " << mu_f_bees[1] << "\n";
     cout << "n: " << n << "\n";
     cout << "m: " << m << "\n";
     return 0;
