@@ -28,6 +28,10 @@ function mount_drive() {
 }
 
 function check_drive() {
+    const file = '/mnt/alov/summary_soc.csv';
+    fs.writeFile(file, 'c,v,f,tau\n', (err) => {
+    });
+
     const command = 'ls /mnt/alov/ann';
     exec(command, (error, stdout, stderr) => {
         categories = stdout.split('\n');
