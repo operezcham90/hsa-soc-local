@@ -1155,7 +1155,7 @@ int main()
     auto duration = duration_cast<microseconds>(stop - start);
     unsigned long full_time = duration.count();
 
-    //imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
+    imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
 
     cout << "Write t: " << time_write_t << " us\n";
     cout << "Write i: " << time_write_i << " us\n";
