@@ -198,13 +198,13 @@ function do_frame_run(category, video, current_frame) {
             const file = '/root/hsa-soc-local/cpp/result.csv';
             const new_line = categories[category] + ',' + videos[category][video] + ',' + f + ',' + tau_bar + '\n';
             fs.appendFile(file, new_line, function (err) {
+                video++;
+                if (video < videos[category].length) {
+                    read_ann(category, video);
+                } else if (category + 1 < categories.length) {
+                    read_ann(category + 1, 0);
+                }
             });
-            /*video++;
-            if (video < videos[category].length) {
-                read_ann(category, video);
-            } else if (category + 1 < categories.length) {
-                read_ann(category + 1, 0);
-            }*/
         }
     });
 }
