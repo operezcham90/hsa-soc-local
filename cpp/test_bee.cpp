@@ -911,8 +911,6 @@ void best_mu(double *mu_bees, signed long int *mu_obj)
 }
 int main()
 {
-    auto start = high_resolution_clock::now();
-
     // general
     open_mem();
     set_names();
