@@ -17,6 +17,7 @@ var nfp;
 var nfn;
 var f;
 var tau;
+var tau_bar;
 var frame_count;
 
 function mount_drive() {
@@ -47,7 +48,7 @@ function check_folder(category) {
         if (category < categories.length) {
             check_folder(category);
         } else {
-            read_ann(0, 22);
+            read_ann(0, 0);
         }
     });
 }
@@ -96,6 +97,7 @@ function read_ann(category, video) {
         nfp = 0;
         nfn = 0;
         tau = 0;
+        tau_bar = 0;
         frame_count = 0;
 
         set_frame_run(category, video, first_frame_index + 1);
@@ -179,8 +181,9 @@ function do_frame_run(category, video, current_frame) {
                 var precision = ntp / (ntp + nfp);
                 var recall = ntp / (ntp + nfn);
                 f = (2 * precision * recall) / (precision + recall);
+                tau_bar = ((tau / frame_count) / 1000000);
                 console.log('F: ' + f);
-                console.log('tau: ' + (tau / frame_count));
+                console.log('tau: ' + tau_bar);
                 break;
             }
         }
@@ -189,7 +192,16 @@ function do_frame_run(category, video, current_frame) {
         if (current_frame <= last_frame_index) {
             set_frame_run(category, video, current_frame);
         } else {
-            // next video?
+            const file = '/mnt/alov/summary_soc.csv';
+            const new_line = categories[category] + ',' + videos[category][video] + ',' + f + ',' + tau_bar + '\n';
+            fs.appendFile(file, new_line, function (err) {
+            });
+            video++;
+            if (video < videos[category].length) {
+                read_ann(category, video);
+            } else if (category + 1 < categories.length) {
+                read_ann(category + 1, 0);
+            }
         }
     });
 }
