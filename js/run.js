@@ -51,7 +51,7 @@ function check_folder(category) {
         if (category < categories.length) {
             check_folder(category);
         } else {
-            read_ann(0, 1);
+            read_ann(0, 0);
         }
     });
 }
@@ -195,16 +195,16 @@ function do_frame_run(category, video, current_frame) {
         if (current_frame <= last_frame_index) {
             set_frame_run(category, video, current_frame);
         } else {
-            /*const file = '/root/hsa-soc-local/cpp/result.csv';
+            const file = '/root/hsa-soc-local/cpp/result.csv';
             const new_line = categories[category] + ',' + videos[category][video] + ',' + f + ',' + tau_bar + '\n';
-            fs.appendFile(file, new_line, function (err) {*/
-            video++;
-            if (video < videos[category].length) {
-                read_ann(category, video);
-            } else if (category + 1 < categories.length) {
-                read_ann(category + 1, 0);
-            }
-            //});
+            fs.appendFile(file, new_line, function (err) {
+                video++;
+                if (video < videos[category].length) {
+                    read_ann(category, video);
+                } else if (category + 1 < categories.length) {
+                    read_ann(category + 1, 0);
+                }
+            });
         }
     });
 }
