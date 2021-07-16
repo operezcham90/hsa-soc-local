@@ -94,6 +94,7 @@ function read_ann(category, video) {
         ntp = 1;
         nfp = 0;
         nfn = 0;
+        tau = 0;
 
         set_frame_run(category, video, first_frame_index + 1);
     });
