@@ -20,6 +20,13 @@ var tau;
 var tau_bar;
 var frame_count;
 
+var summary;
+var u0;
+var v0;
+var n;
+var m;
+var full_time;
+
 function mount_drive() {
     const command = 'mount /dev/sda1 /mnt';
     exec(command, (error, stdout, stderr) => {
@@ -144,67 +151,67 @@ function do_frame_run(category, video, current_frame) {
     console.log("run " + c + '-' + v + ' ' + current_frame + '/' + last_frame_index);
     const command = '/root/hsa-soc-local/cpp/test_bee';
     exec(command, (error, stdout, stderr) => {
-        /*const dump = '/mnt/alov/dump' + c + '_' + v + '_' + current_frame;
-        fs.writeFile(dump, stdout, (err) => {
-        });*/
+        try {
+            summary = stdout.split('\n');
+            u0 = +summary[9].split(':')[1];
+            v0 = +summary[10].split(':')[1];
+            n = +summary[11].split(':')[1];
+            m = +summary[12].split(':')[1];
+            full_time = +(summary[13].split(':')[1].replace(' us', ''));
+            tau += full_time;
+            frame_count++;
+            top_l_x = u0;
+            top_l_y = v0;
+            bottom_r_x = top_l_x + n;
+            bottom_r_y = top_l_y + m;
 
-        const summary = stdout.split('\n');
-        const u0 = +summary[9].split(':')[1];
-        const v0 = +summary[10].split(':')[1];
-        const n = +summary[11].split(':')[1];
-        const m = +summary[12].split(':')[1];
-        const full_time = +(summary[13].split(':')[1].replace(' us', ''));
-        tau += full_time;
-        frame_count++;
-        top_l_x = u0;
-        top_l_y = v0;
-        bottom_r_x = top_l_x + n;
-        bottom_r_y = top_l_y + m;
-
-        // f-score
-        for (var i = 0; i < ann.length; i++) {
-            if (ann[i].frame === current_frame) {
-                const gt = ann[i];
-                var t = {
-                    u: u0,
-                    v: v0,
-                    w: n,
-                    h: m
-                };
-                const x_overlap = Math.max(0, Math.min(t.u + t.w - 1, gt.u + gt.w) - Math.max(t.u + 1, gt.u));
-                const y_overlap = Math.max(0, Math.min(t.v + t.h - 1, gt.v + gt.h) - Math.max(t.v + 1, gt.v));
-                const intersection = x_overlap * y_overlap;
-                const union = (t.w * t.h) + (gt.w * gt.h) - intersection;
-                const pascal = (intersection / union) >= 0.5;
-                if (pascal) {
-                    ntp++;
-                } else {
-                    nfp++;
+            // f-score
+            for (var i = 0; i < ann.length; i++) {
+                if (ann[i].frame === current_frame) {
+                    const gt = ann[i];
+                    var t = {
+                        u: u0,
+                        v: v0,
+                        w: n,
+                        h: m
+                    };
+                    const x_overlap = Math.max(0, Math.min(t.u + t.w - 1, gt.u + gt.w) - Math.max(t.u + 1, gt.u));
+                    const y_overlap = Math.max(0, Math.min(t.v + t.h - 1, gt.v + gt.h) - Math.max(t.v + 1, gt.v));
+                    const intersection = x_overlap * y_overlap;
+                    const union = (t.w * t.h) + (gt.w * gt.h) - intersection;
+                    const pascal = (intersection / union) >= 0.5;
+                    if (pascal) {
+                        ntp++;
+                    } else {
+                        nfp++;
+                    }
+                    var precision = ntp / (ntp + nfp);
+                    var recall = ntp / (ntp + nfn);
+                    f = (2 * precision * recall) / (precision + recall);
+                    tau_bar = ((tau / frame_count) / 1000000);
+                    console.log('F: ' + f);
+                    console.log('tau: ' + tau_bar);
+                    break;
                 }
-                var precision = ntp / (ntp + nfp);
-                var recall = ntp / (ntp + nfn);
-                f = (2 * precision * recall) / (precision + recall);
-                tau_bar = ((tau / frame_count) / 1000000);
-                console.log('F: ' + f);
-                console.log('tau: ' + tau_bar);
-                break;
             }
-        }
 
-        current_frame++;
-        if (current_frame <= last_frame_index) {
+            current_frame++;
+            if (current_frame <= last_frame_index) {
+                set_frame_run(category, video, current_frame);
+            } else {
+                const file = '/root/hsa-soc-local/cpp/result.csv';
+                const new_line = categories[category] + ',' + videos[category][video] + ',' + f + ',' + tau_bar + '\n';
+                fs.appendFile(file, new_line, function (err) {
+                    video++;
+                    if (video < videos[category].length) {
+                        read_ann(category, video);
+                    } else if (category + 1 < categories.length) {
+                        read_ann(category + 1, 0);
+                    }
+                });
+            }
+        } catch (error) {
             set_frame_run(category, video, current_frame);
-        } else {
-            const file = '/root/hsa-soc-local/cpp/result.csv';
-            const new_line = categories[category] + ',' + videos[category][video] + ',' + f + ',' + tau_bar + '\n';
-            fs.appendFile(file, new_line, function (err) {
-                video++;
-                if (video < videos[category].length) {
-                    read_ann(category, video);
-                } else if (category + 1 < categories.length) {
-                    read_ann(category + 1, 0);
-                }
-            });
         }
     });
 }
