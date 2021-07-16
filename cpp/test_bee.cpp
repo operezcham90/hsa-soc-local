@@ -773,22 +773,22 @@ void eval_pop(double *bees, signed long int *obj, double *limits)
         int bram_index = bee / parallel_units;
         if (unit_index == 0)
         {
-            data[a + b * w_minus_n] = ((float)results_0[bram_index] * 255.0) / 65536.0;
+            //data[a + b * w_minus_n] = ((float)results_0[bram_index] * 255.0) / 65536.0;
             obj[bee] = results_0[bram_index];
         }
         if (unit_index == 1)
         {
-            data[a + b * w_minus_n] = ((float)results_1[bram_index] * 255.0) / 65536.0;
+            //data[a + b * w_minus_n] = ((float)results_1[bram_index] * 255.0) / 65536.0;
             obj[bee] = results_1[bram_index];
         }
         if (unit_index == 2)
         {
-            data[a + b * w_minus_n] = ((float)results_2[bram_index] * 255.0) / 65536.0;
+            //data[a + b * w_minus_n] = ((float)results_2[bram_index] * 255.0) / 65536.0;
             obj[bee] = results_2[bram_index];
         }
         if (unit_index == 3)
         {
-            data[a + b * w_minus_n] = ((float)results_3[bram_index] * 255.0) / 65536.0;
+            //data[a + b * w_minus_n] = ((float)results_3[bram_index] * 255.0) / 65536.0;
             obj[bee] = results_3[bram_index];
         }
     }
@@ -930,9 +930,12 @@ int main()
     mu_lambda_bees = (double *)malloc(num_bees_comp * 2 * sizeof(double));
     mu_lambda_obj = (signed long int *)malloc(num_bees * 2 * sizeof(signed long int));
 
-    // template
     load_init_file();
     load_image_file();
+
+    auto start = high_resolution_clock::now();
+
+    // template
     region_of_interest(-1, -1, -1);
     write_t_data();
 
