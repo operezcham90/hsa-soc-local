@@ -82,10 +82,10 @@ function read_ann(category, video) {
         bottom_r_x = Math.ceil(bottom_r_x);
         bottom_r_y = Math.ceil(bottom_r_y);
 
-        console.log(top_l_x);
+        /*console.log(top_l_x);
         console.log(top_l_y);
         console.log(bottom_r_x);
-        console.log(bottom_r_y);
+        console.log(bottom_r_y);*/
 
         ann = [];
         for (var i = 1; i <= frames.length - 2; i++) {
@@ -216,6 +216,7 @@ function do_frame_run(category, video, current_frame) {
                 });
             }
         } catch (error) {
+            console.log('error catch: ' + error);
             set_frame_run(category, video, current_frame);
         }
     });
