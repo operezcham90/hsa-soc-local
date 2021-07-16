@@ -3,7 +3,7 @@ const fs = require('fs');
 
 const result_file = '/root/hsa-soc-local/cpp/result3.csv';
 const start_cat = 1;
-const start_vid = 11;
+const start_vid = 33;
 
 var categories = [];
 var videos = [];
@@ -30,6 +30,8 @@ var v0;
 var n;
 var m;
 var full_time;
+
+var used;
 
 function mount_drive() {
     const command = 'mount /dev/sda1 /mnt';
@@ -161,6 +163,8 @@ function do_frame_run(category, video, current_frame) {
     exec(command, (error, stdout, stderr) => {
         try {
             console.log(stdout);
+            used = process.memoryUsage().heapUsed / 1024 / 1024;
+            console.log("mem: " + used);
             summary = stdout.split('\n');
             u0 = +summary[9].split(':')[1];
             v0 = +summary[10].split(':')[1];
