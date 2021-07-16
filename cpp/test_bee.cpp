@@ -144,7 +144,7 @@ Mat i_img_roi;
 Mat t_img_roi;
 Mat t_img_roi_resize;
 Mat i_img_roi_resize;
-//Mat res;
+Mat res;
 Rect rect;
 ofstream result;
 std::string i_path;
@@ -646,7 +646,7 @@ int load_image_file()
     img0.release();
 
     // result
-    //res = Mat(h_minus_m, w_minus_n, CV_32FC1, cv::Scalar(128, 128, 128));
+    res = Mat(h_minus_m, w_minus_n, CV_32FC1, cv::Scalar(128, 128, 128));
     //data = (float *)res.data;
 
     /*auto stop = high_resolution_clock::now();
@@ -809,22 +809,22 @@ void eval_pop(double *bees, signed long int *obj, double *limits)
         int bram_index = bee / parallel_units;
         if (unit_index == 0)
         {
-            //data[a + b * w_minus_n] = ((float)results_0[bram_index] * 255.0) / 65536.0;
+            res.data[a + b * w_minus_n] = ((float)results_0[bram_index] * 255.0) / 65536.0;
             obj[bee] = results_0[bram_index];
         }
         if (unit_index == 1)
         {
-            //data[a + b * w_minus_n] = ((float)results_1[bram_index] * 255.0) / 65536.0;
+            res.data[a + b * w_minus_n] = ((float)results_1[bram_index] * 255.0) / 65536.0;
             obj[bee] = results_1[bram_index];
         }
         if (unit_index == 2)
         {
-            //data[a + b * w_minus_n] = ((float)results_2[bram_index] * 255.0) / 65536.0;
+            res.data[a + b * w_minus_n] = ((float)results_2[bram_index] * 255.0) / 65536.0;
             obj[bee] = results_2[bram_index];
         }
         if (unit_index == 3)
         {
-            //data[a + b * w_minus_n] = ((float)results_3[bram_index] * 255.0) / 65536.0;
+            res.data[a + b * w_minus_n] = ((float)results_3[bram_index] * 255.0) / 65536.0;
             obj[bee] = results_3[bram_index];
         }
     }
