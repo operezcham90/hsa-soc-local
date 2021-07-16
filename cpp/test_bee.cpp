@@ -1115,7 +1115,7 @@ int main()
         rate_mut = 39;
         rate_cross = 20;
         rate_rand = 5;
-        generate_new_pop(mu_f_bees, mu_f_obj, lambda_f_bees, lambda_f_obj, limits);
+        generate_new_pop(mu_f_bees, mu_f_obj, lambda_f_bees, lambda_f_obj, limits, 0, num_bees - 1);
 
         // Evaluate new population
         eval_pop(lambda_f_bees, lambda_f_obj, limits);
