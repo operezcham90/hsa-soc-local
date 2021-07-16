@@ -607,7 +607,7 @@ int load_image_file()
     h = t_img.rows;
     h_minus_m = h - m;
     w_minus_n = w - n;
-    res_bytes_per_unit = w_minus_n * 4 / parallel_units;
+    res_bytes_per_unit = num_bees * 4 / parallel_units;
 
     // draw the target for inspection
     Mat img0 = t_img.clone();
@@ -719,7 +719,6 @@ int load_init_file()
 }
 void eval_pop(double *bees, signed long int *obj, double *limits)
 {
-    clear_signal();
     idx = 0;
     for (int bee = 0; bee < num_bees; bee++)
     {
@@ -744,7 +743,7 @@ void eval_pop(double *bees, signed long int *obj, double *limits)
             clear_signal();
         }
         region_of_interest(a, b, unit_index);
-        if (unit_index == parallel_units - 1)
+        if (unit_index == 3)
         {
             write_i_data();
             work(idx);
@@ -780,17 +779,17 @@ void eval_pop(double *bees, signed long int *obj, double *limits)
         if (unit_index == 1)
         {
             data[a + b * w_minus_n] = ((float)results_1[bram_index] * 255.0) / 65536.0;
-            obj[bee] = results_0[bram_index];
+            obj[bee] = results_1[bram_index];
         }
         if (unit_index == 2)
         {
             data[a + b * w_minus_n] = ((float)results_2[bram_index] * 255.0) / 65536.0;
-            obj[bee] = results_0[bram_index];
+            obj[bee] = results_2[bram_index];
         }
         if (unit_index == 3)
         {
             data[a + b * w_minus_n] = ((float)results_3[bram_index] * 255.0) / 65536.0;
-            obj[bee] = results_0[bram_index];
+            obj[bee] = results_3[bram_index];
         }
     }
 }
@@ -1126,6 +1125,8 @@ int main()
         // Select best mu
         best_mu(mu_f_bees, mu_f_obj);
     }
+
+    imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
 
     cout << "Write t: " << time_write_t << " us\n";
     cout << "Write i: " << time_write_i << " us\n";
