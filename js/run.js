@@ -201,7 +201,7 @@ function do_frame_run(category, video, current_frame) {
                 }
             }
 
-            current_frame++;
+            /*current_frame++;
             if (current_frame <= last_frame_index) {
                 set_frame_run(category, video, current_frame);
             } else {
@@ -215,7 +215,7 @@ function do_frame_run(category, video, current_frame) {
                         read_ann(category + 1, 0);
                     }
                 });
-            }
+            }*/
         } catch (error) {
             console.log('error catch: ' + error);
             set_frame_run(category, video, current_frame);
