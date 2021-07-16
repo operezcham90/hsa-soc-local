@@ -358,7 +358,7 @@ void clear_signal()
 }
 void write_t_data()
 {
-    auto start = high_resolution_clock::now();
+    //auto start = high_resolution_clock::now();
     axi_cdma_0[0] = CLEAR_CDMA;
     axi_cdma_0[0] = STANDBY_CDMA;
     axi_cdma_0[6] = DDR_0_ADDR;
@@ -369,13 +369,13 @@ void write_t_data()
         axi_cdma_0[0] = STANDBY_CDMA;
     }
     axi_cdma_0[0] = STANDBY_CDMA;
-    auto stop = high_resolution_clock::now();
+    /*auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    time_write_t += duration.count();
+    time_write_t += duration.count();*/
 }
 void write_i_data()
 {
-    auto start = high_resolution_clock::now();
+    //auto start = high_resolution_clock::now();
     axi_cdma_0[0] = CLEAR_CDMA;
     axi_cdma_1[0] = CLEAR_CDMA;
     axi_cdma_2[0] = CLEAR_CDMA;
@@ -458,13 +458,13 @@ void write_i_data()
     axi_cdma_2[0] = STANDBY_CDMA;
     axi_cdma_3[0] = STANDBY_CDMA;*/
 
-    auto stop = high_resolution_clock::now();
+    /*auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    time_write_i += duration.count();
+    time_write_i += duration.count();*/
 }
 void work(int idx)
 {
-    auto start = high_resolution_clock::now();
+    //auto start = high_resolution_clock::now();
     axi_gpio_2[0] = idx;
     axi_gpio_1[0] = num_elem;
     while (axi_gpio_3[0] != ZNCC_DONE)
@@ -472,13 +472,13 @@ void work(int idx)
         axi_gpio_1[0] = num_elem;
     }
     axi_gpio_1[0] = num_elem;
-    auto stop = high_resolution_clock::now();
+    /*auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    time_work += duration.count();
+    time_work += duration.count();*/
 }
 void read_data()
 {
-    auto start = high_resolution_clock::now();
+    //auto start = high_resolution_clock::now();
     axi_cdma_0[0] = CLEAR_CDMA;
     axi_cdma_1[0] = CLEAR_CDMA;
     axi_cdma_2[0] = CLEAR_CDMA;
@@ -561,9 +561,9 @@ void read_data()
     axi_cdma_2[0] = STANDBY_CDMA;
     axi_cdma_3[0] = STANDBY_CDMA;*/
 
-    auto stop = high_resolution_clock::now();
+    /*auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    time_read_res += duration.count();
+    time_read_res += duration.count();*/
 }
 void set_names()
 {
@@ -587,7 +587,7 @@ void set_names()
 }
 int load_image_file()
 {
-    auto start = high_resolution_clock::now();
+    //auto start = high_resolution_clock::now();
 
     fstream file_i(I_FILE, std::ios_base::in);
     fstream file_t(T_FILE, std::ios_base::in);
@@ -621,13 +621,13 @@ int load_image_file()
     res = Mat(h_minus_m, w_minus_n, CV_32FC1, cv::Scalar(128, 128, 128));
     data = (float *)res.data;
 
-    auto stop = high_resolution_clock::now();
+    /*auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    time_read_file += duration.count();
+    time_read_file += duration.count();*/
 }
 void region_of_interest(int x, int y, int unit)
 {
-    auto start = high_resolution_clock::now();
+    //auto start = high_resolution_clock::now();
     if (x < 0 || y < 0 || x >= w_minus_n || y >= h_minus_m)
     {
         rect = cv::Rect(u, v, n, m);
@@ -689,9 +689,9 @@ void region_of_interest(int x, int y, int unit)
     {
         memcpy(data_i_7, i_img_roi_resize.data, n_times_m);
     }
-    auto stop = high_resolution_clock::now();
+    /*auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    time_slice_data += duration.count();
+    time_slice_data += duration.count();*/
 }
 int load_init_file()
 {
@@ -724,7 +724,7 @@ void eval_pop(double *bees, signed long int *obj, double *limits)
     {
         // Point in frame 2
         int a = bees[bee * 2];
-        int b = bees[bee * 2 + 1];
+        g int b = bees[bee * 2 + 1];
 
         // Check limits, just in case
         if (a > limits[2])
@@ -911,6 +911,8 @@ void best_mu(double *mu_bees, signed long int *mu_obj)
 }
 int main()
 {
+    auto start = high_resolution_clock::now();
+
     // general
     open_mem();
     set_names();
@@ -1126,6 +1128,10 @@ int main()
         best_mu(mu_f_bees, mu_f_obj);
     }
 
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
+    unsigned long full_time = duration.count();
+
     imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
 
     cout << "Write t: " << time_write_t << " us\n";
@@ -1140,5 +1146,7 @@ int main()
     cout << "v: " << mu_f_bees[1] << "\n";
     cout << "n: " << n << "\n";
     cout << "m: " << m << "\n";
+    cout << "full time: " << full_time << " us\n";
+
     return 0;
 }
