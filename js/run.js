@@ -17,6 +17,7 @@ var nfp;
 var nfn;
 var f;
 var tau;
+var frames;
 
 function mount_drive() {
     const command = 'mount /dev/sda1 /mnt';
@@ -95,6 +96,7 @@ function read_ann(category, video) {
         nfp = 0;
         nfn = 0;
         tau = 0;
+        frames = 0;
 
         set_frame_run(category, video, first_frame_index + 1);
     });
@@ -148,6 +150,7 @@ function do_frame_run(category, video, current_frame) {
         const m = +summary[12].split(':')[1];
         const full_time = +(summary[13].split(':')[1].replace(' us', ''));
         tau += full_time;
+        frames++;
         top_l_x = u0;
         top_l_y = v0;
         bottom_r_x = top_l_x + n;
@@ -177,7 +180,7 @@ function do_frame_run(category, video, current_frame) {
                 var recall = ntp / (ntp + nfn);
                 f = (2 * precision * recall) / (precision + recall);
                 console.log('F: ' + f);
-                console.log('tau: ' + (tau / (current_frame - 1)))
+                console.log('tau: ' + (tau / frames));
                 break;
             }
         }
