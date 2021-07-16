@@ -360,17 +360,17 @@ int open_mem()
     int *recruits = (int *)malloc(num_bees * sizeof(int));
     recruiter = (int *)malloc(num_bees * sizeof(int));*/
     mu_e_bees = (double *)map_mem(num_bees_comp * sizeof(double), 0x1F000000);
-    mu_e_obj = (signed long int *)map_mem(num_bees * sizeof(signed long int), 0x20000000);
-    lambda_e_bees = (double *)map_mem(num_bees_comp * sizeof(double), 0x21000000);
-    lambda_e_obj = (signed long int *)map_mem(num_bees * sizeof(signed long int), 0x22000000);
-    mu_f_bees = (double *)map_mem(num_bees_comp * sizeof(double), 0x23000000);
-    mu_f_obj = (signed long int *)map_mem(num_bees * sizeof(signed long int), 0x24000000);
-    lambda_f_bees = (double *)map_mem(num_bees_comp * sizeof(double), 0x25000000);
-    lambda_f_obj = (signed long int *)map_mem(num_bees * sizeof(signed long int), 0x26000000);
-    mu_lambda_bees = (double *)map_mem(num_bees_comp * 2 * sizeof(double), 0x27000000);
-    mu_lambda_obj = (signed long int *)map_mem(num_bees * 2 * sizeof(signed long int), 0x28000000);
-    recruits = (int *)map_mem(num_bees * sizeof(int), 0x29000000);
-    recruiter = (int *)map_mem(num_bees * sizeof(int), 0x2A000000);
+    mu_e_obj = (signed long int *)map_mem(num_bees * sizeof(signed long int), 0x1F010000);
+    lambda_e_bees = (double *)map_mem(num_bees_comp * sizeof(double), 0x1F020000);
+    lambda_e_obj = (signed long int *)map_mem(num_bees * sizeof(signed long int), 0x1F030000);
+    mu_f_bees = (double *)map_mem(num_bees_comp * sizeof(double), 0x1F040000);
+    mu_f_obj = (signed long int *)map_mem(num_bees * sizeof(signed long int), 0x1F050000);
+    lambda_f_bees = (double *)map_mem(num_bees_comp * sizeof(double), 0x1F060000);
+    lambda_f_obj = (signed long int *)map_mem(num_bees * sizeof(signed long int), 0x1F070000);
+    mu_lambda_bees = (double *)map_mem(num_bees_comp * 2 * sizeof(double), 0x1F080000);
+    mu_lambda_obj = (signed long int *)map_mem(num_bees * 2 * sizeof(signed long int), 0x1F090000);
+    recruits = (int *)map_mem(num_bees * sizeof(int), 0x1F0A0000);
+    recruiter = (int *)map_mem(num_bees * sizeof(int), 0x1F0B0000);
 }
 int close_mem()
 {
