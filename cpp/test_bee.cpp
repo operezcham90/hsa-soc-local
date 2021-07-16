@@ -173,6 +173,7 @@ int *mu_lambda_order;
 int num_bees = 64;
 int num_bees_comp = 64 * 2;
 int *recruiter;
+int *recruits;
 double eta_m = 25;
 double eta_c = 2;
 int max_gen = 2;
@@ -344,6 +345,32 @@ int open_mem()
     ddr_14 = map_mem(BRAM_BYTES, DDR_14_ADDR);
     ddr_15 = map_mem(BRAM_BYTES, DDR_15_ADDR);
     ddr_16 = map_mem(BRAM_BYTES, DDR_16_ADDR);
+
+    // initial pop
+    /*mu_e_bees = (double *)malloc(num_bees_comp * sizeof(double));
+    mu_e_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
+    lambda_e_bees = (double *)malloc(num_bees_comp * sizeof(double));
+    lambda_e_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
+    mu_f_bees = (double *)malloc(num_bees_comp * sizeof(double));
+    mu_f_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
+    lambda_f_bees = (double *)malloc(num_bees_comp * sizeof(double));
+    lambda_f_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
+    mu_lambda_bees = (double *)malloc(num_bees_comp * 2 * sizeof(double));
+    mu_lambda_obj = (signed long int *)malloc(num_bees * 2 * sizeof(signed long int));
+    int *recruits = (int *)malloc(num_bees * sizeof(int));
+    recruiter = (int *)malloc(num_bees * sizeof(int));*/
+    mu_e_bees = (double *)map_mem(num_bees_comp * sizeof(double), 0x1F000000);
+    mu_e_obj = (signed long int *)map_mem(num_bees * sizeof(signed long int), 0x20000000);
+    lambda_e_bees = (double *)map_mem(num_bees_comp * sizeof(double), 0x21000000);
+    lambda_e_obj = (signed long int *)map_mem(num_bees * sizeof(signed long int), 0x22000000);
+    mu_f_bees = (double *)map_mem(num_bees_comp * sizeof(double), 0x23000000);
+    mu_f_obj = (signed long int *)map_mem(num_bees * sizeof(signed long int), 0x24000000);
+    lambda_f_bees = (double *)map_mem(num_bees_comp * sizeof(double), 0x25000000);
+    lambda_f_obj = (signed long int *)map_mem(num_bees * sizeof(signed long int), 0x26000000);
+    mu_lambda_bees = (double *)map_mem(num_bees_comp * 2 * sizeof(double), 0x27000000);
+    mu_lambda_obj = (signed long int *)map_mem(num_bees * 2 * sizeof(signed long int), 0x28000000);
+    recruits = (int *)map_mem(num_bees * sizeof(int), 0x29000000);
+    recruiter = (int *)map_mem(num_bees * sizeof(int), 0x2A000000);
 }
 int close_mem()
 {
@@ -927,18 +954,6 @@ int main()
     set_names();
     print_version();
 
-    // initial pop
-    mu_e_bees = (double *)malloc(num_bees_comp * sizeof(double));
-    mu_e_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
-    lambda_e_bees = (double *)malloc(num_bees_comp * sizeof(double));
-    lambda_e_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
-    mu_f_bees = (double *)malloc(num_bees_comp * sizeof(double));
-    mu_f_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
-    lambda_f_bees = (double *)malloc(num_bees_comp * sizeof(double));
-    lambda_f_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
-    mu_lambda_bees = (double *)malloc(num_bees_comp * 2 * sizeof(double));
-    mu_lambda_obj = (signed long int *)malloc(num_bees * 2 * sizeof(signed long int));
-
     load_init_file();
     load_image_file();
 
@@ -985,8 +1000,6 @@ int main()
     }
 
     // RECRUITMENT PHASE
-    int *recruits = (int *)malloc(num_bees * sizeof(int));
-    recruiter = (int *)malloc(num_bees * sizeof(int));
     int last_recruiter;
     int min_u;
     int max_u;
@@ -1145,7 +1158,7 @@ int main()
     imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
 
     close_mem();
-    free(mu_e_bees);
+    /*free(mu_e_bees);
     free(mu_e_obj);
     free(lambda_e_bees);
     free(lambda_e_obj);
@@ -1156,7 +1169,7 @@ int main()
     free(mu_lambda_bees);
     free(mu_lambda_obj);
     free(mu_lambda_order);
-    free(recruiter);
+    free(recruiter);*/
     i_img.release();
     t_img.release();
     i_img_roi.release();
