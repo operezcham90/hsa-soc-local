@@ -595,15 +595,15 @@ void read_data()
 }
 void set_names()
 {
-    data_t = (unsigned char *)ddr_0;
-    data_i_0 = (unsigned char *)ddr_1;
-    data_i_1 = (unsigned char *)ddr_3;
-    data_i_2 = (unsigned char *)ddr_5;
-    data_i_3 = (unsigned char *)ddr_7;
-    data_i_4 = (unsigned char *)ddr_9;
-    data_i_5 = (unsigned char *)ddr_11;
-    data_i_6 = (unsigned char *)ddr_13;
-    data_i_7 = (unsigned char *)ddr_15;
+    data_t = ddr_0;
+    data_i_0 = ddr_1;
+    data_i_1 = ddr_3;
+    data_i_2 = ddr_5;
+    data_i_3 = ddr_7;
+    data_i_4 = ddr_9;
+    data_i_5 = ddr_11;
+    data_i_6 = ddr_13;
+    data_i_7 = ddr_15;
     results_0 = ddr_2;
     results_1 = ddr_4;
     results_2 = ddr_6;
@@ -638,12 +638,12 @@ int load_image_file()
     res_bytes_per_unit = num_bees * 4 / parallel_units;
 
     // draw the target for inspection
-    Mat img0 = t_img.clone();
+    /*Mat img0 = t_img.clone();
     Point pt1(a, b);
     Point pt2(c, d);
     rectangle(img0, pt1, pt2, cv::Scalar(0, 0, 0));
     cv::imwrite("/root/hsa-soc-local/img/dices0.jpg", img0);
-    img0.release();
+    img0.release();*/
 
     // result
     //res = Mat(h_minus_m, w_minus_n, CV_32FC1, cv::Scalar(128, 128, 128));
@@ -1157,6 +1157,20 @@ int main()
 
     //imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
 
+    cout << "Write t: " << time_write_t << " us\n";
+    cout << "Write i: " << time_write_i << " us\n";
+    cout << "Read res: " << time_read_res << " us\n";
+    cout << "Read file: " << time_read_file << " us\n";
+    cout << "Slice data: " << time_slice_data << " us\n";
+    cout << "Work: " << time_work << " us\n";
+    cout << "Tests: " << tests << "\n";
+    cout << "Max: " << mu_f_obj[0] << "\n";
+    cout << "u: " << mu_f_bees[0] << "\n";
+    cout << "v: " << mu_f_bees[1] << "\n";
+    cout << "n: " << n << "\n";
+    cout << "m: " << m << "\n";
+    cout << "full time: " << full_time << " us\n";
+
     close_mem();
     /*free(mu_e_bees);
     free(mu_e_obj);
@@ -1177,20 +1191,6 @@ int main()
     t_img_roi_resize.release();
     i_img_roi_resize.release();
     //res.release();
-
-    cout << "Write t: " << time_write_t << " us\n";
-    cout << "Write i: " << time_write_i << " us\n";
-    cout << "Read res: " << time_read_res << " us\n";
-    cout << "Read file: " << time_read_file << " us\n";
-    cout << "Slice data: " << time_slice_data << " us\n";
-    cout << "Work: " << time_work << " us\n";
-    cout << "Tests: " << tests << "\n";
-    cout << "Max: " << mu_f_obj[0] << "\n";
-    cout << "u: " << mu_f_bees[0] << "\n";
-    cout << "v: " << mu_f_bees[1] << "\n";
-    cout << "n: " << n << "\n";
-    cout << "m: " << m << "\n";
-    cout << "full time: " << full_time << " us\n";
 
     return 0;
 }
