@@ -223,8 +223,10 @@ function do_frame_run(category, video, current_frame) {
                 });
             }
         } catch (error) {
-            console.log('error catch: ' + error);
-            set_frame_run(category, video, current_frame);
+            setTimeout(function () {
+                // try again
+                set_frame_run(category, video, current_frame);
+            }, 3000);
         }
     });
 }
