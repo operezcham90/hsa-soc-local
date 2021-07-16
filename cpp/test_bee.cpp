@@ -809,22 +809,22 @@ void eval_pop(double *bees, signed long int *obj, double *limits)
         int bram_index = bee / parallel_units;
         if (unit_index == 0)
         {
-            res.data[a + b * w_minus_n] = ((float)results_0[bram_index] * 255.0) / 65536.0;
+            //res.data[a + b * w_minus_n] = ((float)results_0[bram_index] * 255.0) / 65536.0;
             obj[bee] = results_0[bram_index];
         }
         if (unit_index == 1)
         {
-            res.data[a + b * w_minus_n] = ((float)results_1[bram_index] * 255.0) / 65536.0;
+            //res.data[a + b * w_minus_n] = ((float)results_1[bram_index] * 255.0) / 65536.0;
             obj[bee] = results_1[bram_index];
         }
         if (unit_index == 2)
         {
-            res.data[a + b * w_minus_n] = ((float)results_2[bram_index] * 255.0) / 65536.0;
+            //res.data[a + b * w_minus_n] = ((float)results_2[bram_index] * 255.0) / 65536.0;
             obj[bee] = results_2[bram_index];
         }
         if (unit_index == 3)
         {
-            res.data[a + b * w_minus_n] = ((float)results_3[bram_index] * 255.0) / 65536.0;
+            //res.data[a + b * w_minus_n] = ((float)results_3[bram_index] * 255.0) / 65536.0;
             obj[bee] = results_3[bram_index];
         }
     }
@@ -1170,6 +1170,8 @@ int main()
     cout << "n: " << n << "\n";
     cout << "m: " << m << "\n";
     cout << "full time: " << full_time << " us\n";
+    cout << "u0: " << u << "\n";
+    cout << "v0: " << v << "\n";
 
     close_mem();
     /*free(mu_e_bees);
