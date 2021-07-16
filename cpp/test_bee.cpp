@@ -719,6 +719,7 @@ int load_init_file()
     num_elem_real = n_times_m;
     if (num_elem_real > BRAM_BYTES)
     {
+        exit(1);
         num_elem = BRAM_BYTES;
     }
     else

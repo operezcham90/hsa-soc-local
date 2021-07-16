@@ -59,9 +59,9 @@ function check_folder(category) {
 function read_ann(category, video) {
     const file = '/mnt/alov/ann/' + categories[category] + '/' + videos[category][video];
     fs.readFile(file, 'utf8', (err, data) => {
-        var frames = data.split('\n');
-        var first_frame_data = frames[0].split(/\s/g);
-        var last_frame_data = frames[frames.length - 2].split(/\s/g);
+        const frames = data.split('\n');
+        const first_frame_data = frames[0].split(/\s/g);
+        const last_frame_data = frames[frames.length - 2].split(/\s/g);
         first_frame_index = +first_frame_data[0];
         last_frame_index = +last_frame_data[0];
 
