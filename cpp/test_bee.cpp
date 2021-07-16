@@ -75,6 +75,7 @@ using namespace cv;
 using namespace std;
 using namespace std::chrono;
 int fd;
+float *data;
 unsigned char *data_t;
 unsigned char *data_i_0;
 unsigned char *data_i_1;
@@ -205,6 +206,84 @@ double get_delta(double u)
         delta = 1.0 - pow(2.0 * (1.0 - u), (1.0 / (eta_m + 1.0)));
     }
     return delta;
+}
+void mutation(double *bees, int bee, double *limits)
+{
+    double x, delta;
+    int site;
+
+    // Mutation for each component of the individual
+    for (site = 0; site < 2; site++)
+    {
+        // Get limits, based on component
+        double upper = limits[site * 4 + 2];
+        double lower = limits[site * 4 + 3];
+
+        // Get the value
+        x = bees[bee * 2 + site];
+
+        // Get delta
+        delta = get_delta(cvRandReal(&rng));
+
+        // Apply mutation
+        if (delta >= 0)
+        {
+            bees[bee * 2 + site] += delta * (upper - x);
+        }
+        else
+        {
+            bees[bee * 2 + site] += delta * (x - lower);
+        }
+
+        // Absolute limits
+        if (bees[bee * 2 + site] < lower)
+            bees[bee * 2 + site] = lower;
+        if (bees[bee * 2 + site] > upper)
+            bees[bee * 2 + site] = upper;
+    }
+}
+void create_children(
+    double p1,
+    double p2,
+    double *c1,
+    double *c2,
+    double low,
+    double high)
+{
+    double beta = get_beta(cvRandReal(&rng));
+
+    double v2 = 0.5 * ((1 - beta) * p1 + (1 + beta) * p2);
+    double v1 = 0.5 * ((1 + beta) * p1 + (1 - beta) * p2);
+
+    if (v2 < low)
+        v2 = low;
+    if (v2 > high)
+        v2 = high;
+    if (v1 < low)
+        v1 = low;
+    if (v1 > high)
+        v1 = high;
+
+    *c2 = v2;
+    *c1 = v1;
+}
+void cross_over(double *mu_bees, double *lambda_bees, int parent1, int parent2, int child1, int child2, double *limits)
+{
+    int site;
+    int nvar_real = 2;
+    for (site = 0; site < nvar_real; site++)
+    {
+        double lower = limits[site * 4 + 3];
+        double upper = limits[site * 4 + 2];
+
+        create_children(
+            mu_bees[parent1 * 2 + site],
+            mu_bees[parent2 * 2 + site],
+            &lambda_bees[child1 * 2 + site],
+            &lambda_bees[child2 * 2 + site],
+            lower,
+            upper);
+    }
 }
 void initial_random_pop(double *mu_bees, double *limits, int first, int last)
 {
@@ -540,6 +619,7 @@ int load_image_file()
 
     // result
     res = Mat(h_minus_m, w_minus_n, CV_32FC1, cv::Scalar(128, 128, 128));
+    data = (float *)res.data;
 
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
