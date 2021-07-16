@@ -30,13 +30,12 @@ function mount_drive() {
 function check_drive() {
     const file = '/mnt/alov/summary_soc.csv';
     fs.writeFile(file, 'c,v,f,tau\n', (err) => {
-    });
-
-    const command = 'ls /mnt/alov/ann';
-    exec(command, (error, stdout, stderr) => {
-        categories = stdout.split('\n');
-        categories.pop();
-        check_folder(0);
+        const command = 'ls /mnt/alov/ann';
+        exec(command, (error, stdout, stderr) => {
+            categories = stdout.split('\n');
+            categories.pop();
+            check_folder(0);
+        });
     });
 }
 
@@ -200,12 +199,12 @@ function do_frame_run(category, video, current_frame) {
             const new_line = categories[category] + ',' + videos[category][video] + ',' + f + ',' + tau_bar + '\n';
             fs.appendFile(file, new_line, function (err) {
             });
-            video++;
+            /*video++;
             if (video < videos[category].length) {
                 read_ann(category, video);
             } else if (category + 1 < categories.length) {
                 read_ann(category + 1, 0);
-            }
+            }*/
         }
     });
 }
