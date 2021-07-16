@@ -120,6 +120,7 @@ unsigned long int *ddr_15;
 unsigned long int *ddr_16;
 unsigned long int idx;
 unsigned long int num_elem;
+unsigned long int num_elem_real;
 unsigned int parallel_units = 4;
 int a;
 int b;
@@ -632,7 +633,7 @@ void region_of_interest(int x, int y, int unit)
     {
         rect = cv::Rect(u, v, n, m);
         t_img_roi = t_img(rect);
-        if (num_elem > BRAM_BYTES)
+        if (num_elem_real > BRAM_BYTES)
         {
             cv::resize(t_img_roi, t_img_roi_resize, cv::Size(128, 64), 0, 0, CV_INTER_LINEAR);
         }
@@ -647,7 +648,7 @@ void region_of_interest(int x, int y, int unit)
     {
         rect = cv::Rect(x, y, n, m);
         i_img_roi = i_img(rect);
-        if (num_elem > BRAM_BYTES)
+        if (num_elem_real > BRAM_BYTES)
         {
             cv::resize(i_img_roi, i_img_roi_resize, cv::Size(128, 64), 0, 0, CV_INTER_LINEAR);
         }
@@ -715,7 +716,15 @@ int load_init_file()
     n = c - a;
     m = d - b;
     n_times_m = n * m;
-    num_elem = n_times_m;
+    num_elem_real = n_times_m;
+    if (num_elem_real > BRAM_BYTES)
+    {
+        num_elem = BRAM_BYTES;
+    }
+    else
+    {
+        num_elem = num_elem_real;
+    }
 }
 void eval_pop(double *bees, signed long int *obj, double *limits)
 {
@@ -911,6 +920,8 @@ void best_mu(double *mu_bees, signed long int *mu_obj)
 }
 int main()
 {
+    auto start = high_resolution_clock::now();
+
     // general
     open_mem();
     set_names();
@@ -930,8 +941,6 @@ int main()
 
     load_init_file();
     load_image_file();
-
-    auto start = high_resolution_clock::now();
 
     // template
     region_of_interest(-1, -1, -1);
