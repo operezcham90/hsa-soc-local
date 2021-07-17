@@ -1,7 +1,7 @@
 const exec = require('child_process').exec;
 const fs = require('fs');
 
-const result_file = '/root/hsa-soc-local/cpp/result6.csv';
+const result_file = '/root/hsa-soc-local/cpp/result7.csv';
 const start_cat = 3;
 const start_vid = 10;
 
