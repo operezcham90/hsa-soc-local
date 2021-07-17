@@ -3,7 +3,7 @@ const fs = require('fs');
 
 const result_file = '/root/hsa-soc-local/cpp/result6.csv';
 const start_cat = 3;
-const start_vid = 4;
+const start_vid = 10;
 
 var categories = [];
 var videos = [];
@@ -93,6 +93,7 @@ function read_ann(category, video) {
         console.log(bottom_r_y);*/
 
         ann = [];
+        global.gc();
         for (var i = 1; i <= frames.length - 2; i++) {
             const line = frames[i].split(/\s/g);
             const gt = {
