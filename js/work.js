@@ -1,7 +1,7 @@
 const exec = require('child_process').exec;
 const fs = require('fs');
 
-const command_run = 'node --expose-gc run.js';
+const command_run = 'node --expose-gc /root/hsa-soc-local/js/run.js';
 const command_rest = 'reboot';
 const times_file = '/root/times';
 const max_times = 3;
