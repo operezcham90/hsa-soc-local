@@ -1,9 +1,9 @@
 const exec = require('child_process').exec;
 const fs = require('fs');
 
-const result_file = '/root/hsa-soc-local/cpp/result7.csv';
-const start_cat = 3;
-const start_vid = 10;
+const result_file = '/root/hsa-soc-local/cpp/result8.csv';
+const start_cat = 4;
+const start_vid = 1;
 
 var categories = [];
 var videos = [];
@@ -183,7 +183,7 @@ function do_frame_run(category, video, current_frame) {
             for (var i = 0; i < ann.length; i++) {
                 if (ann[i].frame === current_frame) {
                     const gt = ann[i];
-                    var t = {
+                    const t = {
                         u: u0,
                         v: v0,
                         w: n,
@@ -199,8 +199,8 @@ function do_frame_run(category, video, current_frame) {
                     } else {
                         nfp++;
                     }
-                    var precision = ntp / (ntp + nfp);
-                    var recall = ntp / (ntp + nfn);
+                    const precision = ntp / (ntp + nfp);
+                    const recall = ntp / (ntp + nfn);
                     f = (2 * precision * recall) / (precision + recall);
                     tau_bar = ((tau / frame_count) / 1000000);
                     console.log('F: ' + f);
