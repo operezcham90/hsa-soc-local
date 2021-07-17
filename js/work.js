@@ -23,11 +23,11 @@ function check_times() {
 }
 
 function save_times() {
-    fs.writeFile(times_file, times, err => {
-        if (times < max_times) {
+    if (times < max_times) {
+        fs.writeFile(times_file, times, err => {
             run();
-        }
-    });
+        });
+    }
 }
 
 function run() {
