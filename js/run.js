@@ -239,7 +239,12 @@ function do_frame_run(category, video, current_frame) {
 function report_res(category, video) {
     const new_line = (category + 1) + ',' + (video + 1) + ',' + f + ',' + tau_bar + '\n';
     fs.appendFile(result_file, new_line, function (err) {
-        // reboot and next video
+        const html_file = '/root/hsa-soc-local/html/index.html';
+        var html = 'last alive: ' + (new Date().toISOString()) + '<br>';
+        html += 'last vid: ' + videos[category][video] + '<br>';
+        fs.writeFile(html_file, html, (err) => {
+            // reboot and next video
+        });
     });
 }
 
