@@ -1,9 +1,10 @@
 const exec = require('child_process').exec;
 const fs = require('fs');
 
-const result_file = '/root/hsa-soc-local/cpp/result9.csv';
-const start_cat = 4;
-const start_vid = 13;
+const result_file = '/root/hsa-soc-local/cpp/result10.csv';
+const start_cat = 5;
+const start_vid = 9;
+// new
 
 var categories = [];
 var videos = [];
@@ -163,9 +164,9 @@ function do_frame_run(category, video, current_frame) {
     const command = '/root/hsa-soc-local/cpp/test_bee';
     exec(command, (error, stdout, stderr) => {
         try {
-            console.log(stdout);
+            //console.log(stdout);
             used = process.memoryUsage().heapUsed / 1024 / 1024;
-            console.log("mem: " + used);
+            //console.log("mem: " + used);
             summary = stdout.split('\n');
             u0 = +summary[9].split(':')[1];
             v0 = +summary[10].split(':')[1];
@@ -203,8 +204,8 @@ function do_frame_run(category, video, current_frame) {
                     const recall = ntp / (ntp + nfn);
                     f = (2 * precision * recall) / (precision + recall);
                     tau_bar = ((tau / frame_count) / 1000000);
-                    console.log('F: ' + f);
-                    console.log('tau: ' + tau_bar);
+                    //console.log('F: ' + f);
+                    //console.log('tau: ' + tau_bar);
                     break;
                 }
             }
