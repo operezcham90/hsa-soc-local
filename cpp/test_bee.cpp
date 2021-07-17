@@ -387,6 +387,10 @@ void clear_signal()
 void write_t_data()
 {
     //auto start = high_resolution_clock::now();
+    while (!(axi_cdma_0[1] & DONE_CDMA))
+    {
+        axi_cdma_0[0] = CLEAR_CDMA;
+    }
     axi_cdma_0[0] = CLEAR_CDMA;
     axi_cdma_0[0] = STANDBY_CDMA;
     axi_cdma_0[6] = DDR_0_ADDR;
@@ -404,6 +408,17 @@ void write_t_data()
 void write_i_data()
 {
     //auto start = high_resolution_clock::now();
+    while (
+        !(axi_cdma_0[1] & DONE_CDMA) &&
+        !(axi_cdma_1[1] & DONE_CDMA) &&
+        !(axi_cdma_2[1] & DONE_CDMA) &&
+        !(axi_cdma_3[1] & DONE_CDMA))
+    {
+        axi_cdma_0[0] = CLEAR_CDMA;
+        axi_cdma_1[0] = CLEAR_CDMA;
+        axi_cdma_2[0] = CLEAR_CDMA;
+        axi_cdma_3[0] = CLEAR_CDMA;
+    }
     axi_cdma_0[0] = CLEAR_CDMA;
     axi_cdma_1[0] = CLEAR_CDMA;
     axi_cdma_2[0] = CLEAR_CDMA;
@@ -507,6 +522,17 @@ void work(int idx)
 void read_data()
 {
     //auto start = high_resolution_clock::now();
+    while (
+        !(axi_cdma_0[1] & DONE_CDMA) &&
+        !(axi_cdma_1[1] & DONE_CDMA) &&
+        !(axi_cdma_2[1] & DONE_CDMA) &&
+        !(axi_cdma_3[1] & DONE_CDMA))
+    {
+        axi_cdma_0[0] = CLEAR_CDMA;
+        axi_cdma_1[0] = CLEAR_CDMA;
+        axi_cdma_2[0] = CLEAR_CDMA;
+        axi_cdma_3[0] = CLEAR_CDMA;
+    }
     axi_cdma_0[0] = CLEAR_CDMA;
     axi_cdma_1[0] = CLEAR_CDMA;
     axi_cdma_2[0] = CLEAR_CDMA;
