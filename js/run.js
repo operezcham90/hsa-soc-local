@@ -180,6 +180,7 @@ function set_frame_run(category, video, current_frame) {
 }
 
 function do_frame_run(category, video, current_frame) {
+    console.log(category + ' ' + video + ' ' + current_frame);
     const command = '/root/hsa-soc-local/cpp/test_bee';
     exec(command, (error, stdout, stderr) => {
         try {
