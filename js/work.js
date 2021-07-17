@@ -32,7 +32,9 @@ function save_times() {
 
 function run() {
     exec(command_run, (error, stdout, stderr) => {
-        rest();
+        fs.writeFile('/root/dump', stdout + stderr, err => {
+            rest();
+        });
     });
 }
 
