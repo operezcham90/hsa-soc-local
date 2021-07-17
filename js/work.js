@@ -4,7 +4,7 @@ const fs = require('fs');
 const command_run = 'node --expose-gc /root/hsa-soc-local/js/run.js';
 const command_rest = 'reboot';
 const times_file = '/root/times';
-const max_times = 3;
+const max_times = 325;
 
 var times = 0;
 
