@@ -31,8 +31,9 @@ function save_times() {
 }
 
 function run() {
-    // do ...
-    rest();
+    exec(command_run, (error, stdout, stderr) => {
+        rest();
+    });
 }
 
 function rest() {

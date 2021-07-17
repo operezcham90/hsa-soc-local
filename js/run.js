@@ -1,9 +1,9 @@
 const exec = require('child_process').exec;
 const fs = require('fs');
 
-const result_file = '/root/hsa-soc-local/cpp/result14.csv';
-const start_cat = 8;
-const start_vid = 3;
+const result_file = '/root/result.csv';
+var start_cat = 1;
+var start_vid = 1;
 
 var categories = [];
 var videos = [];
@@ -31,8 +31,6 @@ var n;
 var m;
 var full_time;
 
-var used;
-
 function mount_drive() {
     const command = 'mount /dev/sda1 /mnt';
     exec(command, (error, stdout, stderr) => {
@@ -41,13 +39,11 @@ function mount_drive() {
 }
 
 function check_drive() {
-    fs.writeFile(result_file, 'c,v,f,tau\n', (err) => {
-        const command = 'ls /mnt/alov/ann';
-        exec(command, (error, stdout, stderr) => {
-            categories = stdout.split('\n');
-            categories.pop();
-            check_folder(0);
-        });
+    const command = 'ls /mnt/alov/ann';
+    exec(command, (error, stdout, stderr) => {
+        categories = stdout.split('\n');
+        categories.pop();
+        check_folder(0);
     });
 }
 
@@ -63,8 +59,40 @@ function check_folder(category) {
         if (category < categories.length) {
             check_folder(category);
         } else {
-            read_ann(start_cat - 1, start_vid - 1);
+            check_res_file();
         }
+    });
+}
+
+function check_res_file() {
+    fs.exists(result_file, function (exists) {
+        if (exists) {
+            fs.readFile(result_file, 'utf8', (err, text) => {
+                // read progress
+                const res_lines = text.split('\n');
+                // remove empty line
+                res_lines.pop();
+                // read last vid
+                const last_line = res_lines.pop();
+                start_cat = (+last_line.split(',')[0]) - 1;
+                start_vid = (+last_line.split(',')[1]) - 1;
+                // start next vid
+                start_vid++;
+                if (start_vid < videos[start_cat].length) {
+                    read_ann(start_cat, start_vid);
+                } else if (start_cat + 1 < categories.length) {
+                    read_ann(start_cat + 1, 0);
+                }
+            });
+        } else {
+            save_res_file();
+        }
+    });
+}
+
+function save_res_file() {
+    fs.writeFile(result_file, 'c,v,f,tau\n', (err) => {
+        read_ann(0, 0);
     });
 }
 
@@ -86,11 +114,6 @@ function read_ann(category, video) {
         top_l_y = Math.floor(top_l_y);
         bottom_r_x = Math.ceil(bottom_r_x);
         bottom_r_y = Math.ceil(bottom_r_y);
-
-        /*console.log(top_l_x);
-        console.log(top_l_y);
-        console.log(bottom_r_x);
-        console.log(bottom_r_y);*/
 
         ann = [];
         global.gc();
@@ -157,15 +180,9 @@ function set_frame_run(category, video, current_frame) {
 }
 
 function do_frame_run(category, video, current_frame) {
-    const c = categories[category];
-    const v = video + 1;
-    console.log("run " + c + '-' + v + ' ' + current_frame + '/' + last_frame_index);
     const command = '/root/hsa-soc-local/cpp/test_bee';
     exec(command, (error, stdout, stderr) => {
         try {
-            //console.log(stdout);
-            used = process.memoryUsage().heapUsed / 1024 / 1024;
-            //console.log("mem: " + used);
             summary = stdout.split('\n');
             u0 = +summary[9].split(':')[1];
             v0 = +summary[10].split(':')[1];
@@ -203,8 +220,6 @@ function do_frame_run(category, video, current_frame) {
                     const recall = ntp / (ntp + nfn);
                     f = (2 * precision * recall) / (precision + recall);
                     tau_bar = ((tau / frame_count) / 1000000);
-                    //console.log('F: ' + f);
-                    //console.log('tau: ' + tau_bar);
                     break;
                 }
             }
@@ -213,25 +228,18 @@ function do_frame_run(category, video, current_frame) {
             if (current_frame <= last_frame_index) {
                 set_frame_run(category, video, current_frame);
             } else {
-                const new_line = categories[category] + ',' + videos[category][video] + ',' + f + ',' + tau_bar + '\n';
-                fs.appendFile(result_file, new_line, function (err) {
-                    video++;
-                    if (video < videos[category].length) {
-                        setTimeout(function () {
-                            read_ann(category, video);
-                        }, 6000);
-                    } else if (category + 1 < categories.length) {
-                        setTimeout(function () {
-                            read_ann(category + 1, 0);
-                        }, 6000);
-                    }
-                });
+                report_res(category, video);
             }
         } catch (error) {
-            setTimeout(function () {
-                read_ann(category, video);
-            }, 30000);
+            // reboot and retry
         }
+    });
+}
+
+function report_res(category, video) {
+    const new_line = (category + 1) + ',' + (video + 1) + ',' + f + ',' + tau_bar + '\n';
+    fs.appendFile(result_file, new_line, function (err) {
+        // reboot and next video
     });
 }
 
