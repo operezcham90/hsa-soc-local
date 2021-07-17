@@ -1,9 +1,9 @@
 const exec = require('child_process').exec;
 const fs = require('fs');
 
-const result_file = '/root/hsa-soc-local/cpp/result13.csv';
-const start_cat = 6;
-const start_vid = 15;
+const result_file = '/root/hsa-soc-local/cpp/result14.csv';
+const start_cat = 8;
+const start_vid = 3;
 
 var categories = [];
 var videos = [];
@@ -219,19 +219,18 @@ function do_frame_run(category, video, current_frame) {
                     if (video < videos[category].length) {
                         setTimeout(function () {
                             read_ann(category, video);
-                        }, 3000);
+                        }, 6000);
                     } else if (category + 1 < categories.length) {
                         setTimeout(function () {
                             read_ann(category + 1, 0);
-                        }, 3000);
+                        }, 6000);
                     }
                 });
             }
         } catch (error) {
             setTimeout(function () {
-                // try again
-                set_frame_run(category, video, current_frame);
-            }, 3000);
+                read_ann(category, video);
+            }, 30000);
         }
     });
 }
