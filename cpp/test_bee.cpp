@@ -347,18 +347,6 @@ int open_mem()
     ddr_16 = map_mem(BRAM_BYTES, DDR_16_ADDR);
 
     // initial pop
-    /*mu_e_bees = (double *)malloc(num_bees_comp * sizeof(double));
-    mu_e_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
-    lambda_e_bees = (double *)malloc(num_bees_comp * sizeof(double));
-    lambda_e_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
-    mu_f_bees = (double *)malloc(num_bees_comp * sizeof(double));
-    mu_f_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
-    lambda_f_bees = (double *)malloc(num_bees_comp * sizeof(double));
-    lambda_f_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
-    mu_lambda_bees = (double *)malloc(num_bees_comp * 2 * sizeof(double));
-    mu_lambda_obj = (signed long int *)malloc(num_bees * 2 * sizeof(signed long int));
-    int *recruits = (int *)malloc(num_bees * sizeof(int));
-    recruiter = (int *)malloc(num_bees * sizeof(int));*/
     mu_e_bees = (double *)map_mem(num_bees_comp * sizeof(double), 0x1F000000);
     mu_e_obj = (signed long int *)map_mem(num_bees * sizeof(signed long int), 0x1F010000);
     lambda_e_bees = (double *)map_mem(num_bees_comp * sizeof(double), 0x1F020000);
