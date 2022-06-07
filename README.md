@@ -31,6 +31,23 @@ Make sure that the configuration switch SW11 is set to SD program mode (00110).
 
 # Software Installation
 
+Open the `/etc/apt/sources.list` file with a text editor.
+
+```
+sudo nano /etc/apt/sources.list
+```
+
+Include the following sources.
+
+```
+#deb http://ports.ubuntu.com/ubuntu-ports/ precise main universe
+#deb-src http://ports.ubuntu.com/ubuntu-ports/ precise main universe
+deb http://old-releases.ubuntu.com/ubuntu precise main universe
+deb-src http://old-releases.ubuntu.com/ubuntu precise main universe
+deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu precise main
+deb-src http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu precise main
+```
+
 Install SSH if remote access is required.
 
 ```
