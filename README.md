@@ -152,11 +152,17 @@ Modify the `config.js` file to set the `SECRET` environment variable (use the sa
 sudo nano hsa-soc-local/js/config.js
 ```
 
+Create a file named `/etc/init.d/startup.sh` with the following content.
+
+```
+/usr/local/bin/node /root/hsa-soc-local/js/boss.js > /root/boss
+```
+
 Set the startup script to run on boot.
 
 ```
-npm install -g pm2
-pm2 start hsa-soc-local/js/server.js
-pm2 save
-pm2 startup
+sudo chmod +x /etc/init.d/startup.sh
+sudo chown root:root /etc/init.d/startup.sh
+sudo update-rc.d startup.sh defaults
+sudo update-rc.d startup.sh enable
 ```
