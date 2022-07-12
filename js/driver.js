@@ -352,7 +352,7 @@ int close_mem()
 }
 void print_version()
 {
-    cout << "version:" << axi_gpio_0[0] << "\n";
+    cout << "version:" << axi_gpio_0[0] << endl;
 }
 void clear_signal()
 {
@@ -1089,4 +1089,3 @@ fs.writeFile(path, code, err => {
         console.error(err)
     }
 })
-
