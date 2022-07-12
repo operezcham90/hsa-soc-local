@@ -1,6 +1,6 @@
 const fs = require('fs')
-let units = 4
-let bees = 64//units * 4//64
+let units = 15
+let bees = units * 4//64
 let dmas = 4
 const path = '/root/hsa-soc-local/cpp/test_bee_auto.cpp'
 const gpio = [
