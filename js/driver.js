@@ -696,7 +696,7 @@ code += `void eval_pop(double *bees, signed long int *obj, double *limits)
         ${conditions}
     }
 }
-oid generate_new_pop(double *mu_bees, signed long int *mu_obj,
+void generate_new_pop(double *mu_bees, signed long int *mu_obj,
     double *lambda_bees, signed long int *lambda_obj, double *limits,
     int first, int last)
 {
