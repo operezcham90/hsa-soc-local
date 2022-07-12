@@ -1,6 +1,6 @@
 const fs = require('fs')
-let units = 15
-let bees = units * 4//64
+let units = 4
+let bees = 64//units * 4//64
 let dmas = 4
 const path = '/root/hsa-soc-local/cpp/test_bee_auto.cpp'
 const gpio = [
@@ -16,47 +16,47 @@ const cdma = [
     ['axi_cdma_3', '0x7E230000', 40]
 ]
 const mem = [
-    ['axi_cdma_0', 't', '0xC0000000', '0x0E000000', 8192],
+    ['axi_cdma_0', 't', '0xC0000000', '0x0E000000', 8192, 0x0],
 
     ['axi_cdma_0', 'i0', '0xC2000000', '0x0F000000', 8192, 0x0],
-    ['axi_cdma_1', 'i1', '0xC0000000', '0x17000000', 8192, 0x1],
-    ['axi_cdma_2', 'ic', '0xC8000000', '0x1F000000', 8192, 0xC],
-    ['axi_cdma_3', 'i3', '0xC0000000', '0x28000000', 8192, 0x3],
+    ['axi_cdma_1', 'i1', '0xC0000000', '0x10000000', 8192, 0x1],
+    ['axi_cdma_2', 'i2', '0xC0000000', '0x11000000', 8192, 0x2],
+    ['axi_cdma_3', 'i3', '0xC0000000', '0x12000000', 8192, 0x3],
 
-    ['axi_cdma_0', 'i4', '0xC6000000', '0x11000000', 8192, 0x4],
+    ['axi_cdma_0', 'i4', '0xC6000000', '0x17000000', 8192, 0x4],
     ['axi_cdma_1', 'i5', '0xC4000000', '0x18000000', 8192, 0x5],
-    ['axi_cdma_2', 'id', '0xCA000000', '0x20000000', 8192, 0xD],
-    ['axi_cdma_3', 'i7', '0xC4000000', '0x29000000', 8192, 0x7],
+    ['axi_cdma_2', 'i6', '0xC4000000', '0x19000000', 8192, 0x6],
+    ['axi_cdma_3', 'i7', '0xC4000000', '0x1A000000', 8192, 0x7],
 
-    ['axi_cdma_0', 'i8', '0xCA000000', '0x13000000', 8192, 0x8],
-    ['axi_cdma_1', 'ib', '0xCA000000', '0x1B000000', 8192, 0xB],
-    ['axi_cdma_2', 'i2', '0xC0000000', '0x23000000', 8192, 0x2],
-    ['axi_cdma_3', 'ie', '0xC8000000', '0x2B000000', 8192, 0xE],
+    ['axi_cdma_0', 'i8', '0xCA000000', '0x1F000000', 8192, 0x8],
+    ['axi_cdma_1', 'ia', '0xC8000000', '0x20000000', 8192, 0xA],
+    ['axi_cdma_2', 'ic', '0xC8000000', '0x21000000', 8192, 0xC],
+    ['axi_cdma_3', 'ie', '0xC8000000', '0x22000000', 8192, 0xE],
 
-    ['axi_cdma_0', 'i9', '0xCC000000', '0x14000000', 8192, 0x9],
-    ['axi_cdma_1', 'ia', '0xC8000000', '0x1C000000', 8192, 0xA],
-    ['axi_cdma_2', 'i6', '0xC4000000', '0x25000000', 8192, 0x6],
-    [null, null, '0xC8000000', '0x2B000000', 8192, 0xF],
+    ['axi_cdma_0', 'i9', '0xCC000000', '0x27000000', 8192, 0x9],
+    ['axi_cdma_1', 'ib', '0xCA000000', '0x28000000', 8192, 0xB],
+    ['axi_cdma_2', 'id', '0xCA000000', '0x29000000', 8192, 0xD],
+    [null, null, '0xC8000000', '0x22000000', 8192, 0xF],
 
-    ['axi_cdma_0', 'r0', '0xC4000000', '0x10000000', 8192, 0x0],
-    ['axi_cdma_1', 'r5', '0xC6000000', '0x19000000', 8192, 0x5],
-    ['axi_cdma_2', 'rc', '0xCC000000', '0x21000000', 8192, 0xC],
-    ['axi_cdma_3', 'r3', '0xC2000000', '0x27000000', 8192, 0x3],
+    ['axi_cdma_0', 'r0', '0xC4000000', '0x13000000', 8192, 0x0],
+    ['axi_cdma_1', 'r1', '0xC2000000', '0x14000000', 8192, 0x1],
+    ['axi_cdma_2', 'r2', '0xC2000000', '0x15000000', 8192, 0x2],
+    ['axi_cdma_3', 'r3', '0xC2000000', '0x16000000', 8192, 0x3],
 
-    ['axi_cdma_0', 'r4', '0xC8000000', '0x12000000', 8192, 0x4],
-    ['axi_cdma_1', 'r1', '0xC2000000', '0x1A000000', 8192, 0x1],
-    ['axi_cdma_2', 'rd', '0xCE000000', '0x22000000', 8192, 0xD],
-    ['axi_cdma_3', 'r7', '0xC6000000', '0x2A000000', 8192, 0x7],
+    ['axi_cdma_0', 'r4', '0xC8000000', '0x1B000000', 8192, 0x4],
+    ['axi_cdma_1', 'r5', '0xC6000000', '0x1C000000', 8192, 0x5],
+    ['axi_cdma_2', 'r6', '0xC6000000', '0x1D000000', 8192, 0x6],
+    ['axi_cdma_3', 'r7', '0xC6000000', '0x1E000000', 8192, 0x7],
 
-    ['axi_cdma_0', 'r8', '0xCE000000', '0x15000000', 8192, 0x8],
-    ['axi_cdma_1', 'ra', '0xCC000000', '0x1D000000', 8192, 0xA],
-    ['axi_cdma_2', 'r2', '0xC2000000', '0x24000000', 8192, 0x2],
-    ['axi_cdma_3', 're', '0xCC000000', '0x2C000000', 8192, 0xE],
+    ['axi_cdma_0', 'r8', '0xCE000000', '0x23000000', 8192, 0x8],
+    ['axi_cdma_1', 'ra', '0xCC000000', '0x24000000', 8192, 0xA],
+    ['axi_cdma_2', 'rc', '0xCC000000', '0x25000000', 8192, 0xC],
+    ['axi_cdma_3', 're', '0xCC000000', '0x26000000', 8192, 0xE],
 
-    ['axi_cdma_0', 'r9', '0xD0000000', '0x16000000', 8192, 0x9],
-    ['axi_cdma_1', 'rb', '0xCE000000', '0x1E000000', 8192, 0xB],
-    ['axi_cdma_2', 'r6', '0xC6000000', '0x26000000', 8192, 0x6],
-    [null, null, '0xCC000000', '0x2C000000', 8192, 0xF]
+    ['axi_cdma_0', 'r9', '0xD0000000', '0x2A000000', 8192, 0x9],
+    ['axi_cdma_1', 'rb', '0xCE000000', '0x2B000000', 8192, 0xB],
+    ['axi_cdma_2', 'rd', '0xCE000000', '0x2C000000', 8192, 0xD],
+    [null, null, '0xCC000000', '0x26000000', 8192, 0xF]
 ]
 let code = ''
 code += `#include <stdio.h>
@@ -321,7 +321,8 @@ for (let i = 0; i < mem.length; i++) {
     let name = mem[i][1]
     let addr = mem[i][3]
     let bytes = mem[i][4]
-    if (name) {
+    let unit = mem[i][5]
+    if (name && unit < units) {
         list += `    ${name} = map_mem(${bytes}, ${addr});`
         list += '\n'
     }
@@ -333,18 +334,18 @@ code += `int open_mem()
         exit(1);
     }
 ${list}
-    mu_e_bees = (double *)map_mem(num_bees_comp * sizeof(double), 0x2D000000);
-    mu_e_obj = (signed long int *)map_mem(num_bees * sizeof(signed long int), 0x2D010000);
-    lambda_e_bees = (double *)map_mem(num_bees_comp * sizeof(double), 0x2D020000);
-    lambda_e_obj = (signed long int *)map_mem(num_bees * sizeof(signed long int), 0x2D030000);
-    mu_f_bees = (double *)map_mem(num_bees_comp * sizeof(double), 0x2D040000);
-    mu_f_obj = (signed long int *)map_mem(num_bees * sizeof(signed long int), 0x2D050000);
-    lambda_f_bees = (double *)map_mem(num_bees_comp * sizeof(double), 0x2D060000);
-    lambda_f_obj = (signed long int *)map_mem(num_bees * sizeof(signed long int), 0x2D070000);
-    mu_lambda_bees = (double *)map_mem(num_bees_comp * 2 * sizeof(double), 0x2D080000);
-    mu_lambda_obj = (signed long int *)map_mem(num_bees * 2 * sizeof(signed long int), 0x2D090000);
-    recruits = (int *)map_mem(num_bees * sizeof(int), 0x2D0A0000);
-    recruiter = (int *)map_mem(num_bees * sizeof(int), 0x2D0B0000);
+    mu_e_bees = (double *)malloc(num_bees_comp * sizeof(double));
+    mu_e_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
+    lambda_e_bees = (double *)malloc(num_bees_comp * sizeof(double));
+    lambda_e_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
+    mu_f_bees = (double *)malloc(num_bees_comp * sizeof(double));
+    mu_f_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
+    lambda_f_bees = (double *)malloc(num_bees_comp * sizeof(double));
+    lambda_f_obj = (signed long int *)malloc(num_bees * sizeof(signed long int));
+    mu_lambda_bees = (double *)malloc(num_bees_comp * 2 * sizeof(double));
+    mu_lambda_obj = (signed long int *)malloc(num_bees * 2 * sizeof(signed long int));
+    recruits = (int *)malloc(num_bees * sizeof(int));
+    recruiter = (int *)malloc(num_bees * sizeof(int));
 }
 int close_mem()
 {
@@ -366,8 +367,8 @@ void write_t_data()
     }
     axi_cdma_0[0] = CLEAR_CDMA;
     axi_cdma_0[0] = STANDBY_CDMA;
-    axi_cdma_0[6] = ${mem[0][2]};
-    axi_cdma_0[8] = ${mem[0][3]};
+    axi_cdma_0[6] = ${mem[0][3]};
+    axi_cdma_0[8] = ${mem[0][2]};
     axi_cdma_0[10] = num_elem;
     while (!(axi_cdma_0[1] & DONE_CDMA))
     {
