@@ -1044,21 +1044,21 @@ if (b_temp < limits[7])
 b_temp = limits[7];
 }
 
-cout << "Write t: " << time_write_t << " us\n";
-cout << "Write i: " << time_write_i << " us\n";
-cout << "Read res: " << time_read_res << " us\n";
-cout << "Read file: " << time_read_file << " us\n";
-cout << "Slice data: " << time_slice_data << " us\n";
-cout << "Work: " << time_work << " us\n";
-cout << "Tests: " << tests << "\n";
-cout << "Max: " << mu_f_obj[0] << "\n";
-cout << "u: " << a_temp << "\n";
-cout << "v: " << b_temp << "\n";
-cout << "n: " << n << "\n";
-cout << "m: " << m << "\n";
-cout << "full time: " << full_time << " us\n";
-cout << "u0: " << u << "\n";
-cout << "v0: " << v << "\n";
+cout << "Write t: " << time_write_t << " us" << endl;
+cout << "Write i: " << time_write_i << " us" << endl;
+cout << "Read res: " << time_read_res << " us" << endl;
+cout << "Read file: " << time_read_file << " us" << endl;
+cout << "Slice data: " << time_slice_data << " us" << endl;
+cout << "Work: " << time_work << " us" << endl;
+cout << "Tests: " << tests << endl;
+cout << "Max: " << mu_f_obj[0] << endl;
+cout << "u: " << a_temp << endl;
+cout << "v: " << b_temp << endl;
+cout << "n: " << n << endl;
+cout << "m: " << m << endl;
+cout << "full time: " << full_time << " us" << endl;
+cout << "u0: " << u << endl;
+cout << "v0: " << v << endl;
 
 close_mem();
 /*free(mu_e_bees);
@@ -1089,3 +1089,4 @@ fs.writeFile(path, code, err => {
         console.error(err)
     }
 })
+
