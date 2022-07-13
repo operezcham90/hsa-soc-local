@@ -1,6 +1,6 @@
 const fs = require('fs')
 let units = 15
-let bees = units * 3
+let bees = units * 1
 let dmas = 4
 const path = '/root/hsa-soc-local/cpp/test_bee_auto.cpp'
 const gpio = [
@@ -813,7 +813,6 @@ mu_bees[bee * 2 + 1] = mu_lambda_bees[best * 2 + 1];
 }
 int main()
 {
-auto start = high_resolution_clock::now();
 
 // general
 open_mem();
@@ -822,6 +821,8 @@ print_version();
 
 load_init_file();
 load_image_file();
+
+auto start = high_resolution_clock::now();
 
 // template
 region_of_interest(-1, -1, -1);
