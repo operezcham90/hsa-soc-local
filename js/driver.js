@@ -1,13 +1,15 @@
 const fs = require('fs')
-let units = 15
-let bees = units * 1
+let units = 4
+let bees = 64
 let dmas = 4
 const path = '/root/hsa-soc-local/cpp/test_bee_auto.cpp'
 const gpio = [
     ['axi_gpio_0', '0x41200000', 4],
     ['axi_gpio_1', '0x41210000', 4],
     ['axi_gpio_2', '0x41220000', 4],
-    ['axi_gpio_3', '0x41230000', 4]
+    ['axi_gpio_3', '0x41230000', 4],
+    ['axi_gpio_4', '0x41240000', 4],
+    ['axi_gpio_5', '0x41250000', 4]
 ]
 const cdma = [
     ['axi_cdma_0', '0x7E200000', 40],
@@ -16,9 +18,9 @@ const cdma = [
     ['axi_cdma_3', '0x7E230000', 40]
 ]
 const mem = [
-    ['axi_cdma_0', 't', '0xC0000000', '0x0E000000', 8192, 0x0],
+    ['axi_cdma_0', 't', '0xC2000000', '0x0E000000', 8192, 0x0],
 
-    ['axi_cdma_0', 'i0', '0xC2000000', '0x0E010000', 8192, 0x0],
+    ['axi_cdma_0', 'i0', '0xC0000000', '0x0E010000', 8192, 0x0],
     ['axi_cdma_1', 'i1', '0xC0000000', '0x0E020000', 8192, 0x1],
     ['axi_cdma_2', 'i2', '0xC0000000', '0x0E030000', 8192, 0x2],
     ['axi_cdma_3', 'i3', '0xC0000000', '0x0E040000', 8192, 0x3],
@@ -172,7 +174,6 @@ code += `double get_beta(double u)
     double beta;
     u = 1 - u;
     double p = 1.0 / (eta_c + 1.0);
-
     if (u <= 0.5)
     {
         beta = pow(2.0 * u, p);
@@ -200,20 +201,16 @@ void mutation(double *bees, int bee, double *limits)
 {
     double x, delta;
     int site;
-
     // Mutation for each component of the individual
     for (site = 0; site < 2; site++)
     {
         // Get limits, based on component
         double upper = limits[site * 4 + 2];
         double lower = limits[site * 4 + 3];
-
         // Get the value
         x = bees[bee * 2 + site];
-
         // Get delta
         delta = get_delta(cvRandReal(&rng));
-
         // Apply mutation
         if (delta >= 0)
         {
@@ -223,7 +220,6 @@ void mutation(double *bees, int bee, double *limits)
         {
             bees[bee * 2 + site] += delta * (x - lower);
         }
-
         // Absolute limits
         if (bees[bee * 2 + site] < lower)
             bees[bee * 2 + site] = lower;
@@ -240,10 +236,8 @@ void create_children(
     double high)
 {
     double beta = get_beta(cvRandReal(&rng));
-
     double v2 = 0.5 * ((1 - beta) * p1 + (1 + beta) * p2);
     double v1 = 0.5 * ((1 + beta) * p1 + (1 - beta) * p2);
-
     if (v2 < low)
         v2 = low;
     if (v2 > high)
@@ -252,7 +246,6 @@ void create_children(
         v1 = low;
     if (v1 > high)
         v1 = high;
-
     *c2 = v2;
     *c1 = v1;
 }
@@ -264,7 +257,6 @@ void cross_over(double *mu_bees, double *lambda_bees, int parent1, int parent2, 
     {
         double lower = limits[site * 4 + 3];
         double upper = limits[site * 4 + 2];
-
         create_children(
             mu_bees[parent1 * 2 + site],
             mu_bees[parent2 * 2 + site],
@@ -286,7 +278,6 @@ void initial_random_pop(double *mu_bees, double *limits, int first, int last)
         if (low < limits[3])
             low = limits[3];
         mu_bees[bee * 2] = (a * (up - low)) + low;
-
         double b = cvRandReal(&rng);
         up = limits[4];
         low = limits[5];
@@ -351,10 +342,6 @@ int close_mem()
 {
     close(fd);
 }
-void print_version()
-{
-    cout << "version:" << axi_gpio_0[0] << endl;
-}
 void clear_signal()
 {
     axi_gpio_1[0] = CLEAR_ZNCC;
@@ -404,12 +391,10 @@ axi_cdma_0[0] = CLEAR_CDMA;
 axi_cdma_1[0] = CLEAR_CDMA;
 axi_cdma_2[0] = CLEAR_CDMA;
 axi_cdma_3[0] = CLEAR_CDMA;
-
 axi_cdma_0[0] = STANDBY_CDMA;
 axi_cdma_1[0] = STANDBY_CDMA;
 axi_cdma_2[0] = STANDBY_CDMA;
 axi_cdma_3[0] = STANDBY_CDMA;
-
 axi_cdma_0[6] = ${origin1};
 axi_cdma_0[8] = ${destiny1};
 axi_cdma_1[6] = ${origin2};
@@ -418,12 +403,10 @@ axi_cdma_2[6] = ${origin3};
 axi_cdma_2[8] = ${destiny3};
 axi_cdma_3[6] = ${origin4};
 axi_cdma_3[8] = ${destiny4};
-
 axi_cdma_0[10] = num_elem;
 axi_cdma_1[10] = num_elem;
 axi_cdma_2[10] = num_elem;
 axi_cdma_3[10] = num_elem;
-
 while (
     !(axi_cdma_0[1] & DONE_CDMA) &&
     !(axi_cdma_1[1] & DONE_CDMA) &&
@@ -435,12 +418,10 @@ while (
     axi_cdma_2[0] = STANDBY_CDMA;
     axi_cdma_3[0] = STANDBY_CDMA;
 }
-
 axi_cdma_0[0] = STANDBY_CDMA;
 axi_cdma_1[0] = STANDBY_CDMA;
 axi_cdma_2[0] = STANDBY_CDMA;
 axi_cdma_3[0] = STANDBY_CDMA;
-
 `
 }
 code += `void write_i_data()
@@ -449,13 +430,13 @@ ${dma}
 }
 void work(int idx)
 {
-    axi_gpio_2[0] = idx;
-    axi_gpio_1[0] = num_elem;
-    while (axi_gpio_3[0] != ZNCC_DONE)
+    //axi_gpio_2[0] = idx;
+    axi_gpio_0[0] = num_elem;
+    while (axi_gpio_5[0] != ZNCC_DONE)
     {
-        axi_gpio_1[0] = num_elem;
+        axi_gpio_0[0] = num_elem;
     }
-    axi_gpio_1[0] = num_elem;
+    axi_gpio_0[0] = num_elem;
 }
 `
 dma = ''
@@ -483,12 +464,10 @@ for (let i = 0; i < count; i++) {
     axi_cdma_1[0] = CLEAR_CDMA;
     axi_cdma_2[0] = CLEAR_CDMA;
     axi_cdma_3[0] = CLEAR_CDMA;
-
     axi_cdma_0[0] = STANDBY_CDMA;
     axi_cdma_1[0] = STANDBY_CDMA;
     axi_cdma_2[0] = STANDBY_CDMA;
     axi_cdma_3[0] = STANDBY_CDMA;
-
 axi_cdma_0[6] = ${origin1};
 axi_cdma_0[8] = ${destiny1};
 axi_cdma_1[6] = ${origin2};
@@ -497,12 +476,10 @@ axi_cdma_2[6] = ${origin3};
 axi_cdma_2[8] = ${destiny3};
 axi_cdma_3[6] = ${origin4};
 axi_cdma_3[8] = ${destiny4};
-
     axi_cdma_0[10] = res_bytes_per_unit;
     axi_cdma_1[10] = res_bytes_per_unit;
     axi_cdma_2[10] = res_bytes_per_unit;
     axi_cdma_3[10] = res_bytes_per_unit;
-
     while (
         !(axi_cdma_0[1] & DONE_CDMA) &&
         !(axi_cdma_1[1] & DONE_CDMA) &&
@@ -514,34 +491,27 @@ axi_cdma_3[8] = ${destiny4};
         axi_cdma_2[0] = STANDBY_CDMA;
         axi_cdma_3[0] = STANDBY_CDMA;
     }
-
     axi_cdma_0[0] = STANDBY_CDMA;
     axi_cdma_1[0] = STANDBY_CDMA;
     axi_cdma_2[0] = STANDBY_CDMA;
     axi_cdma_3[0] = STANDBY_CDMA;
-
     `
 }
 code += `void read_data()
 {
 ${dma}
 }
-
 int load_image_file()
 {
     fstream file_i(I_FILE, std::ios_base::in);
     fstream file_t(T_FILE, std::ios_base::in);
-
     file_i >> i_path;
     file_t >> t_path;
-
     // 0.299 R + 0.587 G + 0.114 B
     i_img = cv::imread(i_path, cv::IMREAD_GRAYSCALE);
     t_img = cv::imread(t_path, cv::IMREAD_GRAYSCALE);
-
     file_i.close();
     file_t.close();
-
     // global
     w = t_img.cols;
     h = t_img.rows;
@@ -601,17 +571,14 @@ int load_init_file()
     fstream file_b(TOP_L_Y_FILE, std::ios_base::in);
     fstream file_c(BOTTOM_R_X_FILE, std::ios_base::in);
     fstream file_d(BOTTOM_R_Y_FILE, std::ios_base::in);
-
     file_a >> a;
     file_b >> b;
     file_c >> c;
     file_d >> d;
-
     file_a.close();
     file_b.close();
     file_c.close();
     file_d.close();
-
     u = a;
     v = b;
     n = c - a;
@@ -635,7 +602,7 @@ for (let i = 0; i < units; i++) {
     if (name) {
         conditions += `if (unit_index == ${unit})
     {
-        obj[bee] = ${name}[bram_index];
+        obj[bee] = axi_gpio_${unit + 1}[0];
     }
     `
     }
@@ -648,7 +615,6 @@ code += `void eval_pop(double *bees, signed long int *obj, double *limits)
         // Point in frame 2
         int a_temp = bees[bee * 2];
         int b_temp = bees[bee * 2 + 1];
-
         // Check limits, just in case
         if (a_temp > limits[2])
         {
@@ -670,7 +636,6 @@ code += `void eval_pop(double *bees, signed long int *obj, double *limits)
             b_temp = limits[7];
             bees[bee * 2 + 1] = (double)limits[7];
         }
-
         // Get fitness value of point
         int unit_index = bee % parallel_units;
         if (unit_index == 0)
@@ -684,23 +649,24 @@ code += `void eval_pop(double *bees, signed long int *obj, double *limits)
             work(idx);
             idx += 4;
             tests += parallel_units;
-        }
-    }
-    // read results
-    read_data();
+
+            // read results
+    //read_data();
     for (int bee = 0; bee < num_bees; bee++)
     {
         int unit_index = bee % parallel_units;
         int bram_index = bee / parallel_units;
         ${conditions}
     }
+        }
+    }
+    
 }
 void generate_new_pop(double *mu_bees, signed long int *mu_obj,
     double *lambda_bees, signed long int *lambda_obj, double *limits,
     int first, int last)
 {
 int mate1, mate2, num_cross, num_mut, num_rand;
-
 for (int bee = first; bee <= last; bee++)
 {
 // Mutation
@@ -715,15 +681,12 @@ if (mu_obj[a_temp] > mu_obj[b_temp])
 mate1 = a_temp;
 else
 mate1 = b_temp;
-
 // Copy the individual
 lambda_bees[bee * 2] = mu_bees[mate1 * 2];
 lambda_bees[bee * 2 + 1] = mu_bees[mate1 * 2 + 1];
-
 // Polinomial Mutation
 mutation(lambda_bees, bee, limits);
 }
-
 // Crossover
 // bees from first_bee + rate_mut to first_bee + rate_mut + rate_cross - 1
 // rate_mut must be even if crossover happens since two sons are generated
@@ -744,11 +707,9 @@ if (mu_obj[c_temp] > mu_obj[d_temp])
 mate2 = c_temp;
 else
 mate2 = d_temp;
-
 // crossover SBX
 cross_over(mu_bees, lambda_bees, mate1, mate2, bee, bee + 1, limits);
 }
-
 // Random
 // bees from first_bee + rate_mut + rate_cross to
 // first_bee + rate_mut + rate_cross + rate_rand - 1
@@ -762,7 +723,6 @@ for (int j = 0; j < nvar_real; j++)
 {
 upper = limits[j * 4 + 2];
 lower = limits[j * 4 + 3];
-
 lambda_bees[bee * nvar_real + j] =
   cvRandReal(&rng) * (upper - lower) + lower;
 }
@@ -779,7 +739,6 @@ int mu_lambda_bee = bee * 2;
 mu_lambda_obj[mu_lambda_bee] = mu_obj[bee];
 mu_lambda_bees[mu_lambda_bee * 2] = mu_bees[bee * 2];
 mu_lambda_bees[mu_lambda_bee * 2 + 1] = mu_bees[bee * 2 + 1];
-
 // Copy lambda bee
 mu_lambda_bee++;
 mu_lambda_obj[mu_lambda_bee] = lambda_obj[bee];
@@ -804,7 +763,6 @@ best_val = mu_lambda_obj[i];
 }
 }
 mu_lambda_obj[best] = -1000;
-
 // Copy the ith best bee to the mu population
 mu_obj[bee] = best_val;
 mu_bees[bee * 2] = mu_lambda_bees[best * 2];
@@ -813,69 +771,53 @@ mu_bees[bee * 2 + 1] = mu_lambda_bees[best * 2 + 1];
 }
 int main()
 {
-
 // general
 open_mem();
 //set_names();
-print_version();
-
 load_init_file();
 load_image_file();
-
 auto start = high_resolution_clock::now();
-
 // template
 region_of_interest(-1, -1, -1);
 write_t_data();
-
 double limits[8];
 // First component
 limits[0] = u + n / 8;
 limits[1] = u - n / 8;
 limits[2] = w - n;
 limits[3] = 0;
-
 // Second component
 limits[4] = v + m / 8;
 limits[5] = v - m / 8;
 limits[6] = h - m;
 limits[7] = 0;
-
 // EXPLORATION PHASE
 // Generate random initial exploration individuals
 initial_random_pop(mu_e_bees, limits, 0, num_bees - 1);
-
 for (int generation = 0; generation < max_gen; generation++)
 {
 // Evaluate parent population
 eval_pop(mu_e_bees, mu_e_obj, limits);
-
 // Generate lamdba population
 rate_mut = 39;
 rate_cross = 6;
 rate_rand = 19;
 generate_new_pop(mu_e_bees, mu_e_obj, lambda_e_bees, lambda_e_obj, limits, 0, num_bees - 1);
-
 // Evaluate new population
 eval_pop(lambda_e_bees, lambda_e_obj, limits);
-
 // Mu + Lambda
 merge_pop(mu_e_bees, mu_e_obj, lambda_e_bees, lambda_e_obj);
-
 // Select best mu
 best_mu(mu_e_bees, mu_e_obj);
 }
-
 // RECRUITMENT PHASE
 int last_recruiter;
 int min_u;
 int max_u;
 int min_v;
 int max_v;
-
 double sum = 0.0;
 int recruited_bees = 0;
-
 // Get accumulated fitness value
 for (int i = 0; i < num_bees; i++)
 {
@@ -883,7 +825,6 @@ for (int i = 0; i < num_bees; i++)
 if (mu_e_obj[i] > 0.0f)
 sum += mu_e_obj[i];
 }
-
 // Decide resources for each recruiter
 if (sum > 0.0)
 {
@@ -915,14 +856,12 @@ recruits[i] = 0;
 }
 recruited_bees = num_bees;
 }
-
 // All cores should have some work
 // Give the difference to the best explorer bee
 if (recruited_bees < num_bees)
 {
 recruits[0] = recruits[0] + (num_bees - recruited_bees);
 }
-
 // Assign bees
 int current_recruiter = 0;
 for (int i = 0; i < num_bees; i++)
@@ -932,7 +871,6 @@ recruits[current_recruiter]--;
 if (recruits[current_recruiter] <= 0)
 current_recruiter++;
 }
-
 // Count the real recruited bees
 for (int i = 0; i < num_bees; i++)
 {
@@ -942,7 +880,6 @@ for (int i = 0; i < num_bees; i++)
 {
 recruits[recruiter[i]]++;
 }
-
 // Get new boundaries
 min_u = mu_e_bees[0];
 max_u = mu_e_bees[0];
@@ -959,7 +896,6 @@ min_v = mu_e_bees[recruiter[i] * 2 + 1];
 if (mu_e_bees[recruiter[i] * 2 + 1] > max_v)
 max_v = mu_e_bees[recruiter[i] * 2 + 1];
 }
-
 // FORAGING PHASE
 int first = 0;
 int last = 0;
@@ -981,7 +917,6 @@ if (limits[2] > w - n)
 limits[2] = w - n;
 if (limits[3] < 0)
 limits[3] = 0;
-
 // Second component
 limits[4] = mu_e_bees[r * 2 + 1] + 1;
 limits[5] = mu_e_bees[r * 2 + 1] - 1;
@@ -991,39 +926,30 @@ if (limits[6] > h - m)
 limits[6] = h - m;
 if (limits[7] < 0)
 limits[7] = 0;
-
 // Generate random initial individuals
 initial_random_pop(mu_f_bees, limits, first, last);
 first += recruits[r];
 }
-
 for (int generation = 0; generation < max_gen / 2; generation++)
 {
 // Evaluate parent population
 eval_pop(mu_f_bees, mu_f_obj, limits);
-
 // Generate lamdba population
 rate_mut = 39;
 rate_cross = 20;
 rate_rand = 5;
 generate_new_pop(mu_f_bees, mu_f_obj, lambda_f_bees, lambda_f_obj, limits, 0, num_bees - 1);
-
 // Evaluate new population
 eval_pop(lambda_f_bees, lambda_f_obj, limits);
-
 // Mu + Lambda
 merge_pop(mu_f_bees, mu_f_obj, lambda_f_bees, lambda_f_obj);
-
 // Select best mu
 best_mu(mu_f_bees, mu_f_obj);
 }
-
 auto stop = high_resolution_clock::now();
 auto duration = duration_cast<microseconds>(stop - start);
 unsigned long full_time = duration.count();
-
 //imwrite("/root/hsa-soc-local/img/dices1.jpg", res);
-
 // Point in frame 2
 int a_temp = mu_f_bees[0];
 int b_temp = mu_f_bees[1];
@@ -1043,7 +969,6 @@ if (b_temp < limits[7])
 {
 b_temp = limits[7];
 }
-
 cout << "Write t: " << time_write_t << " us" << endl;
 cout << "Write i: " << time_write_i << " us" << endl;
 cout << "Read res: " << time_read_res << " us" << endl;
@@ -1059,7 +984,6 @@ cout << "m: " << m << endl;
 cout << "full time: " << full_time << " us" << endl;
 cout << "u0: " << u << endl;
 cout << "v0: " << v << endl;
-
 close_mem();
 /*free(mu_e_bees);
 free(mu_e_obj);
@@ -1080,7 +1004,6 @@ t_img_roi.release();
 t_img_roi_resize.release();
 i_img_roi_resize.release();
 //res.release();
-
 return 0;
 }
 `
