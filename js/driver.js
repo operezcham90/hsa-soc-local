@@ -597,15 +597,16 @@ int load_init_file()
 `
 conditions = ''
 for (let i = 0; i < units; i++) {
-    let name = mem[i + 17][1]
-    let unit = mem[i + 17][5]
-    if (name) {
-        conditions += `if (unit_index == ${unit})
+    //let name = mem[i + 17][1]
+    //let unit = mem[i + 17][5]
+    //if (name) {
+    let unit = i
+    conditions += `if (unit_index == ${unit})
     {
         obj[bee] = axi_gpio_${unit + 1}[0];
     }
     `
-    }
+    //}
 }
 code += `void eval_pop(double *bees, signed long int *obj, double *limits)
 {
