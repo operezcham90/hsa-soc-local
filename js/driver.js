@@ -440,7 +440,7 @@ void work(int idx)
 }
 `
 dma = ''
-for (let i = 0; i < count; i++) {
+/*for (let i = 0; i < count; i++) {
     origin1 = mem[i * dmas + 17][2]
     destiny1 = mem[i * dmas + 17][3]
     origin2 = mem[i * dmas + 18][2]
@@ -496,7 +496,7 @@ axi_cdma_3[8] = ${destiny4};
     axi_cdma_2[0] = STANDBY_CDMA;
     axi_cdma_3[0] = STANDBY_CDMA;
     `
-}
+}*/
 code += `void read_data()
 {
 ${dma}
