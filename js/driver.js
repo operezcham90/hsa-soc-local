@@ -9,7 +9,8 @@ const gpio = [
     ['axi_gpio_2', '0x41220000', 4],
     ['axi_gpio_3', '0x41230000', 4],
     ['axi_gpio_4', '0x41240000', 4],
-    ['axi_gpio_5', '0x41250000', 4]
+    ['axi_gpio_5', '0x41250000', 4],
+    ['axi_gpio_6', '0x41260000', 4]
 ]
 const cdma = [
     ['axi_cdma_0', '0x7E200000', 40],
@@ -38,30 +39,28 @@ const mem = [
     ['axi_cdma_0', 'i9', '0xCC000000', '0x0E0D0000', 8192, 0x9],
     ['axi_cdma_1', 'ib', '0xCA000000', '0x0E0E0000', 8192, 0xB],
     ['axi_cdma_2', 'id', '0xCA000000', '0x0E0F0000', 8192, 0xD],
-    [null, null, '0xC8000000', '0x0E0C0000', 8192, 0xF],
+    [null, null, '0xC8000000', '0x0E0C0000', 8192, 0xF]//,
 
     /*['axi_cdma_0', 'r0', '0xC4000000', '0x0E100000', 8192, 0x0],
     ['axi_cdma_1', 'r1', '0xC2000000', '0x0E110000', 8192, 0x1],
     ['axi_cdma_2', 'r2', '0xC2000000', '0x0E120000', 8192, 0x2],
     ['axi_cdma_3', 'r3', '0xC2000000', '0x0E130000', 8192, 0x3],
-
     ['axi_cdma_0', 'r4', '0xC8000000', '0x0E140000', 8192, 0x4],
     ['axi_cdma_1', 'r5', '0xC6000000', '0x0E150000', 8192, 0x5],
     ['axi_cdma_2', 'r6', '0xC6000000', '0x0E160000', 8192, 0x6],
     ['axi_cdma_3', 'r7', '0xC6000000', '0x0E170000', 8192, 0x7],
-
     ['axi_cdma_0', 'r8', '0xCE000000', '0x0E180000', 8192, 0x8],
     ['axi_cdma_1', 'ra', '0xCC000000', '0x0E190000', 8192, 0xA],
     ['axi_cdma_2', 'rc', '0xCC000000', '0x0E1A0000', 8192, 0xC],
     ['axi_cdma_3', 're', '0xCC000000', '0x0E1B0000', 8192, 0xE],
-
     ['axi_cdma_0', 'r9', '0xD0000000', '0x0E1C0000', 8192, 0x9],
     ['axi_cdma_1', 'rb', '0xCE000000', '0x0E1D0000', 8192, 0xB],
     ['axi_cdma_2', 'rd', '0xCE000000', '0x0E1E0000', 8192, 0xD],
     [null, null, '0xCC000000', '0x0E1B0000', 8192, 0xF]*/
 ]
 let code = ''
-code += `#include <stdio.h>
+code += `
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -348,6 +347,7 @@ void clear_signal()
 }
 void write_t_data()
 {
+    cout << "send t... "
     while (!(axi_cdma_0[1] & DONE_CDMA))
     {
         axi_cdma_0[0] = CLEAR_CDMA;
@@ -362,6 +362,7 @@ void write_t_data()
         axi_cdma_0[0] = STANDBY_CDMA;
     }
     axi_cdma_0[0] = STANDBY_CDMA;
+    cout << "t sent... "
 }
 `
 let dma = ''
@@ -650,7 +651,6 @@ code += `void eval_pop(double *bees, signed long int *obj, double *limits)
             work(idx);
             idx += 4;
             tests += parallel_units;
-
             // read results
     //read_data();
     for (int bee = 0; bee < num_bees; bee++)
