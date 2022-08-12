@@ -319,6 +319,7 @@ for (let i = 0; i < mem.length; i++) {
 }
 code += `int open_mem()
 {
+    cout << "opening mem ";
     if ((fd = open("/dev/mem", O_RDWR | O_SYNC)) == -1)
     {
         exit(1);
@@ -336,6 +337,7 @@ ${list}
     mu_lambda_obj = (signed long int *)malloc(num_bees * 2 * sizeof(signed long int));
     recruits = (int *)malloc(num_bees * sizeof(int));
     recruiter = (int *)malloc(num_bees * sizeof(int));
+    cout << "mem open ";
 }
 int close_mem()
 {
