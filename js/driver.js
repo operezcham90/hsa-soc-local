@@ -347,7 +347,7 @@ void clear_signal()
 }
 void write_t_data()
 {
-    cout << "send t... "
+    cout << "send t... ";
     while (!(axi_cdma_0[1] & DONE_CDMA))
     {
         axi_cdma_0[0] = CLEAR_CDMA;
@@ -362,7 +362,7 @@ void write_t_data()
         axi_cdma_0[0] = STANDBY_CDMA;
     }
     axi_cdma_0[0] = STANDBY_CDMA;
-    cout << "t sent... "
+    cout << "t sent... ";
 }
 `
 let dma = ''
