@@ -8,6 +8,7 @@ const command_work = 'node /root/hsa-soc-local/js/work.js';
 
 function work() {
     exec(command_work, (error, stdout, stderr) => {
+        console.log(error || stdout || stderr)
     });
 }
 
