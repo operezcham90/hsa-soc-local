@@ -9,8 +9,7 @@ const gpio = [
     ['axi_gpio_2', '0x41220000', 4],
     ['axi_gpio_3', '0x41230000', 4],
     ['axi_gpio_4', '0x41240000', 4],
-    ['axi_gpio_5', '0x41250000', 4],
-    ['axi_gpio_6', '0x41260000', 4]
+    ['axi_gpio_5', '0x41250000', 4]
 ]
 const cdma = [
     ['axi_cdma_0', '0x7E200000', 40],
@@ -345,7 +344,7 @@ int close_mem()
 }
 void clear_signal()
 {
-    axi_gpio_1[0] = CLEAR_ZNCC;
+    axi_gpio_4[0] = CLEAR_ZNCC;
 }
 void write_t_data()
 {
@@ -434,12 +433,12 @@ ${dma}
 void work(int idx)
 {
     //axi_gpio_2[0] = idx;
-    axi_gpio_0[0] = num_elem;
+    axi_gpio_4[0] = num_elem;
     while (axi_gpio_5[0] != ZNCC_DONE)
     {
-        axi_gpio_0[0] = num_elem;
+        axi_gpio_4[0] = num_elem;
     }
-    axi_gpio_0[0] = num_elem;
+    axi_gpio_4[0] = num_elem;
 }
 `
 dma = ''
@@ -606,7 +605,7 @@ for (let i = 0; i < units; i++) {
     let unit = i
     conditions += `if (unit_index == ${unit})
     {
-        obj[bee] = axi_gpio_${unit + 1}[0];
+        obj[bee] = axi_gpio_${unit}[0];
     }
     `
     //}
