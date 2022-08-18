@@ -605,7 +605,7 @@ for (let i = 0; i < units; i++) {
     let unit = i
     conditions += `if (unit_index == ${unit})
     {
-        obj[bee] = axi_gpio_${unit}[0];
+        obj[sub_bee] = axi_gpio_${unit}[0];
     }
     `
     //}
@@ -654,10 +654,10 @@ code += `void eval_pop(double *bees, signed long int *obj, double *limits)
             tests += parallel_units;
             // read results
     //read_data();
-    for (int bee = 0; bee < num_bees; bee++)
+    for (int sub_bee = bee - 3; sub_bee <= bee; sub_bee++)
     {
-        int unit_index = bee % parallel_units;
-        int bram_index = bee / parallel_units;
+        int unit_index = sub_bee % parallel_units;
+        int bram_index = sub_bee / parallel_units;
         ${conditions}
     }
         }
