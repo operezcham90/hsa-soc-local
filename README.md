@@ -29,7 +29,7 @@ Make sure that the configuration switch SW11 is set to SD program mode (00110).
 
 ![SW11](https://i.imgur.com/8GRIOfN.png)
 
-In some cases, the driver for serial communication must be installed manually. (Silicon Labs USB-UART drivers page)[http://www.silabs.com/Support%20Documents/Software/CP210x_VCP_Windows.zip].
+In some cases, the driver for serial communication must be installed manually. [Silicon Labs USB-UART drivers page](http://www.silabs.com/Support%20Documents/Software/CP210x_VCP_Windows.zip).
 
 # Software Installation
 
