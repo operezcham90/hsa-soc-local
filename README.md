@@ -46,8 +46,8 @@ Include the following sources.
 #deb-src http://ports.ubuntu.com/ubuntu-ports/ precise main universe
 deb http://old-releases.ubuntu.com/ubuntu precise main universe
 deb-src http://old-releases.ubuntu.com/ubuntu precise main universe
-deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu precise main
-deb-src http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu precise main
+#deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu precise main
+#deb-src http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu precise main
 ```
 
 Install SSH if remote access is required.
