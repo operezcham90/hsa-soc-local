@@ -31,7 +31,7 @@ Make sure that the configuration switch SW11 is set to SD program mode (00110).
 
 In some cases, the driver for UART serial communication must be installed manually. [Silicon Labs USB-UART drivers page](http://www.silabs.com/Support%20Documents/Software/CP210x_VCP_Windows.zip).
 
-# Software Installation
+# Software Installation (PS)
 
 Open the `/etc/apt/sources.list` file with a text editor.
 
@@ -39,7 +39,60 @@ Open the `/etc/apt/sources.list` file with a text editor.
 sudo nano /etc/apt/sources.list
 ```
 
-Include the following sources.
+The text content should be the following. Save the file.
+
+```
+#deb http://ports.ubuntu.com/ubuntu-ports/ precise main universe
+#deb-src http://ports.ubuntu.com/ubuntu-ports/ precise main universe
+deb http://old-releases.ubuntu.com/ubuntu precise main universe
+deb-src http://old-releases.ubuntu.com/ubuntu precise main universe
+```
+
+Istall CA certificates.
+
+```
+sudo apt-get update
+sudo apt-get install --reinstall ca-certificates
+```
+
+Open the `/etc/apt/sources.list` file with a text editor again.
+
+```
+sudo nano /etc/apt/sources.list
+```
+
+The text content should be the following. Save the file.
+
+```
+#deb http://ports.ubuntu.com/ubuntu-ports/ precise main universe
+#deb-src http://ports.ubuntu.com/ubuntu-ports/ precise main universe
+deb http://old-releases.ubuntu.com/ubuntu precise main universe
+deb-src http://old-releases.ubuntu.com/ubuntu precise main universe
+deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu precise main
+deb-src http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu precise main
+```
+
+Update packages, note that some packages will fail, **ignore the errors**.
+
+```
+sudo apt-get update
+```
+
+Upgrade GCC compiler.
+
+```
+sudo apt-get install gcc g++ gcc-5 g++-5 gcc-6 g++-6
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 80 --slave /usr/bin/g++ g++ /usr/bin/g++-6
+g++ --version
+```
+
+Open the `/etc/apt/sources.list` file with a text editor again.
+
+```
+sudo nano /etc/apt/sources.list
+```
+
+The text content should be the following. Save the file.
 
 ```
 #deb http://ports.ubuntu.com/ubuntu-ports/ precise main universe
@@ -48,6 +101,12 @@ deb http://old-releases.ubuntu.com/ubuntu precise main universe
 deb-src http://old-releases.ubuntu.com/ubuntu precise main universe
 #deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu precise main
 #deb-src http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu precise main
+```
+
+Update packages.
+
+```
+sudo apt-get update
 ```
 
 Install SSH if remote access is required.
@@ -61,15 +120,6 @@ To change the root passwrod:
 
 ```
 passwd
-```
-
-Upgrade GCC compiler.
-
-```
-sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-sudo apt-get update
-sudo apt-get install gcc g++ gcc-5 g++-5 gcc-6 g++-6
-sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 80 --slave /usr/bin/g++ g++ /usr/bin/g++-6
 ```
 
 Install NodeJS and NPM.
